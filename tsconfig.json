@@ -14,7 +14,7 @@
     "paths": {
       "@/*": [
         "src/*",
-        "build/src/*"
+        "build/*"
       ]
     }
   },
