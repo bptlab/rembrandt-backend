@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-#User Story Title
-
 As a ‹role›, I'd like to ‹feature short description› [ , in order to ‹value it adds›. ]
 
 ## Conditions of satisfaction
