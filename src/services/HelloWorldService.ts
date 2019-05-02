@@ -1,4 +1,4 @@
-import HelloWorldMessage from '@/interfaces/HelloWorldMessage';
+import { HelloWorldMessage } from '@/models/HelloWorldMessageModel';
 
 export default class HelloWorld {
   // region public static methods

@@ -18,7 +18,7 @@ function startApiServer() {
 
   app.use('/hello-world', helloWorldRouter);
 
-  app.get('/', (req: any, res: any) => {
+  app.get('/', (req: express.Request, res: express.Response) => {
     res.send('hello world!');
   });
 
