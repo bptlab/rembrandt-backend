@@ -27,11 +27,24 @@ export default class RootTypeInitializer {
     }
 
     Winston.info('Begin initializing root types...');
+
     for (const rootType of rootTypes) {
       const resourceRootType = new ResourceType(rootType);
+      if (rootType.parentType) {
+        const parentResourceType = await ResourceType.findOne({ name: rootType.parentType });
+        if (!parentResourceType) {
+          Winston.warn(
+            `Failed to find parent resource type definition for ${rootType.name}!
+            Please ensure the types are correctly ordered.
+            Skipping this type.`);
+          continue;
+        }
+        resourceRootType.parentType = parentResourceType._id;
+      }
       await resourceRootType.save();
       Winston.debug(`Initialized type for ${rootType.name}`);
     }
+
     Winston.info('Finished initializing root types.');
   }
   // endregion
