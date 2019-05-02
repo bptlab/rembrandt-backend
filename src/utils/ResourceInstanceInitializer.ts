@@ -1,0 +1,43 @@
+import ResourceType from '@/models/ResourceType';
+import rootTypes from '@/utils/rootTypes';
+import Winston from 'winston';
+import ResourceInstanceFactory from '@/models/ResourceInstanceFactory';
+import resourceInstances from '@/utils/resourceInstances';
+
+export default class RootTypeInitializer {
+  // region public static methods
+  // endregion
+
+  // region private static methods
+  // endregion
+
+  // region public members
+  // endregion
+
+  // region private members
+  // endregion
+
+  // region constructor
+  // endregion
+
+  // region public methods
+  public static async initializeResourceInstance(): Promise<void> {
+    const resourceTypeCount = await ResourceType.find().estimatedDocumentCount();
+
+    if (resourceTypeCount !== 0) {
+      return;
+    }
+
+    Winston.info('Begin initializing resourceInstance...');
+    for (const instance of resourceInstances) {
+      const resource = await ResourceInstanceFactory.build(instance.attributes, instance.resourceType);
+      await resource.save();
+      Winston.debug(`saved instance of type ${instance.resourceType}`);
+    }
+    Winston.info('Finished saving all instances.');
+  }
+  // endregion
+
+  // region private methods
+  // endregion
+}
