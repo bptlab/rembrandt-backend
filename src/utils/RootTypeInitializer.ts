@@ -1,5 +1,6 @@
 import ResourceType from '@/models/ResourceType';
 import rootTypes from '@/utils/rootTypes';
+import Winston from 'winston';
 
 export default class RootTypeInitializer {
   // region public static methods
@@ -20,12 +21,18 @@ export default class RootTypeInitializer {
   // region public methods
   public static async initializeRootTypes(): Promise<void> {
     const resourceTypeCount = await ResourceType.find().estimatedDocumentCount();
-    if (resourceTypeCount === 0) {
-      for (const rootType of rootTypes) {
-        const resourceRootType = new ResourceType(rootType);
-        await resourceRootType.save();
-      }
+
+    if (resourceTypeCount !== 0) {
+      return;
     }
+
+    Winston.info('Begin initializing root types...');
+    for (const rootType of rootTypes) {
+      const resourceRootType = new ResourceType(rootType);
+      await resourceRootType.save();
+      Winston.debug(`Initialized type for ${rootType.name}`);
+    }
+    Winston.info('Finished initializing root types.');
   }
   // endregion
 
