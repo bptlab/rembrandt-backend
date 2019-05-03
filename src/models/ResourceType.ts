@@ -16,7 +16,7 @@ interface Attribute {
 })
 
 export class ResourceType extends Typegoose {
-  @prop({ required: true })
+  @prop({ required: true, unique: true })
   public name: string = '';
 
   @prop({ required: true })
