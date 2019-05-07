@@ -10,7 +10,7 @@ export interface Attribute {
 
 @pre<ResourceInstance>('save', async function() {
 
-  const foundType = await ResourceTypeModel.findOne({_id: this.resourceType }).exec();
+  const foundType = await ResourceTypeModel.findById( this.resourceType ).exec();
   if (!foundType) {
     const errorText = 'No corrresponding ResourceType found!';
     Winston.error(errorText);
