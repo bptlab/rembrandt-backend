@@ -4,12 +4,15 @@ import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import helloWorldRouter from '@/routes/helloWorld';
+import RootTypeInitializer from '@/utils/RootTypeInitializer';
 
 const swaggerConfig = require('@/swagger.json');
 
 function startApiServer() {
   const app: express.Application = express();
   const port: string = process.env.PORT || '3000';
+
+  RootTypeInitializer.initializeRootTypes();
 
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json());
@@ -30,4 +33,4 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', startApiServer);
 
-mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/monitoring`, { useNewUrlParser: true });
+mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/rembrandt`, { useNewUrlParser: true });
