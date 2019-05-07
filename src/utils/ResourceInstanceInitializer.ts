@@ -3,6 +3,7 @@ import rootTypes from '@/utils/rootTypes';
 import Winston from 'winston';
 import ResourceInstanceFactory from '@/models/ResourceInstanceFactory';
 import resourceInstances from '@/utils/resourceInstances';
+import ResourceInstance from '@/models/ResourceInstance';
 
 export default class RootTypeInitializer {
   // region public static methods
@@ -30,7 +31,10 @@ export default class RootTypeInitializer {
 
     Winston.info('Begin initializing resourceInstance...');
     for (const instance of resourceInstances) {
-      const resource = await ResourceInstanceFactory.build(instance.attributes, instance.resourceType);
+      const resource = new ResourceInstance({ attributes: instance.attributes });
+      await resource.setResourceTypeByName(instance.resourceType);
+      Winston.info('before ');
+     // await ResourceInstanceFactory.build(instance.attributes, instance.resourceType);
       await resource.save();
       Winston.debug(`saved instance of type ${instance.resourceType}`);
     }

@@ -5,7 +5,6 @@ import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import helloWorldRouter from '@/routes/helloWorld';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
-import { watchFile } from 'fs';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import winston = require('winston');
 
