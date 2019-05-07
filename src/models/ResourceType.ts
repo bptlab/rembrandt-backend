@@ -1,6 +1,6 @@
 import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
 
-interface Attribute {
+export interface Attribute {
   name: string;
   dataType: string;
   required: boolean;
@@ -27,6 +27,30 @@ export class ResourceType extends Typegoose {
 
   @prop({ ref: ResourceType })
   public parentType?: Ref<ResourceType>;
+
+  @instanceMethod
+  public async getCompleteListOfAttributes(requiredOnly: boolean = false): Promise<Attribute[]> {
+    let attributes: Attribute[] = this.attributes;
+    let parentTypeId = this.parentType;
+
+    while (parentTypeId) {
+      const parentResourceType = await ResourceTypeModel.findById(parentTypeId).exec();
+      if (parentResourceType) {
+        attributes = attributes.concat(parentResourceType.attributes);
+        parentTypeId = parentResourceType.parentType;
+      } else {
+        break;
+      }
+    }
+
+    if (requiredOnly) {
+      return attributes.filter( (attribute) => {
+        return attribute.required;
+      });
+    }
+
+    return attributes;
+  }
 
   @instanceMethod
   public async setParentResourceTypeByName(resourceTypeName: string): Promise<void> {
