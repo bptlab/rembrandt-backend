@@ -56,7 +56,9 @@ export class ResourceInstance extends Typegoose {
     if (!foundType) {
       const errorText = 'No corrresponding ResourceType found!';
       Winston.error(errorText);
-      throw Error(errorText);
+      return new Promise((resolve, reject) => {
+        reject(new Error(errorText));
+      });
     }
     this.resourceType = foundType._id;
   }
