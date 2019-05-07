@@ -6,7 +6,6 @@ import cors from 'cors';
 import helloWorldRouter from '@/routes/helloWorld';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
-import winston = require('winston');
 
 const swaggerConfig = require('@/swagger.json');
 
