@@ -5,14 +5,13 @@ import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import helloWorldRouter from '@/routes/helloWorld';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
+import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 
 const swaggerConfig = require('@/swagger.json');
 
-function startApiServer() {
+async function startApiServer() {
   const app: express.Application = express();
   const port: string = process.env.PORT || '3000';
-
-  RootTypeInitializer.initializeRootTypes();
 
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json());
@@ -25,8 +24,10 @@ function startApiServer() {
     res.send('hello world!');
   });
 
-
   app.listen(port);
+
+  await RootTypeInitializer.initializeRootTypes();
+  await ResourceInstanceInitializer.initializeResourceInstances();
 }
 
 const db = mongoose.connection;

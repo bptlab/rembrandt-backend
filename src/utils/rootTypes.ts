@@ -31,12 +31,18 @@ export default [
   {
     name: 'MaterialResource',
     abstract: true,
-    attributes: [],
+    attributes: [
+      {
+        name: 'location',
+        dataType: 'string',
+        required: true,
+      },
+    ],
     parentType: 'Resource',
   },
   {
     name: 'ExhaustibleResource',
-    abstract: true,
+    abstract: false,
     parentType: 'MaterialResource',
     attributes: [
       {
