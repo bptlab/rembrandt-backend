@@ -1,7 +1,6 @@
 import ResourceType from '@/models/ResourceType';
 import rootTypes from '@/utils/rootTypes';
 import Winston from 'winston';
-import ResourceInstanceFactory from '@/models/ResourceInstanceFactory';
 import resourceInstances from '@/utils/resourceInstances';
 import ResourceInstance from '@/models/ResourceInstance';
 
