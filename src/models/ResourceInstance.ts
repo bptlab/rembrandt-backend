@@ -7,7 +7,6 @@ export interface AttributeValue {
   value: string;
 }
 
-
 @pre<ResourceInstance>('save', async function() {
 
   const foundType = await ResourceTypeModel.findById( this.resourceType ).exec();
@@ -46,7 +45,6 @@ export class ResourceInstance extends Typegoose {
   @prop({ required: true })
   public attributes: AttributeValue[] = [];
 
-
   @prop({ required: true, ref: ResourceType })
   public resourceType?: Ref<ResourceType>;
 
@@ -64,7 +62,6 @@ export class ResourceInstance extends Typegoose {
   }
 
 }
-
 
 const ResourceInstanceModel = new ResourceInstance().getModelForClass(ResourceInstance);
 
