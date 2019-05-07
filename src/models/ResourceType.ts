@@ -7,7 +7,7 @@ interface Attribute {
 }
 
 // tslint:disable-next-line:only-arrow-functions
-@pre<ResourceType>('save', async function() {
+@pre<ResourceType>('save', async function(): Promise<void> {
   if (!this.parentType && this.name !== 'Resource') {
     return new Promise((resolve, reject) => {
       reject(new Error(`Parent resource type for new type '${this.name}' must be defined.`));
