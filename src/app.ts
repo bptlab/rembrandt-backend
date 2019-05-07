@@ -5,14 +5,15 @@ import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import helloWorldRouter from '@/routes/helloWorld';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
+import { watchFile } from 'fs';
+import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
+import winston = require('winston');
 
 const swaggerConfig = require('@/swagger.json');
 
-function startApiServer() {
+async function startApiServer() {
   const app: express.Application = express();
   const port: string = process.env.PORT || '3000';
-
-  RootTypeInitializer.initializeRootTypes();
 
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json());
@@ -27,6 +28,13 @@ function startApiServer() {
 
 
   app.listen(port);
+
+  await RootTypeInitializer.initializeRootTypes();
+  try {
+    await ResourceInstanceInitializer.initializeResourceInstance();
+  } catch (e) {
+    winston.error('initializing Resources failed');
+  }
 }
 
 const db = mongoose.connection;

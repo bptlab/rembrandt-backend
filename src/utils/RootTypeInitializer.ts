@@ -2,6 +2,7 @@ import ResourceType from '@/models/ResourceType';
 import rootTypes from '@/utils/rootTypes';
 import winston from 'winston';
 
+
 export default class RootTypeInitializer {
   // region public static methods
   public static async initializeRootTypes(): Promise<void> {

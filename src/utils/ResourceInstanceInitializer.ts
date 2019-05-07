@@ -24,7 +24,7 @@ export default class RootTypeInitializer {
   public static async initializeResourceInstance(): Promise<void> {
     const resourceTypeCount = await ResourceType.find().estimatedDocumentCount();
 
-    if (resourceTypeCount !== 0) {
+    if (resourceTypeCount === 0) {
       return;
     }
 
