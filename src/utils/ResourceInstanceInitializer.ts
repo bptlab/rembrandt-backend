@@ -34,9 +34,14 @@ export default class RootTypeInitializer {
       const resource = new ResourceInstance({ attributes: instance.attributes });
       await resource.setResourceTypeByName(instance.resourceType);
       Winston.info('before ');
-     // await ResourceInstanceFactory.build(instance.attributes, instance.resourceType);
-      await resource.save();
-      Winston.debug(`saved instance of type ${instance.resourceType}`);
+      // await ResourceInstanceFactory.build(instance.attributes, instance.resourceType);
+      try {
+        await resource.save();
+        Winston.debug(`saved instance of type ${instance.resourceType}`);
+      } catch (error) {
+        Winston.error(error.message);
+        Winston.error(`instance for type ${instance.resourceType} could not be initialized. See error above.`);
+      }
     }
     Winston.info('Finished saving all instances.');
   }
