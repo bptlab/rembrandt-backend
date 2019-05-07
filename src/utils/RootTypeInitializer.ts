@@ -30,6 +30,7 @@ export default class RootTypeInitializer {
 
     for (const rootType of rootTypes) {
       const resourceRootType = new ResourceType(rootType);
+
       if (rootType.parentType) {
         const parentResourceType = await ResourceType.findOne({ name: rootType.parentType });
         if (!parentResourceType) {
@@ -41,12 +42,13 @@ export default class RootTypeInitializer {
         }
         resourceRootType.parentType = parentResourceType._id;
       }
-      await resourceRootType.save().then(() => {
+      try {
+        await resourceRootType.save();
         Winston.debug(`Initialized '${rootType.name}' type.`);
-      }).catch((error) => {
+      } catch (error) {
         Winston.error(error.message);
         Winston.error(`'${rootType.name}' could not be initialized. See error above.`);
-      });
+      }
     }
 
     Winston.info('Finished initializing root types.');
