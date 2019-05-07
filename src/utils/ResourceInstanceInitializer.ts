@@ -1,10 +1,32 @@
 import ResourceType from '@/models/ResourceType';
-import Winston from 'winston';
+import winston from 'winston';
 import resourceInstances from '@/utils/resourceInstances';
 import ResourceInstance from '@/models/ResourceInstance';
 
 export default class RootTypeInitializer {
   // region public static methods
+  public static async initializeResourceInstances(): Promise<void> {
+    const resourceTypeCount = await ResourceType.find().estimatedDocumentCount();
+
+    if (resourceTypeCount === 0) {
+      return;
+    }
+
+    winston.info('Begin initializing resourceInstance...');
+    for (const instance of resourceInstances) {
+      const resource = new ResourceInstance({ attributes: instance.attributes });
+      await resource.setResourceTypeByName(instance.resourceType);
+
+      try {
+        await resource.save();
+        winston.debug(`saved instance of type ${instance.resourceType}`);
+      } catch (error) {
+        winston.error(error.message);
+        winston.error(`instance for type ${instance.resourceType} could not be initialized. See error above.`);
+      }
+    }
+    winston.info('Finished saving all instances.');
+  }
   // endregion
 
   // region private static methods
@@ -20,29 +42,6 @@ export default class RootTypeInitializer {
   // endregion
 
   // region public methods
-  public static async initializeResourceInstance(): Promise<void> {
-    const resourceTypeCount = await ResourceType.find().estimatedDocumentCount();
-
-    if (resourceTypeCount === 0) {
-      return;
-    }
-
-    Winston.info('Begin initializing resourceInstance...');
-    for (const instance of resourceInstances) {
-      const resource = new ResourceInstance({ attributes: instance.attributes });
-      await resource.setResourceTypeByName(instance.resourceType);
-      Winston.info('before ');
-      // await ResourceInstanceFactory.build(instance.attributes, instance.resourceType);
-      try {
-        await resource.save();
-        Winston.debug(`saved instance of type ${instance.resourceType}`);
-      } catch (error) {
-        Winston.error(error.message);
-        Winston.error(`instance for type ${instance.resourceType} could not be initialized. See error above.`);
-      }
-    }
-    Winston.info('Finished saving all instances.');
-  }
   // endregion
 
   // region private methods

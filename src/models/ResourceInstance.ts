@@ -1,6 +1,6 @@
 import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
 import ResourceTypeModel, { ResourceType, Attribute } from '@/models/ResourceType';
-import Winston from 'winston';
+import winston from 'winston';
 
 export interface AttributeValue {
   name: string;
@@ -41,26 +41,43 @@ export interface AttributeValue {
 })
 
 export class ResourceInstance extends Typegoose {
+  // region public static methods
+  // endregion
 
+  // region private static methods
+  // endregion
+
+  // region public members
   @prop({ required: true })
   public attributes: AttributeValue[] = [];
 
   @prop({ required: true, ref: ResourceType })
   public resourceType?: Ref<ResourceType>;
+  // endregion
 
+  // region private members
+  // endregion
+
+  // region constructor
+  // endregion
+
+  // region public methods
   @instanceMethod
   public async setResourceTypeByName(resourceTypeName: string): Promise<void> {
     const foundType = await ResourceTypeModel.findOne({name: resourceTypeName }).exec();
     if (!foundType) {
       const errorText = 'No corrresponding ResourceType found!';
-      Winston.error(errorText);
+      winston.error(errorText);
       return new Promise((resolve, reject) => {
         reject(new Error(errorText));
       });
     }
     this.resourceType = foundType._id;
   }
+  // endregion
 
+  // region private methods
+  // endregion
 }
 
 const ResourceInstanceModel = new ResourceInstance().getModelForClass(ResourceInstance);

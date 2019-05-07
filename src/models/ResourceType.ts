@@ -16,6 +16,13 @@ export interface Attribute {
 })
 
 export class ResourceType extends Typegoose {
+  // region public static methods
+  // endregion
+
+  // region private static methods
+  // endregion
+
+  // region public members
   @prop({ required: true, unique: true })
   public name: string = '';
 
@@ -27,6 +34,15 @@ export class ResourceType extends Typegoose {
 
   @prop({ ref: ResourceType })
   public parentType?: Ref<ResourceType>;
+  // endregion
+
+  // region private members
+  // endregion
+
+  // region constructor
+  // endregion
+
+  // region public methods
 
   @instanceMethod
   public async getCompleteListOfAttributes(requiredOnly: boolean = false): Promise<Attribute[]> {
@@ -64,6 +80,11 @@ export class ResourceType extends Typegoose {
 
     this.parentType = parentResourceType._id;
   }
+  // endregion
+
+  // region private methods
+  // endregion
+
 }
 
 const ResourceTypeModel = new ResourceType().getModelForClass(ResourceType);

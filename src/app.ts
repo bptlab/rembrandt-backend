@@ -25,15 +25,10 @@ async function startApiServer() {
     res.send('hello world!');
   });
 
-
   app.listen(port);
 
   await RootTypeInitializer.initializeRootTypes();
-  try {
-    await ResourceInstanceInitializer.initializeResourceInstance();
-  } catch (e) {
-    winston.error('initializing Resources failed');
-  }
+  await ResourceInstanceInitializer.initializeResourceInstances();
 }
 
 const db = mongoose.connection;
