@@ -1,5 +1,6 @@
 import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
 import ResourceTypeModel, { ResourceType, Attribute } from '@/models/ResourceType';
+import { Serializer } from 'jsonapi-serializer';
 import winston from 'winston';
 
 export interface AttributeValue {
@@ -83,3 +84,11 @@ export class ResourceInstance extends Typegoose {
 const ResourceInstanceModel = new ResourceInstance().getModelForClass(ResourceInstance);
 
 export default ResourceInstanceModel;
+
+export const resourceInstanceSerializer = new Serializer('resourceInstance', {
+  id: '_id',
+  attributes: [
+    'attributes',
+    'resourceType',
+  ],
+});

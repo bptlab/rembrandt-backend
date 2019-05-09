@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import helloWorldRouter from '@/routes/helloWorld';
 import resourceTypeRouter from '@/routes/resourceTypes';
+import resourceInstanceRouter from '@/routes/resourceInstances';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 
@@ -21,6 +22,7 @@ async function startApiServer() {
 
   app.use('/hello-world', helloWorldRouter);
   app.use('/resource-types', resourceTypeRouter);
+  app.use('/resource-instances', resourceInstanceRouter);
 
   app.get('/', (req: express.Request, res: express.Response) => {
     res.send('hello world!');
