@@ -15,7 +15,11 @@ export default class RootTypeInitializer {
     winston.info('Begin initializing resourceInstance...');
     for (const instance of resourceInstances) {
       const resource = new ResourceInstance({ attributes: instance.attributes });
-      await resource.setResourceTypeByName(instance.resourceType);
+      try {
+        await resource.setResourceTypeByName(instance.resourceType);
+      } catch (error) {
+        winston.error(`Resource type ${instance.resourceType} not found.`);
+      }
 
       try {
         await resource.save();

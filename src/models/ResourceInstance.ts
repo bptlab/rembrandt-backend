@@ -66,7 +66,7 @@ export class ResourceInstance extends Typegoose {
   public async setResourceTypeByName(resourceTypeName: string): Promise<void> {
     const foundType = await ResourceTypeModel.findOne({name: resourceTypeName }).exec();
     if (!foundType) {
-      const errorText = 'No corrresponding ResourceType found!';
+      const errorText = 'No corresponding ResourceType found!';
       winston.error(errorText);
       return new Promise((resolve, reject) => {
         reject(new Error(errorText));
