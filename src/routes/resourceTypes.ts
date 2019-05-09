@@ -38,6 +38,17 @@ router.get('/:typeId', async (req: express.Request, res: express.Response) => {
   }
 });
 
+router.patch('/:typeId', async (req: express.Request, res: express.Response) => {
+  try {
+    const newAttributeValues = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    await ResourceType.findByIdAndUpdate(req.params.typeId, newAttributeValues).exec();
+    res.status(202).send();
+  } catch (error) {
+    winston.error(error.message);
+    res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
+  }
+});
+
 router.delete('/:typeId', async (req: express.Request, res: express.Response) => {
   try {
     const resourceType = await ResourceType.findById(req.params.typeId).exec();
