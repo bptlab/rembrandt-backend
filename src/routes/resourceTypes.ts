@@ -25,4 +25,18 @@ router.get('/:typeId', async (req: express.Request, res: express.Response) => {
   }
 });
 
+router.delete('/:typeId', async (req: express.Request, res: express.Response) => {
+  try {
+    const resourceType = await ResourceType.findById(req.params.typeId).exec();
+    if (!resourceType) {
+      throw Error(`Resource Type with Id: '${req.params.typeId}' not found. Could not be deleted.`);
+    }
+    await resourceType.remove();
+    res.status(202).send();
+  } catch (error) {
+    winston.error(error.message);
+    res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
+  }
+});
+
 export default router;
