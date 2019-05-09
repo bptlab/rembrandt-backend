@@ -18,7 +18,7 @@ export default class RootTypeInitializer {
       try {
         await resource.setResourceTypeByName(instance.resourceType);
       } catch (error) {
-        winston.error(`resource type ${instance.resourceType} not found.`)
+        winston.error(`resource type ${instance.resourceType} not found.`);
       }
 
       try {
