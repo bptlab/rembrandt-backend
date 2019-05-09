@@ -1,4 +1,5 @@
 import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
+import { Serializer } from 'jsonapi-serializer';
 
 export interface Attribute {
   name: string;
@@ -90,3 +91,13 @@ export class ResourceType extends Typegoose {
 const ResourceTypeModel = new ResourceType().getModelForClass(ResourceType);
 
 export default ResourceTypeModel;
+
+export const resourceTypeSerializer = new Serializer('resourceType', {
+  id: '_id',
+  attributes: [
+    'name',
+    'abstract',
+    'attributes',
+    'parentType',
+  ],
+});
