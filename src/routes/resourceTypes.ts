@@ -15,4 +15,14 @@ router.get('/', async (req: express.Request, res: express.Response) => {
   }
 });
 
+router.get('/:typeId', async (req: express.Request, res: express.Response) => {
+  try {
+    const resourceType = await ResourceType.findById(req.params.typeId).exec();
+    res.send(resourceTypeSerializer.serialize(resourceType));
+  } catch (error) {
+    winston.error(error.message);
+    res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
+  }
+});
+
 export default router;
