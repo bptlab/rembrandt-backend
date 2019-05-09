@@ -1,4 +1,5 @@
 import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
+import ResourceInstanceModel from '@/models/ResourceInstance';
 import { Serializer } from 'jsonapi-serializer';
 
 export interface Attribute {
@@ -7,11 +8,27 @@ export interface Attribute {
   required: boolean;
 }
 
-// tslint:disable-next-line:only-arrow-functions
 @pre<ResourceType>('save', async function(): Promise<void> {
   if (!this.parentType && this.name !== 'Resource') {
     return new Promise((resolve, reject) => {
       reject(new Error(`Parent resource type for new type '${this.name}' must be defined.`));
+    });
+  }
+})
+
+@pre<ResourceType>('remove', async function(): Promise<void> {
+  const childTypesCount = await ResourceTypeModel.countDocuments({ parentType: this._id });
+  if (childTypesCount > 0) {
+    return new Promise((resolve, reject) => {
+      reject(new Error(`There are ${childTypesCount} resource types with '${this.name}' as parent. ` +
+        `Type can not be deleted.`));
+    });
+  }
+
+  const instancesCount = await ResourceInstanceModel.countDocuments({ resourceType: this._id });
+  if (instancesCount > 0) {
+    return new Promise((resolve, reject) => {
+      reject(new Error(`There are ${instancesCount} instances of type '${this.name}'. Type can not be deleted.`));
     });
   }
 })
