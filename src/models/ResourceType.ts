@@ -117,4 +117,5 @@ export const resourceTypeSerializer = new Serializer('resourceType', {
     'attributes',
     'parentType',
   ],
+  keyForAttribute: 'camelCase',
 });

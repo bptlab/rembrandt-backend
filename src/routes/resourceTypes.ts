@@ -1,6 +1,7 @@
 import express from 'express';
 import ResourceType, { resourceTypeSerializer } from '@/models/ResourceType';
 import winston from 'winston';
+import { Deserializer } from 'jsonapi-serializer';
 import createJSONError from '@/utils/errorSerializer';
 
 const router: express.Router = express.Router();
@@ -9,6 +10,18 @@ router.get('/', async (req: express.Request, res: express.Response) => {
   try {
     const resourceTypes = await ResourceType.find({}).exec();
     res.send(resourceTypeSerializer.serialize(resourceTypes));
+  } catch (error) {
+    winston.error(error.message);
+    res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
+  }
+});
+
+router.post('/', async (req: express.Request, res: express.Response) => {
+  try {
+    const newResourceTypeJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    const newResourceType = new ResourceType(newResourceTypeJSON);
+    await newResourceType.save();
+    res.status(201).send(resourceTypeSerializer.serialize(newResourceType));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
