@@ -16,7 +16,7 @@ async function startApiServer() {
   const port: string = process.env.PORT || '3000';
 
   app.use(bodyParser.urlencoded({extended: true}));
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
   app.use(cors());
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
