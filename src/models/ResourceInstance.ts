@@ -1,13 +1,9 @@
 import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
 import ResourceTypeModel, { ResourceType } from '@/models/ResourceType';
 import { ResourceAttribute } from '@/models/ResourceAttribute';
+import { ResourceAttributeValue } from '@/models/ResourceAttributeValue';
 import { Serializer } from 'jsonapi-serializer';
 import winston from 'winston';
-
-export interface AttributeValue {
-  name: string;
-  value: string;
-}
 
 @pre<ResourceInstance>('save', async function() {
 
@@ -43,6 +39,7 @@ export interface AttributeValue {
 })
 
 export class ResourceInstance extends Typegoose {
+  [index: string]: any;
   // region public static methods
   // endregion
 
@@ -51,7 +48,7 @@ export class ResourceInstance extends Typegoose {
 
   // region public members
   @prop({ required: true })
-  public attributes: AttributeValue[] = [];
+  public attributes: ResourceAttributeValue[] = [];
 
   @prop({ required: true, ref: ResourceType })
   public resourceType?: Ref<ResourceType>;
@@ -64,6 +61,15 @@ export class ResourceInstance extends Typegoose {
   // endregion
 
   // region public methods
+  @instanceMethod
+  public updateFromObject(updateObject: any) {
+    ResourceInstanceModel.schema.eachPath( (path) => {
+      if (!path.startsWith('_') && path in updateObject) {
+        this[path] = updateObject[path];
+      }
+    });
+  }
+
   @instanceMethod
   public async setResourceTypeByName(resourceTypeName: string): Promise<void> {
     const foundType = await ResourceTypeModel.findOne({name: resourceTypeName }).exec();
