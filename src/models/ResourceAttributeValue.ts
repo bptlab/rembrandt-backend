@@ -1,6 +1,6 @@
-import { prop, Typegoose } from 'typegoose';
+import { prop } from 'typegoose';
 
-export class ResourceAttributeValue extends Typegoose {
+export default class ResourceAttributeValue {
   // region public static methods
   // endregion
 
@@ -28,7 +28,3 @@ export class ResourceAttributeValue extends Typegoose {
   // endregion
 
 }
-
-const ResourceAttributeValueModel = new ResourceAttributeValue().getModelForClass(ResourceAttributeValue);
-
-export default ResourceAttributeValueModel;

@@ -1,6 +1,6 @@
 import { Typegoose, prop, arrayProp, Ref, pre, instanceMethod } from 'typegoose';
 import ResourceInstanceModel from '@/models/ResourceInstance';
-import { ResourceAttribute } from '@/models/ResourceAttribute';
+import ResourceAttribute from '@/models/ResourceAttribute';
 import { Serializer } from 'jsonapi-serializer';
 
 @pre<ResourceType>('save', async function(): Promise<void> {

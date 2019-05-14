@@ -1,7 +1,7 @@
 import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
 import ResourceTypeModel, { ResourceType } from '@/models/ResourceType';
-import { ResourceAttribute } from '@/models/ResourceAttribute';
-import { ResourceAttributeValue } from '@/models/ResourceAttributeValue';
+import ResourceAttribute from '@/models/ResourceAttribute';
+import ResourceAttributeValue from '@/models/ResourceAttributeValue';
 import { Serializer } from 'jsonapi-serializer';
 import winston from 'winston';
 
