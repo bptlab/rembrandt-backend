@@ -1,12 +1,7 @@
-import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
+import { Typegoose, prop, arrayProp, Ref, pre, instanceMethod } from 'typegoose';
 import ResourceInstanceModel from '@/models/ResourceInstance';
+import { ResourceTypeAttribute } from '@/models/ResourceTypeAttribute';
 import { Serializer } from 'jsonapi-serializer';
-
-export interface Attribute {
-  name: string;
-  dataType: string;
-  required: boolean;
-}
 
 @pre<ResourceType>('save', async function(): Promise<void> {
   if (!this.parentType && this.name !== 'Resource') {
@@ -34,6 +29,7 @@ export interface Attribute {
 })
 
 export class ResourceType extends Typegoose {
+  [index: string]: any;
   // region public static methods
   // endregion
 
@@ -47,8 +43,8 @@ export class ResourceType extends Typegoose {
   @prop({ required: true })
   public abstract: boolean = false;
 
-  @prop({ required: true })
-  public attributes: Attribute[] = [];
+  @arrayProp({ required: true, items: ResourceTypeAttribute })
+  public attributes: ResourceTypeAttribute[] = [];
 
   @prop({ ref: ResourceType })
   public parentType?: Ref<ResourceType>;
@@ -61,10 +57,18 @@ export class ResourceType extends Typegoose {
   // endregion
 
   // region public methods
+  @instanceMethod
+  public updateFromObject(updateObject: any) {
+    ResourceTypeModel.schema.eachPath( (path) => {
+      if (!path.startsWith('_') && path in updateObject) {
+        this[path] = updateObject[path];
+      }
+    });
+  }
 
   @instanceMethod
-  public async getCompleteListOfAttributes(requiredOnly: boolean = false): Promise<Attribute[]> {
-    let attributes: Attribute[] = this.attributes;
+  public async getCompleteListOfAttributes(requiredOnly: boolean = false): Promise<ResourceTypeAttribute[]> {
+    let attributes: ResourceTypeAttribute[] = this.attributes;
     let parentTypeId = this.parentType;
 
     while (parentTypeId) {

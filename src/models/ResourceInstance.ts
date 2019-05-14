@@ -1,5 +1,6 @@
 import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
-import ResourceTypeModel, { ResourceType, Attribute } from '@/models/ResourceType';
+import ResourceTypeModel, { ResourceType } from '@/models/ResourceType';
+import { ResourceTypeAttribute } from '@/models/ResourceTypeAttribute';
 import { Serializer } from 'jsonapi-serializer';
 import winston from 'winston';
 
@@ -26,7 +27,7 @@ export interface AttributeValue {
     });
   }
 
-  const requiredAttributes: Attribute[] = await foundType.getCompleteListOfAttributes(true);
+  const requiredAttributes: ResourceTypeAttribute[] = await foundType.getCompleteListOfAttributes(true);
   for (const requiredAttribute of requiredAttributes) {
     const attribute = this.attributes.find( (instanceAttribute) => {
       return (instanceAttribute.name === requiredAttribute.name);

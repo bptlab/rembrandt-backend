@@ -44,9 +44,13 @@ router.patch('/:typeId', async (req: express.Request, res: express.Response) => 
     if (req.params.typeId !== newAttributeValues.id) {
       throw Error('ObjectId provided in body does not match id in url. Denying update.');
     }
-    delete newAttributeValues.id;
 
-    await ResourceType.findByIdAndUpdate(req.params.typeId, newAttributeValues).exec();
+    const resourceType = await ResourceType.findById(req.params.typeId).exec();
+    if (!resourceType) {
+      throw Error(`Resource type with id ${req.params.id} could not be found.`);
+    }
+    resourceType.updateFromObject(newAttributeValues);
+    await resourceType.save();
     res.status(202).send();
   } catch (error) {
     winston.error(error.message);
