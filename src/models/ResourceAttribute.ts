@@ -2,7 +2,7 @@ import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
 import winston = require('winston');
 
-export class ResourceTypeAttribute extends Typegoose {
+export class ResourceAttribute extends Typegoose {
   // region public static methods
   // endregion
 
@@ -34,9 +34,9 @@ export class ResourceTypeAttribute extends Typegoose {
 
 }
 
-const ResourceTypeAttributeModel = new ResourceTypeAttribute().getModelForClass(ResourceTypeAttribute);
+const ResourceAttributeModel = new ResourceAttribute().getModelForClass(ResourceAttribute);
 
-export default ResourceTypeAttributeModel;
+export default ResourceAttributeModel;
 
 /*export const resourceTypeSerializer = new Serializer('resourceType', {
   id: '_id',

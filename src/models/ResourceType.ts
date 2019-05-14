@@ -1,6 +1,6 @@
 import { Typegoose, prop, arrayProp, Ref, pre, instanceMethod } from 'typegoose';
 import ResourceInstanceModel from '@/models/ResourceInstance';
-import { ResourceTypeAttribute } from '@/models/ResourceTypeAttribute';
+import { ResourceAttribute } from '@/models/ResourceAttribute';
 import { Serializer } from 'jsonapi-serializer';
 
 @pre<ResourceType>('save', async function(): Promise<void> {
@@ -43,8 +43,8 @@ export class ResourceType extends Typegoose {
   @prop({ required: true })
   public abstract: boolean = false;
 
-  @arrayProp({ required: true, items: ResourceTypeAttribute })
-  public attributes: ResourceTypeAttribute[] = [];
+  @arrayProp({ required: true, items: ResourceAttribute })
+  public attributes: ResourceAttribute[] = [];
 
   @prop({ ref: ResourceType })
   public parentType?: Ref<ResourceType>;
@@ -67,8 +67,8 @@ export class ResourceType extends Typegoose {
   }
 
   @instanceMethod
-  public async getCompleteListOfAttributes(requiredOnly: boolean = false): Promise<ResourceTypeAttribute[]> {
-    let attributes: ResourceTypeAttribute[] = this.attributes;
+  public async getCompleteListOfAttributes(requiredOnly: boolean = false): Promise<ResourceAttribute[]> {
+    let attributes: ResourceAttribute[] = this.attributes;
     let parentTypeId = this.parentType;
 
     while (parentTypeId) {
