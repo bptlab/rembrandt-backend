@@ -41,6 +41,11 @@ router.get('/:typeId', async (req: express.Request, res: express.Response) => {
 router.patch('/:typeId', async (req: express.Request, res: express.Response) => {
   try {
     const newAttributeValues = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    if (req.params.typeId !== newAttributeValues.id) {
+      throw Error('ObjectId provided in body does not match id in url. Denying update.');
+    }
+    delete newAttributeValues.id;
+
     await ResourceType.findByIdAndUpdate(req.params.typeId, newAttributeValues).exec();
     res.status(202).send();
   } catch (error) {
