@@ -9,9 +9,135 @@
     }
   },
   "openapi": "3.0.2",
-  "paths": {},
+  "paths": {
+    "/resource-types": {
+      "get": {
+        "summary": "Get list of all resource types",
+        "tags": [
+          "ResourceTypes",
+          "ResourceOrganization"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTypesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new resource type",
+        "tags": [
+          "ResourceTypes",
+          "ResourceOrganization"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTypeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resource-types/{id}": {
+      "get": {
+        "summary": "Get a resource type by ID",
+        "tags": [
+          "ResourceTypes",
+          "ResourceOrganization"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Type ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTypeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "components": {
     "schemas": {
+      "JsonApiObject": {
+        "type": "object",
+        "required": [
+          "type",
+          "attributes"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "ResourceTypeResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ResourceType"
+          }
+        }
+      },
+      "ResourceTypesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceType"
+            }
+          }
+        }
+      },
+      "ResourceInstanceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ResourceInstance"
+          }
+        }
+      },
+      "ResourceInstancesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceInstance"
+            }
+          }
+        }
+      },
       "ResourceAttribute": {
         "allOf": [
           {
@@ -99,21 +225,6 @@
             }
           }
         ]
-      },
-      "JsonApiObject": {
-        "type": "object",
-        "required": [
-          "type",
-          "attributes"
-        ],
-        "properties": {
-          "type": {
-            "type": "string"
-          },
-          "id": {
-            "type": "string"
-          }
-        }
       },
       "ResourceType": {
         "allOf": [

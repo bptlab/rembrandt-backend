@@ -5,7 +5,23 @@ import { Deserializer } from 'jsonapi-serializer';
 import createJSONError from '@/utils/errorSerializer';
 
 const router: express.Router = express.Router();
-
+  /**
+   * @swagger
+   *
+   *  /resource-types:
+   *    get:
+   *      summary: Get list of all resource types
+   *      tags:
+   *        - ResourceTypes
+   *        - ResourceOrganization
+   *      responses:
+   *        '200':
+   *          description: Successful
+   *          content:
+   *            application/vnd.api+json:
+   *              schema:
+   *                $ref: '#/components/schemas/ResourceTypesResponse'
+   */
 router.get('/', async (req: express.Request, res: express.Response) => {
   try {
     const resourceTypes = await ResourceType.find({}).exec();
@@ -16,6 +32,23 @@ router.get('/', async (req: express.Request, res: express.Response) => {
   }
 });
 
+  /**
+   * @swagger
+   *
+   *  /resource-types:
+   *    post:
+   *      summary: Create a new resource type
+   *      tags:
+   *        - ResourceTypes
+   *        - ResourceOrganization
+   *      responses:
+   *        '201':
+   *          description: Successful
+   *          content:
+   *            application/vnd.api+json:
+   *              schema:
+   *                $ref: '#/components/schemas/ResourceTypeResponse'
+   */
 router.post('/', async (req: express.Request, res: express.Response) => {
   try {
     const newResourceTypeJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
@@ -28,6 +61,30 @@ router.post('/', async (req: express.Request, res: express.Response) => {
   }
 });
 
+  /**
+   * @swagger
+   *
+   *  /resource-types/{id}:
+   *    get:
+   *      summary: Get a resource type by ID
+   *      tags:
+   *        - ResourceTypes
+   *        - ResourceOrganization
+   *      parameters:
+   *        - name: id
+   *          in: path
+   *          description: Resource-Type ID
+   *          required: true
+   *          schema:
+   *            type: string
+   *      responses:
+   *        '200':
+   *          description: Successful
+   *          content:
+   *            application/vnd.api+json:
+   *              schema:
+   *                $ref: '#/components/schemas/ResourceTypeResponse'
+   */
 router.get('/:typeId', async (req: express.Request, res: express.Response) => {
   try {
     const resourceType = await ResourceType.findById(req.params.typeId).exec();
