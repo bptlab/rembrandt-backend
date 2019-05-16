@@ -1,5 +1,27 @@
 import { prop } from 'typegoose';
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      ResourceAttributeValue:
+ *        allOf:
+ *          - $ref: '#/components/schemas/JsonApiObject'
+ *          - type: object
+ *            properties:
+ *              attributes:
+ *                type: object
+ *                required:
+ *                  - name
+ *                  - value
+ *                properties:
+ *                  name:
+ *                    type: string
+ *                  value:
+ *                    type: string
+ */
+
 export default class ResourceAttributeValue {
   // region public static methods
   // endregion

@@ -38,6 +38,30 @@ import winston from 'winston';
   }
 })
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      ResourceInstance:
+ *        allOf:
+ *          - $ref: '#/components/schemas/JsonApiObject'
+ *          - type: object
+ *            properties:
+ *              attributes:
+ *                type: object
+ *                required:
+ *                  - attributes
+ *                  - resourceType
+ *                properties:
+ *                  attributes:
+ *                    type: array
+ *                    items:
+ *                      $ref: '#/components/schemas/ResourceAttributeValue'
+ *                  resourceType:
+ *                    $ref: '#/components/schemas/ResourceType'
+ */
+
 export class ResourceInstance extends Typegoose {
   [index: string]: any;
   // region public static methods

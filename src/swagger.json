@@ -1,5 +1,4 @@
 {
-  "swagger": "2.0",
   "info": {
     "version": "0.1.0",
     "title": "Rembrandt Backend",
@@ -9,17 +8,151 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:3000",
-  "tags": [],
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "openapi": "3.0.2",
   "paths": {},
-  "definitions": {}
+  "components": {
+    "schemas": {
+      "ResourceAttribute": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "dataType",
+                  "required"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "dataType": {
+                    "type": "string"
+                  },
+                  "required": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ResourceAttributeValue": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "value"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ResourceInstance": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "attributes",
+                  "resourceType"
+                ],
+                "properties": {
+                  "attributes": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ResourceAttributeValue"
+                    }
+                  },
+                  "resourceType": {
+                    "$ref": "#/components/schemas/ResourceType"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "JsonApiObject": {
+        "type": "object",
+        "required": [
+          "type",
+          "attributes"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "ResourceType": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "abstract",
+                  "attributes"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "abstract": {
+                    "type": "boolean"
+                  },
+                  "attributes": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ResourceAttribute"
+                    }
+                  },
+                  "parentType": {
+                    "$ref": "#/components/schemas/ResourceType"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "tags": []
 }

@@ -28,6 +28,46 @@ import { Serializer } from 'jsonapi-serializer';
   }
 })
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      JsonApiObject:
+ *        type: object
+ *        required:
+ *          - type
+ *          - attributes
+ *        properties:
+ *          type:
+ *            type: string
+ *          id:
+ *            type: string
+ *
+ *      ResourceType:
+ *        allOf:
+ *          - $ref: '#/components/schemas/JsonApiObject'
+ *          - type: object
+ *            properties:
+ *              attributes:
+ *                type: object
+ *                required:
+ *                  - name
+ *                  - abstract
+ *                  - attributes
+ *                properties:
+ *                  name:
+ *                    type: string
+ *                  abstract:
+ *                    type: boolean
+ *                  attributes:
+ *                    type: array
+ *                    items:
+ *                      $ref: '#/components/schemas/ResourceAttribute'
+ *                  parentType:
+ *                    $ref: '#/components/schemas/ResourceType'
+ */
+
 export class ResourceType extends Typegoose {
   [index: string]: any;
   // region public static methods
