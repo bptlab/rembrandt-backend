@@ -10,6 +10,7 @@ module.exports = {
   },
   openapi: '3.0.2',
   apis: [
+    'src/models/swagger/*.yaml',
     'src/models/*.ts',
     'src/routes/*.ts',
   ],

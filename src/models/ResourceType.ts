@@ -33,17 +33,6 @@ import { Serializer } from 'jsonapi-serializer';
  *
  *  components:
  *    schemas:
- *      JsonApiObject:
- *        type: object
- *        required:
- *          - type
- *          - attributes
- *        properties:
- *          type:
- *            type: string
- *          id:
- *            type: string
- *
  *      ResourceType:
  *        allOf:
  *          - $ref: '#/components/schemas/JsonApiObject'
