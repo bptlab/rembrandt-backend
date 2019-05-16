@@ -16,22 +16,22 @@ router.get('/', async (req: express.Request, res: express.Response) => {
   }
 });
 
-router.post('/', async (req: express.Request, res: express.Response) => {
+router.get('/:instanceId', async (req: express.Request, res: express.Response) => {
   try {
-    const newInstanceJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
-    const newInstance = new ResourceInstance(newInstanceJSON);
-    await newInstance.save();
-    res.status(201).send(resourceInstanceSerializer.serialize(newInstance));
+    const resourceInstance = await ResourceInstance.findById(req.params.instanceId).exec();
+    res.send(resourceInstanceSerializer.serialize(resourceInstance));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
   }
 });
 
-router.get('/:instanceId', async (req: express.Request, res: express.Response) => {
+router.post('/', async (req: express.Request, res: express.Response) => {
   try {
-    const resourceInstance = await ResourceInstance.findById(req.params.instanceId).exec();
-    res.send(resourceInstanceSerializer.serialize(resourceInstance));
+    const newInstanceJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    const newInstance = new ResourceInstance(newInstanceJSON);
+    await newInstance.save();
+    res.status(201).send(resourceInstanceSerializer.serialize(newInstance));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));

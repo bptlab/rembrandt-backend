@@ -35,35 +35,6 @@ router.get('/', async (req: express.Request, res: express.Response) => {
   /**
    * @swagger
    *
-   *  /resource-types:
-   *    post:
-   *      summary: Create a new resource type
-   *      tags:
-   *        - ResourceTypes
-   *        - ResourceOrganization
-   *      responses:
-   *        '201':
-   *          description: Successful
-   *          content:
-   *            application/vnd.api+json:
-   *              schema:
-   *                $ref: '#/components/schemas/ResourceTypeResponse'
-   */
-router.post('/', async (req: express.Request, res: express.Response) => {
-  try {
-    const newResourceTypeJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
-    const newResourceType = new ResourceType(newResourceTypeJSON);
-    await newResourceType.save();
-    res.status(201).send(resourceTypeSerializer.serialize(newResourceType));
-  } catch (error) {
-    winston.error(error.message);
-    res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
-  }
-});
-
-  /**
-   * @swagger
-   *
    *  /resource-types/{id}:
    *    get:
    *      summary: Get a resource type by ID
@@ -89,6 +60,35 @@ router.get('/:typeId', async (req: express.Request, res: express.Response) => {
   try {
     const resourceType = await ResourceType.findById(req.params.typeId).exec();
     res.send(resourceTypeSerializer.serialize(resourceType));
+  } catch (error) {
+    winston.error(error.message);
+    res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
+  }
+});
+
+  /**
+   * @swagger
+   *
+   *  /resource-types:
+   *    post:
+   *      summary: Create a new resource type
+   *      tags:
+   *        - ResourceTypes
+   *        - ResourceOrganization
+   *      responses:
+   *        '201':
+   *          description: Successful
+   *          content:
+   *            application/vnd.api+json:
+   *              schema:
+   *                $ref: '#/components/schemas/ResourceTypeResponse'
+   */
+router.post('/', async (req: express.Request, res: express.Response) => {
+  try {
+    const newResourceTypeJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    const newResourceType = new ResourceType(newResourceTypeJSON);
+    await newResourceType.save();
+    res.status(201).send(resourceTypeSerializer.serialize(newResourceType));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
