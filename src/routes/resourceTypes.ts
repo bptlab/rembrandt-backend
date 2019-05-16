@@ -108,7 +108,7 @@ router.patch('/:typeId', async (req: express.Request, res: express.Response) => 
     }
     resourceType.updateFromObject(newAttributeValues);
     await resourceType.save();
-    res.status(202).send();
+    res.status(200).send();
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
