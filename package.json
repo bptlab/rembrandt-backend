@@ -7,7 +7,8 @@
     "lint": "tslint -p tsconfig.json",
     "development": "npm run lint && node --inspect=9229 -r tsconfig-paths/register -r ts-node/register src/app.ts",
     "build": "tsc && cp src/swagger.json build/swagger.json",
-    "production": "node -r tsconfig-paths/register build/app.js"
+    "production": "node -r tsconfig-paths/register build/app.js",
+    "swagger": "swagger-jsdoc -d swaggerConf.js -o src/swagger.json"
   },
   "dependencies": {
     "@types/jsonapi-serializer": "^3.6.1",
@@ -29,6 +30,7 @@
     "@types/mongoose": "^5.3.27",
     "@types/swagger-ui-express": "^3.0.0",
     "nodemon": "^1.18.11",
+    "swagger-jsdoc": "^3.2.9",
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
     "typescript": "^3.4.5"
