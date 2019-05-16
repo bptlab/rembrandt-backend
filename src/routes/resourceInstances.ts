@@ -125,7 +125,7 @@ router.patch('/:instanceId', async (req: express.Request, res: express.Response)
     }
     resourceInstance.updateFromObject(newAttributeValues);
     await resourceInstance.save();
-    res.status(202).send();
+    res.status(200).send();
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
@@ -158,7 +158,7 @@ router.delete('/:instanceId', async (req: express.Request, res: express.Response
       throw Error(`Instance with Id: '${req.params.instanceId}' not found. Could not be deleted.`);
     }
     await resourceInstance.remove();
-    res.status(202).send();
+    res.status(204).send();
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
