@@ -14,7 +14,6 @@ const router: express.Router = express.Router();
    *      summary: Get list of all resource instances
    *      tags:
    *        - ResourceInstances
-   *        - ResourceOrganization
    *      responses:
    *        '200':
    *          description: Successful
@@ -41,7 +40,6 @@ router.get('/', async (req: express.Request, res: express.Response) => {
    *      summary: Get a resource instance by ID
    *      tags:
    *        - ResourceInstances
-   *        - ResourceOrganization
    *      parameters:
    *        - name: id
    *          in: path
@@ -75,7 +73,6 @@ router.get('/:instanceId', async (req: express.Request, res: express.Response) =
    *      summary: Create a new resource instance
    *      tags:
    *        - ResourceInstances
-   *        - ResourceOrganization
    *      responses:
    *        '201':
    *          description: Successful
@@ -104,7 +101,6 @@ router.post('/', async (req: express.Request, res: express.Response) => {
    *      summary: Update a resource instance with a given ID
    *      tags:
    *        - ResourceInstances
-   *        - ResourceOrganization
    *      parameters:
    *        - name: id
    *          in: path
@@ -144,7 +140,6 @@ router.patch('/:instanceId', async (req: express.Request, res: express.Response)
    *      summary: Delete a resource instance with a given ID
    *      tags:
    *        - ResourceInstances
-   *        - ResourceOrganization
    *      parameters:
    *        - name: id
    *          in: path

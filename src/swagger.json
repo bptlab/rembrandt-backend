@@ -14,8 +14,7 @@
       "get": {
         "summary": "Get list of all resource instances",
         "tags": [
-          "ResourceInstances",
-          "ResourceOrganization"
+          "ResourceInstances"
         ],
         "responses": {
           "200": {
@@ -33,8 +32,7 @@
       "post": {
         "summary": "Create a new resource instance",
         "tags": [
-          "ResourceInstances",
-          "ResourceOrganization"
+          "ResourceInstances"
         ],
         "responses": {
           "201": {
@@ -54,8 +52,7 @@
       "get": {
         "summary": "Get a resource instance by ID",
         "tags": [
-          "ResourceInstances",
-          "ResourceOrganization"
+          "ResourceInstances"
         ],
         "parameters": [
           {
@@ -84,8 +81,7 @@
       "patch": {
         "summary": "Update a resource instance with a given ID",
         "tags": [
-          "ResourceInstances",
-          "ResourceOrganization"
+          "ResourceInstances"
         ],
         "parameters": [
           {
@@ -107,8 +103,7 @@
       "delete": {
         "summary": "Delete a resource instance with a given ID",
         "tags": [
-          "ResourceInstances",
-          "ResourceOrganization"
+          "ResourceInstances"
         ],
         "parameters": [
           {
@@ -132,8 +127,7 @@
       "get": {
         "summary": "Get list of all resource types",
         "tags": [
-          "ResourceTypes",
-          "ResourceOrganization"
+          "ResourceTypes"
         ],
         "responses": {
           "200": {
@@ -151,8 +145,7 @@
       "post": {
         "summary": "Create a new resource type",
         "tags": [
-          "ResourceTypes",
-          "ResourceOrganization"
+          "ResourceTypes"
         ],
         "responses": {
           "201": {
@@ -172,8 +165,7 @@
       "get": {
         "summary": "Get a resource type by ID",
         "tags": [
-          "ResourceTypes",
-          "ResourceOrganization"
+          "ResourceTypes"
         ],
         "parameters": [
           {
@@ -202,8 +194,7 @@
       "patch": {
         "summary": "Update a resource type with a given ID",
         "tags": [
-          "ResourceTypes",
-          "ResourceOrganization"
+          "ResourceTypes"
         ],
         "parameters": [
           {
@@ -225,8 +216,7 @@
       "delete": {
         "summary": "Delete a resource type with a given ID",
         "tags": [
-          "ResourceTypes",
-          "ResourceOrganization"
+          "ResourceTypes"
         ],
         "parameters": [
           {

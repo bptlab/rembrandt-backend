@@ -14,7 +14,6 @@ const router: express.Router = express.Router();
    *      summary: Get list of all resource types
    *      tags:
    *        - ResourceTypes
-   *        - ResourceOrganization
    *      responses:
    *        '200':
    *          description: Successful
@@ -41,7 +40,6 @@ router.get('/', async (req: express.Request, res: express.Response) => {
    *      summary: Get a resource type by ID
    *      tags:
    *        - ResourceTypes
-   *        - ResourceOrganization
    *      parameters:
    *        - name: id
    *          in: path
@@ -75,7 +73,6 @@ router.get('/:typeId', async (req: express.Request, res: express.Response) => {
    *      summary: Create a new resource type
    *      tags:
    *        - ResourceTypes
-   *        - ResourceOrganization
    *      responses:
    *        '201':
    *          description: Successful
@@ -104,7 +101,6 @@ router.post('/', async (req: express.Request, res: express.Response) => {
    *      summary: Update a resource type with a given ID
    *      tags:
    *        - ResourceTypes
-   *        - ResourceOrganization
    *      parameters:
    *        - name: id
    *          in: path
@@ -144,7 +140,6 @@ router.patch('/:typeId', async (req: express.Request, res: express.Response) => 
    *      summary: Delete a resource type with a given ID
    *      tags:
    *        - ResourceTypes
-   *        - ResourceOrganization
    *      parameters:
    *        - name: id
    *          in: path
