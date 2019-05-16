@@ -10,6 +10,124 @@
   },
   "openapi": "3.0.2",
   "paths": {
+    "/resource-instances": {
+      "get": {
+        "summary": "Get list of all resource instances",
+        "tags": [
+          "ResourceInstances",
+          "ResourceOrganization"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceInstancesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new resource instance",
+        "tags": [
+          "ResourceInstances",
+          "ResourceOrganization"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceInstanceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resource-instances/{id}": {
+      "get": {
+        "summary": "Get a resource instance by ID",
+        "tags": [
+          "ResourceInstances",
+          "ResourceOrganization"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Instance ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceInstanceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a resource instance with a given ID",
+        "tags": [
+          "ResourceInstances",
+          "ResourceOrganization"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Instance ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a resource instance with a given ID",
+        "tags": [
+          "ResourceInstances",
+          "ResourceOrganization"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Instance ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          }
+        }
+      }
+    },
     "/resource-types": {
       "get": {
         "summary": "Get list of all resource types",

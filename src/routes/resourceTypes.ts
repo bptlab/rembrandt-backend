@@ -5,6 +5,7 @@ import { Deserializer } from 'jsonapi-serializer';
 import createJSONError from '@/utils/errorSerializer';
 
 const router: express.Router = express.Router();
+
   /**
    * @swagger
    *
