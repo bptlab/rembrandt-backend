@@ -53,6 +53,8 @@ import { Serializer } from 'jsonapi-serializer';
  *                    type: array
  *                    items:
  *                      $ref: '#/components/schemas/ResourceAttribute'
+ *                  eponymousAttribute:
+ *                    $ref: '#/components/schemas/ResourceAttribute'
  *                  parentType:
  *                    $ref: '#/components/schemas/ResourceType'
  */
@@ -74,6 +76,9 @@ export class ResourceType extends Typegoose {
 
   @arrayProp({ required: true, items: ResourceAttribute })
   public attributes: ResourceAttribute[] = [];
+
+  @prop({ ref: ResourceAttribute })
+  public eponymousAttribute?: Ref<ResourceAttribute>;
 
   @prop({ ref: ResourceType })
   public parentType?: Ref<ResourceType>;
