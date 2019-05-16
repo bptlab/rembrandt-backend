@@ -58,6 +58,10 @@ router.get('/', async (req: express.Request, res: express.Response) => {
 router.get('/:typeId', async (req: express.Request, res: express.Response) => {
   try {
     const resourceType = await ResourceType.findById(req.params.typeId).exec();
+    if (!resourceType) {
+      throw Error(`Resource type with id ${req.params.id} could not be found.`);
+    }
+    resourceType.attributes = await resourceType.getCompleteListOfAttributes();
     res.send(resourceTypeSerializer.serialize(resourceType));
   } catch (error) {
     winston.error(error.message);
