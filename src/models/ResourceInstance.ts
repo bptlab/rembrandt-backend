@@ -75,7 +75,7 @@ export class ResourceInstance extends Typegoose {
   public attributes: ResourceAttributeValue[] = [];
 
   @prop({ required: true, ref: ResourceType })
-  public resourceType?: Ref<ResourceType>;
+  public resourceType!: Ref<ResourceType>;
   // endregion
 
   // region private members
