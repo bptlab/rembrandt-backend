@@ -80,6 +80,52 @@
             }
           }
         }
+      },
+      "patch": {
+        "summary": "Update a resource type with a given ID",
+        "tags": [
+          "ResourceTypes",
+          "ResourceOrganization"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Type ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a resource type with a given ID",
+        "tags": [
+          "ResourceTypes",
+          "ResourceOrganization"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Type ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          }
+        }
       }
     }
   },

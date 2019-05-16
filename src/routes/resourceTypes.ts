@@ -95,6 +95,26 @@ router.get('/:typeId', async (req: express.Request, res: express.Response) => {
   }
 });
 
+  /**
+   * @swagger
+   *
+   *  /resource-types/{id}:
+   *    patch:
+   *      summary: Update a resource type with a given ID
+   *      tags:
+   *        - ResourceTypes
+   *        - ResourceOrganization
+   *      parameters:
+   *        - name: id
+   *          in: path
+   *          description: Resource-Type ID
+   *          required: true
+   *          schema:
+   *            type: string
+   *      responses:
+   *        '200':
+   *          description: Successfully updated
+   */
 router.patch('/:typeId', async (req: express.Request, res: express.Response) => {
   try {
     const newAttributeValues = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
@@ -115,6 +135,26 @@ router.patch('/:typeId', async (req: express.Request, res: express.Response) => 
   }
 });
 
+  /**
+   * @swagger
+   *
+   *  /resource-types/{id}:
+   *    delete:
+   *      summary: Delete a resource type with a given ID
+   *      tags:
+   *        - ResourceTypes
+   *        - ResourceOrganization
+   *      parameters:
+   *        - name: id
+   *          in: path
+   *          description: Resource-Type ID
+   *          required: true
+   *          schema:
+   *            type: string
+   *      responses:
+   *        '204':
+   *          description: Successfully deleted
+   */
 router.delete('/:typeId', async (req: express.Request, res: express.Response) => {
   try {
     const resourceType = await ResourceType.findById(req.params.typeId).exec();
