@@ -2,6 +2,7 @@ import { Typegoose, prop, arrayProp, Ref, pre, instanceMethod } from 'typegoose'
 import ResourceInstanceModel from '@/models/ResourceInstance';
 import ResourceAttribute from '@/models/ResourceAttribute';
 import { Serializer } from 'jsonapi-serializer';
+import { ObjectId } from 'bson';
 
 @pre<ResourceType>('save', async function(): Promise<void> {
   if (!this.parentType && this.name !== 'Resource') {
@@ -53,6 +54,8 @@ import { Serializer } from 'jsonapi-serializer';
  *                    type: array
  *                    items:
  *                      $ref: '#/components/schemas/ResourceAttribute'
+ *                  eponymousAttribute:
+ *                    $ref: '#/components/schemas/ResourceAttribute'
  *                  parentType:
  *                    $ref: '#/components/schemas/ResourceType'
  */
@@ -74,6 +77,9 @@ export class ResourceType extends Typegoose {
 
   @arrayProp({ required: true, items: ResourceAttribute })
   public attributes: ResourceAttribute[] = [];
+
+  @prop({ ref: ResourceAttribute })
+  public eponymousAttribute?: Ref<ResourceAttribute>;
 
   @prop({ ref: ResourceType })
   public parentType?: Ref<ResourceType>;
@@ -111,6 +117,15 @@ export class ResourceType extends Typegoose {
   }
 
   @instanceMethod
+  public getEponymousAttribute(): ResourceAttribute | undefined {
+    const attributes: ResourceAttribute[] = this.attributes;
+    const eponymousAttributeId = this.eponymousAttribute as ObjectId;
+    return attributes.find((attribute: any) => {
+      return (attribute.id === eponymousAttributeId.toString());
+    });
+  }
+
+  @instanceMethod
   public async setParentResourceTypeByName(resourceTypeName: string): Promise<void> {
     const parentResourceType = await ResourceTypeModel.findOne({ name: resourceTypeName });
 
@@ -140,6 +155,7 @@ export const resourceTypeSerializer = new Serializer('resourceType', {
     'abstract',
     'attributes',
     'parentType',
+    'eponymousAttribute',
   ],
   keyForAttribute: 'camelCase',
 });

@@ -2,7 +2,7 @@ export default [
   {
     attributes: [
       {
-        name: 'partOf',
+        name: 'part of',
         value: 'false',
       },
     ],
@@ -11,14 +11,27 @@ export default [
   {
     attributes: [
       {
-        name: 'partOf',
+        name: 'part of',
         value: 'false',
       },
       {
-        name: 'exhaustionLimit',
+        name: 'exhaustion limit',
         value: '123',
       },
     ],
-    resourceType: 'ExhaustibleResource',
+    resourceType: 'Exhaustible Resource',
+  },
+  {
+    attributes: [
+      {
+        name: 'part of',
+        value: 'false',
+      },
+      {
+        name: 'name',
+        value: 'Max Mustermann',
+      },
+    ],
+    resourceType: 'Human Resource',
   },
 ];

@@ -408,6 +408,9 @@
                       "$ref": "#/components/schemas/ResourceAttribute"
                     }
                   },
+                  "eponymousAttribute": {
+                    "$ref": "#/components/schemas/ResourceAttribute"
+                  },
                   "parentType": {
                     "$ref": "#/components/schemas/ResourceType"
                   }

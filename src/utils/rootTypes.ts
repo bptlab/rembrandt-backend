@@ -4,32 +4,39 @@ export default [
     abstract: true,
     attributes: [
       {
-        name: 'partOf',
+        name: 'part of',
         dataType: 'ref',
         required: false,
       },
     ],
   },
   {
-    name: 'MachineryResource',
+    name: 'Machinery Resource',
     abstract: true,
     attributes: [],
     parentType: 'Resource',
   },
   {
-    name: 'InsubstantialResource',
+    name: 'Insubstantial Resource',
     abstract: true,
     attributes: [],
     parentType: 'Resource',
   },
   {
-    name: 'HumanResource',
-    abstract: true,
-    attributes: [],
+    name: 'Human Resource',
+    abstract: false,
+    attributes: [
+      {
+        name: 'name',
+        dataType: 'string',
+        required: false,
+      },
+    ],
     parentType: 'Resource',
+    eponymousAttribute: 'name',
   },
   {
-    name: 'MaterialResource',
+    name: 'Material Resource',
     abstract: true,
     attributes: [
       {
@@ -41,12 +48,12 @@ export default [
     parentType: 'Resource',
   },
   {
-    name: 'ExhaustibleResource',
+    name: 'Exhaustible Resource',
     abstract: false,
-    parentType: 'MaterialResource',
+    parentType: 'Material Resource',
     attributes: [
       {
-        name: 'exhaustionLimit',
+        name: 'exhaustion limit',
         dataType: 'number',
         required: true,
       },
