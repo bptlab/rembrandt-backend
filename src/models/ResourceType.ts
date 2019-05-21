@@ -2,6 +2,7 @@ import { Typegoose, prop, arrayProp, Ref, pre, instanceMethod } from 'typegoose'
 import ResourceInstanceModel from '@/models/ResourceInstance';
 import ResourceAttribute from '@/models/ResourceAttribute';
 import { Serializer } from 'jsonapi-serializer';
+import { ObjectId } from 'bson';
 
 @pre<ResourceType>('save', async function(): Promise<void> {
   if (!this.parentType && this.name !== 'Resource') {
@@ -113,6 +114,15 @@ export class ResourceType extends Typegoose {
     }
 
     return attributes;
+  }
+
+  @instanceMethod
+  public getEponymousAttribute(): ResourceAttribute | undefined {
+    const attributes: ResourceAttribute[] = this.attributes;
+    const eponymousAttributeId = this.eponymousAttribute as ObjectId;
+    return attributes.find((attribute: any) => {
+      return (attribute.id === eponymousAttributeId.toString());
+    });
   }
 
   @instanceMethod
