@@ -17,7 +17,7 @@ export default [
     parentType: 'Resource',
   },
   {
-    name: 'InsubstentialResource',
+    name: 'InsubstantialResource',
     abstract: true,
     attributes: [],
     parentType: 'Resource',
@@ -35,7 +35,7 @@ export default [
       {
         name: 'location',
         dataType: 'string',
-        required: true,
+        required: false,
       },
     ],
     parentType: 'Resource',
