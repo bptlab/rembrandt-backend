@@ -1,11 +1,9 @@
 import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
-import ResourceTypeModel, { ResourceType, Attribute } from '@/models/ResourceType';
+import ResourceTypeModel, { ResourceType } from '@/models/ResourceType';
+import ResourceAttribute from '@/models/ResourceAttribute';
+import ResourceAttributeValue from '@/models/ResourceAttributeValue';
+import { Serializer } from 'jsonapi-serializer';
 import winston from 'winston';
-
-export interface AttributeValue {
-  name: string;
-  value: string;
-}
 
 @pre<ResourceInstance>('save', async function() {
 
@@ -25,7 +23,7 @@ export interface AttributeValue {
     });
   }
 
-  const requiredAttributes: Attribute[] = await foundType.getCompleteListOfAttributes(true);
+  const requiredAttributes: ResourceAttribute[] = await foundType.getCompleteListOfAttributes(true);
   for (const requiredAttribute of requiredAttributes) {
     const attribute = this.attributes.find( (instanceAttribute) => {
       return (instanceAttribute.name === requiredAttribute.name);
@@ -40,7 +38,32 @@ export interface AttributeValue {
   }
 })
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      ResourceInstance:
+ *        allOf:
+ *          - $ref: '#/components/schemas/JsonApiObject'
+ *          - type: object
+ *            properties:
+ *              attributes:
+ *                type: object
+ *                required:
+ *                  - attributes
+ *                  - resourceType
+ *                properties:
+ *                  attributes:
+ *                    type: array
+ *                    items:
+ *                      $ref: '#/components/schemas/ResourceAttributeValue'
+ *                  resourceType:
+ *                    $ref: '#/components/schemas/ResourceType'
+ */
+
 export class ResourceInstance extends Typegoose {
+  [index: string]: any;
   // region public static methods
   // endregion
 
@@ -49,10 +72,10 @@ export class ResourceInstance extends Typegoose {
 
   // region public members
   @prop({ required: true })
-  public attributes: AttributeValue[] = [];
+  public attributes: ResourceAttributeValue[] = [];
 
   @prop({ required: true, ref: ResourceType })
-  public resourceType?: Ref<ResourceType>;
+  public resourceType!: Ref<ResourceType>;
   // endregion
 
   // region private members
@@ -83,3 +106,11 @@ export class ResourceInstance extends Typegoose {
 const ResourceInstanceModel = new ResourceInstance().getModelForClass(ResourceInstance);
 
 export default ResourceInstanceModel;
+
+export const resourceInstanceSerializer = new Serializer('resourceInstance', {
+  id: '_id',
+  attributes: [
+    'attributes',
+    'resourceType',
+  ],
+});

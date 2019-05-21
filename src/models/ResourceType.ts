@@ -1,12 +1,8 @@
-import { prop, Typegoose, Ref, pre, instanceMethod } from 'typegoose';
+import { Typegoose, prop, arrayProp, Ref, pre, instanceMethod } from 'typegoose';
+import ResourceInstanceModel from '@/models/ResourceInstance';
+import ResourceAttribute from '@/models/ResourceAttribute';
+import { Serializer } from 'jsonapi-serializer';
 
-export interface Attribute {
-  name: string;
-  dataType: string;
-  required: boolean;
-}
-
-// tslint:disable-next-line:only-arrow-functions
 @pre<ResourceType>('save', async function(): Promise<void> {
   if (!this.parentType && this.name !== 'Resource') {
     return new Promise((resolve, reject) => {
@@ -15,7 +11,54 @@ export interface Attribute {
   }
 })
 
+@pre<ResourceType>('remove', async function(): Promise<void> {
+  const childTypesCount = await ResourceTypeModel.countDocuments({ parentType: this._id });
+  if (childTypesCount > 0) {
+    return new Promise((resolve, reject) => {
+      reject(new Error(`There are ${childTypesCount} resource types with '${this.name}' as parent. ` +
+        `Type can not be deleted.`));
+    });
+  }
+
+  const instancesCount = await ResourceInstanceModel.countDocuments({ resourceType: this._id });
+  if (instancesCount > 0) {
+    return new Promise((resolve, reject) => {
+      reject(new Error(`There are ${instancesCount} instances of type '${this.name}'. Type can not be deleted.`));
+    });
+  }
+})
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      ResourceType:
+ *        allOf:
+ *          - $ref: '#/components/schemas/JsonApiObject'
+ *          - type: object
+ *            properties:
+ *              attributes:
+ *                type: object
+ *                required:
+ *                  - name
+ *                  - abstract
+ *                  - attributes
+ *                properties:
+ *                  name:
+ *                    type: string
+ *                  abstract:
+ *                    type: boolean
+ *                  attributes:
+ *                    type: array
+ *                    items:
+ *                      $ref: '#/components/schemas/ResourceAttribute'
+ *                  parentType:
+ *                    $ref: '#/components/schemas/ResourceType'
+ */
+
 export class ResourceType extends Typegoose {
+  [index: string]: any;
   // region public static methods
   // endregion
 
@@ -29,8 +72,8 @@ export class ResourceType extends Typegoose {
   @prop({ required: true })
   public abstract: boolean = false;
 
-  @prop({ required: true })
-  public attributes: Attribute[] = [];
+  @arrayProp({ required: true, items: ResourceAttribute })
+  public attributes: ResourceAttribute[] = [];
 
   @prop({ ref: ResourceType })
   public parentType?: Ref<ResourceType>;
@@ -43,10 +86,9 @@ export class ResourceType extends Typegoose {
   // endregion
 
   // region public methods
-
   @instanceMethod
-  public async getCompleteListOfAttributes(requiredOnly: boolean = false): Promise<Attribute[]> {
-    let attributes: Attribute[] = this.attributes;
+  public async getCompleteListOfAttributes(requiredOnly: boolean = false): Promise<ResourceAttribute[]> {
+    let attributes: ResourceAttribute[] = this.attributes;
     let parentTypeId = this.parentType;
 
     while (parentTypeId) {
@@ -90,3 +132,14 @@ export class ResourceType extends Typegoose {
 const ResourceTypeModel = new ResourceType().getModelForClass(ResourceType);
 
 export default ResourceTypeModel;
+
+export const resourceTypeSerializer = new Serializer('resourceType', {
+  id: '_id',
+  attributes: [
+    'name',
+    'abstract',
+    'attributes',
+    'parentType',
+  ],
+  keyForAttribute: 'camelCase',
+});

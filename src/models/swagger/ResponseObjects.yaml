@@ -1,0 +1,27 @@
+components:
+  schemas:
+    ResourceTypeResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ResourceType'
+    ResourceTypesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceType'
+
+    ResourceInstanceResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ResourceInstance'
+    ResourceInstancesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceInstance'
