@@ -2,7 +2,7 @@ export default [
   {
     attributes: [
       {
-        name: 'partOf',
+        name: 'part of',
         value: 'false',
       },
     ],
@@ -15,10 +15,10 @@ export default [
         value: 'false',
       },
       {
-        name: 'exhaustionLimit',
+        name: 'exhaustion limit',
         value: '123',
       },
     ],
-    resourceType: 'ExhaustibleResource',
+    resourceType: 'Exhaustible Resource',
   },
 ];
