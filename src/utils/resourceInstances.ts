@@ -21,4 +21,17 @@ export default [
     ],
     resourceType: 'Exhaustible Resource',
   },
+  {
+    attributes: [
+      {
+        name: 'partOf',
+        value: 'false',
+      },
+      {
+        name: 'name',
+        value: 'Max Mustermann',
+      },
+    ],
+    resourceType: 'Human Resource',
+  },
 ];

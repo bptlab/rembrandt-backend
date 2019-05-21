@@ -24,7 +24,7 @@ export default [
   },
   {
     name: 'Human Resource',
-    abstract: true,
+    abstract: false,
     attributes: [
       {
         name: 'name',
