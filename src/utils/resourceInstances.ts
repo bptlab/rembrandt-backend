@@ -11,7 +11,7 @@ export default [
   {
     attributes: [
       {
-        name: 'partOf',
+        name: 'part of',
         value: 'false',
       },
       {
@@ -24,7 +24,7 @@ export default [
   {
     attributes: [
       {
-        name: 'partOf',
+        name: 'part of',
         value: 'false',
       },
       {
