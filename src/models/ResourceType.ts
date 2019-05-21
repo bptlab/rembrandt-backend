@@ -87,15 +87,6 @@ export class ResourceType extends Typegoose {
 
   // region public methods
   @instanceMethod
-  public updateFromObject(updateObject: any) {
-    ResourceTypeModel.schema.eachPath( (path) => {
-      if (!path.startsWith('_') && path in updateObject) {
-        this[path] = updateObject[path];
-      }
-    });
-  }
-
-  @instanceMethod
   public async getCompleteListOfAttributes(requiredOnly: boolean = false): Promise<ResourceAttribute[]> {
     let attributes: ResourceAttribute[] = this.attributes;
     let parentTypeId = this.parentType;

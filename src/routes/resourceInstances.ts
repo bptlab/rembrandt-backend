@@ -123,7 +123,7 @@ router.patch('/:instanceId', async (req: express.Request, res: express.Response)
     if (!resourceInstance) {
       throw Error(`Resource instance with id ${req.params.id} could not be found.`);
     }
-    resourceInstance.updateFromObject(newAttributeValues);
+    resourceInstance.set(newAttributeValues);
     await resourceInstance.save();
     res.status(200).send();
   } catch (error) {

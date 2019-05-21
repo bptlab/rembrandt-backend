@@ -86,15 +86,6 @@ export class ResourceInstance extends Typegoose {
 
   // region public methods
   @instanceMethod
-  public updateFromObject(updateObject: any) {
-    ResourceInstanceModel.schema.eachPath( (path) => {
-      if (!path.startsWith('_') && path in updateObject) {
-        this[path] = updateObject[path];
-      }
-    });
-  }
-
-  @instanceMethod
   public async setResourceTypeByName(resourceTypeName: string): Promise<void> {
     const foundType = await ResourceTypeModel.findOne({name: resourceTypeName }).exec();
     if (!foundType) {

@@ -127,7 +127,7 @@ router.patch('/:typeId', async (req: express.Request, res: express.Response) => 
     if (!resourceType) {
       throw Error(`Resource type with id ${req.params.id} could not be found.`);
     }
-    resourceType.updateFromObject(newAttributeValues);
+    resourceType.set(newAttributeValues);
     await resourceType.save();
     res.status(200).send();
   } catch (error) {
