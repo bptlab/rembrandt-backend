@@ -1,5 +1,4 @@
 {
-  "swagger": "2.0",
   "info": {
     "version": "0.1.0",
     "title": "Rembrandt Backend",
@@ -9,17 +8,419 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:3000",
-  "tags": [],
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "paths": {},
-  "definitions": {}
+  "openapi": "3.0.2",
+  "paths": {
+    "/resource-instances": {
+      "get": {
+        "summary": "Get list of all resource instances",
+        "tags": [
+          "ResourceInstances"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceInstancesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new resource instance",
+        "tags": [
+          "ResourceInstances"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceInstanceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resource-instances/{id}": {
+      "get": {
+        "summary": "Get a resource instance by ID",
+        "tags": [
+          "ResourceInstances"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Instance ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceInstanceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a resource instance with a given ID",
+        "tags": [
+          "ResourceInstances"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Instance ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a resource instance with a given ID",
+        "tags": [
+          "ResourceInstances"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Instance ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          }
+        }
+      }
+    },
+    "/resource-types": {
+      "get": {
+        "summary": "Get list of all resource types",
+        "tags": [
+          "ResourceTypes"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTypesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new resource type",
+        "tags": [
+          "ResourceTypes"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTypeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resource-types/{id}": {
+      "get": {
+        "summary": "Get a resource type by ID",
+        "tags": [
+          "ResourceTypes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Type ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTypeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a resource type with a given ID",
+        "tags": [
+          "ResourceTypes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Type ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a resource type with a given ID",
+        "tags": [
+          "ResourceTypes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Resource-Type ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "JsonApiObject": {
+        "type": "object",
+        "required": [
+          "type",
+          "attributes"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "ResourceTypeResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ResourceType"
+          }
+        }
+      },
+      "ResourceTypesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceType"
+            }
+          }
+        }
+      },
+      "ResourceInstanceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ResourceInstance"
+          }
+        }
+      },
+      "ResourceInstancesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceInstance"
+            }
+          }
+        }
+      },
+      "ResourceAttribute": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "dataType",
+                  "required"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "dataType": {
+                    "type": "string"
+                  },
+                  "required": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ResourceAttributeValue": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "value"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ResourceInstance": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "attributes",
+                  "resourceType"
+                ],
+                "properties": {
+                  "attributes": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ResourceAttributeValue"
+                    }
+                  },
+                  "resourceType": {
+                    "$ref": "#/components/schemas/ResourceType"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ResourceType": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "abstract",
+                  "attributes"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "abstract": {
+                    "type": "boolean"
+                  },
+                  "attributes": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ResourceAttribute"
+                    }
+                  },
+                  "eponymousAttribute": {
+                    "$ref": "#/components/schemas/ResourceAttribute"
+                  },
+                  "parentType": {
+                    "$ref": "#/components/schemas/ResourceType"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "tags": []
 }

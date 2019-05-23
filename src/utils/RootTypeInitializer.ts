@@ -1,6 +1,7 @@
 import ResourceType from '@/models/ResourceType';
 import rootTypes from '@/utils/rootTypes';
 import winston from 'winston';
+import ResourceAttribute from '@/models/ResourceAttribute';
 
 export default class RootTypeInitializer {
   // region public static methods
@@ -20,7 +21,15 @@ export default class RootTypeInitializer {
         if (rootType.parentType) {
           await resourceRootType.setParentResourceTypeByName(rootType.parentType);
         }
+        resourceRootType.eponymousAttribute = undefined;
         await resourceRootType.save();
+        if (rootType.eponymousAttribute) {
+          const eponymousAttributeId = resourceRootType.attributes.find((attribute: ResourceAttribute) => {
+            return (attribute.name === rootType.eponymousAttribute);
+          });
+          resourceRootType.eponymousAttribute = eponymousAttributeId;
+          await resourceRootType.save();
+        }
         winston.debug(`Initialized '${rootType.name}' type.`);
       } catch (error) {
         winston.error(error.message);
