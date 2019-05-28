@@ -1,5 +1,5 @@
 import express from 'express';
-import ResourceType, { resourceTypeSerializer } from '@/models/ResourceType';
+import ResourceTypeModel, { resourceTypeSerializer, ResourceType } from '@/models/ResourceType';
 import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
 import createJSONError from '@/utils/errorSerializer';
@@ -24,7 +24,10 @@ const router: express.Router = express.Router();
    */
 router.get('/', async (req: express.Request, res: express.Response) => {
   try {
-    const resourceTypes = await ResourceType.find({}).exec();
+    const resourceTypes = await ResourceTypeModel.find({}).exec();
+    for (const resourceType of resourceTypes) {
+      resourceType.attributes = await resourceType.getCompleteListOfAttributes();
+    }
     res.send(resourceTypeSerializer.serialize(resourceTypes));
   } catch (error) {
     winston.error(error.message);
@@ -57,7 +60,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
    */
 router.get('/:typeId', async (req: express.Request, res: express.Response) => {
   try {
-    const resourceType = await ResourceType.findById(req.params.typeId).exec();
+    const resourceType = await ResourceTypeModel.findById(req.params.typeId).exec();
     if (!resourceType) {
       throw Error(`Resource type with id ${req.params.id} could not be found.`);
     }
@@ -88,7 +91,7 @@ router.get('/:typeId', async (req: express.Request, res: express.Response) => {
 router.post('/', async (req: express.Request, res: express.Response) => {
   try {
     const newResourceTypeJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
-    const newResourceType = new ResourceType(newResourceTypeJSON);
+    const newResourceType = new ResourceTypeModel(newResourceTypeJSON);
     await newResourceType.save();
     res.status(201).send(resourceTypeSerializer.serialize(newResourceType));
   } catch (error) {
@@ -123,7 +126,7 @@ router.patch('/:typeId', async (req: express.Request, res: express.Response) => 
       throw Error('ObjectId provided in body does not match id in url. Denying update.');
     }
 
-    const resourceType = await ResourceType.findById(req.params.typeId).exec();
+    const resourceType = await ResourceTypeModel.findById(req.params.typeId).exec();
     if (!resourceType) {
       throw Error(`Resource type with id ${req.params.id} could not be found.`);
     }
@@ -157,7 +160,7 @@ router.patch('/:typeId', async (req: express.Request, res: express.Response) => 
    */
 router.delete('/:typeId', async (req: express.Request, res: express.Response) => {
   try {
-    const resourceType = await ResourceType.findById(req.params.typeId).exec();
+    const resourceType = await ResourceTypeModel.findById(req.params.typeId).exec();
     if (!resourceType) {
       throw Error(`Resource Type with Id: '${req.params.typeId}' not found. Could not be deleted.`);
     }
