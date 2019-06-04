@@ -6,6 +6,11 @@ import createJSONError from '@/utils/errorSerializer';
 
 const router: express.Router = express.Router();
 
+const populateResourceTypeOptions = {
+  path: 'resourceType',
+  model: 'ResourceType',
+};
+
   /**
    * @swagger
    *
@@ -24,7 +29,10 @@ const router: express.Router = express.Router();
    */
 router.get('/', async (req: express.Request, res: express.Response) => {
   try {
-    const resourceInstances = await ResourceInstance.find({}).exec();
+    const resourceInstances = await ResourceInstance
+      .find({})
+      .populate(populateResourceTypeOptions)
+      .exec();
     res.send(resourceInstanceSerializer.serialize(resourceInstances));
   } catch (error) {
     winston.error(error.message);
@@ -57,7 +65,10 @@ router.get('/', async (req: express.Request, res: express.Response) => {
    */
 router.get('/:instanceId', async (req: express.Request, res: express.Response) => {
   try {
-    const resourceInstance = await ResourceInstance.findById(req.params.instanceId).exec();
+    const resourceInstance = await ResourceInstance
+      .findById(req.params.instanceId)
+      .populate(populateResourceTypeOptions)
+      .exec();
     res.send(resourceInstanceSerializer.serialize(resourceInstance));
   } catch (error) {
     winston.error(error.message);

@@ -6,6 +6,11 @@ import createJSONError from '@/utils/errorSerializer';
 
 const router: express.Router = express.Router();
 
+const populateParentTypeOptions = {
+  path: 'parentType',
+  model: 'ResourceType',
+};
+
   /**
    * @swagger
    *
@@ -24,7 +29,10 @@ const router: express.Router = express.Router();
    */
 router.get('/', async (req: express.Request, res: express.Response) => {
   try {
-    const resourceTypes = await ResourceTypeModel.find({}).exec();
+    const resourceTypes = await ResourceTypeModel
+      .find({})
+      .populate(populateParentTypeOptions)
+      .exec();
     for (const resourceType of resourceTypes) {
       resourceType.attributes = await resourceType.getCompleteListOfAttributes();
     }
@@ -60,7 +68,10 @@ router.get('/', async (req: express.Request, res: express.Response) => {
    */
 router.get('/:typeId', async (req: express.Request, res: express.Response) => {
   try {
-    const resourceType = await ResourceTypeModel.findById(req.params.typeId).exec();
+    const resourceType = await ResourceTypeModel
+      .findById(req.params.typeId)
+      .populate(populateParentTypeOptions)
+      .exec();
     if (!resourceType) {
       throw Error(`Resource type with id ${req.params.id} could not be found.`);
     }
