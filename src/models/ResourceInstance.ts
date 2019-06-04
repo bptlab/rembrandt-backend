@@ -113,5 +113,16 @@ export const resourceInstanceSerializer = new Serializer('resourceInstance', {
     'attributes',
     'resourceType',
   ],
+  resourceType: {
+    ref: '_id',
+    type: 'resourceType',
+    attributes: [
+      'name',
+      'abstract',
+      'attributes',
+      'parentType',
+      'eponymousAttribute',
+    ],
+  },
   keyForAttribute: 'camelCase',
-});
+} as any);

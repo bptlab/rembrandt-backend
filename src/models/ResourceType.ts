@@ -157,5 +157,16 @@ export const resourceTypeSerializer = new Serializer('resourceType', {
     'parentType',
     'eponymousAttribute',
   ],
+  parentType: {
+    ref: '_id',
+    type: 'resourceType',
+    attributes: [
+      'name',
+      'abstract',
+      'attributes',
+      'parentType',
+      'eponymousAttribute',
+    ],
+  },
   keyForAttribute: 'camelCase',
-});
+} as any);
