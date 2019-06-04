@@ -15,6 +15,11 @@ const swaggerConfig = require('@/swagger.json');
 const contentType: string = 'application/vnd.api+json';
 
 function enforceContentType(req: express.Request, res: express.Response, next: express.NextFunction): void {
+  if (req.originalUrl.startsWith('/docs')) {
+    next();
+    return;
+  }
+
   if (!req.headers || req.headers['content-type'] !== contentType) {
     res.status(415).send(createJSONError(
       '415',
