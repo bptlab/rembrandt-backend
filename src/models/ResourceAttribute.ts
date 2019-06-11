@@ -6,23 +6,20 @@ import { prop } from 'typegoose';
  *  components:
  *    schemas:
  *      ResourceAttribute:
- *        allOf:
- *          - $ref: '#/components/schemas/JsonApiObject'
- *          - type: object
- *            properties:
- *              attributes:
- *                type: object
- *                required:
- *                  - name
- *                  - dataType
- *                  - required
- *                properties:
- *                  name:
- *                    type: string
- *                  dataType:
- *                    type: string
- *                  required:
- *                    type: boolean
+ *        type: object
+ *        required:
+ *          - name
+ *          - dataType
+ *          - required
+ *        properties:
+ *          id:
+ *            type: string
+ *          name:
+ *            type: string
+ *          dataType:
+ *            type: string
+ *          required:
+ *            type: boolean
  */
 
 export default class ResourceAttribute {

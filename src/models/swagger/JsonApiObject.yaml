@@ -10,3 +10,13 @@ components:
           type: string
         id:
           type: string
+    RelationshipObject:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+            id:
+              type: string

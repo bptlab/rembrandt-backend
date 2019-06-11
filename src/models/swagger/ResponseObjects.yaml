@@ -4,24 +4,49 @@ components:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/ResourceType'
+          $ref: '#/components/schemas/PopulatedResourceType'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlatResourceType'
     ResourceTypesResponse:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/ResourceType'
-
+            $ref: '#/components/schemas/PopulatedResourceType'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlatResourceType'
+    ParentTypeRelationship:
+      type: object
+      properties:
+        parentType:
+          $ref: '#/components/schemas/RelationshipObject'
     ResourceInstanceResponse:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/ResourceInstance'
+          $ref: '#/components/schemas/PopulatedResourceInstance'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlatResourceType'
     ResourceInstancesResponse:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/ResourceInstance'
+            $ref: '#/components/schemas/PopulatedResourceInstance'
+        included:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlatResourceType'
+    ResourceTypeRelationship:
+      type: object
+      properties:
+        resourceType:
+          $ref: '#/components/schemas/RelationshipObject'

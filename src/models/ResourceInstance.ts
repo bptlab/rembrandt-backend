@@ -58,8 +58,20 @@ import winston from 'winston';
  *                    type: array
  *                    items:
  *                      $ref: '#/components/schemas/ResourceAttributeValue'
- *                  resourceType:
- *                    $ref: '#/components/schemas/ResourceType'
+ *      PopulatedResourceInstance:
+ *        allOf:
+ *          - $ref: '#/components/schemas/ResourceInstance'
+ *          - type: object
+ *            properties:
+ *              relationships:
+ *                $ref: '#/components/schemas/ResourceTypeRelationship'
+ *      FlatResourceInstance:
+ *        allOf:
+ *          - $ref: '#/components/schemas/ResourceInstance'
+ *          - type: object
+ *            properties:
+ *              resourceType:
+ *                type: string
  */
 
 export class ResourceInstance extends Typegoose {
