@@ -1,33 +1,32 @@
 import { Serializer } from 'jsonapi-serializer';
 
+const typesToSerialize = ['parentTypes', 'resourceTypes'];
+
 export default function serialize(object: any, serializer: Serializer): any {
   const serializedObject = serializer.serialize(object);
-  return serializeAttributes(serializedObject);
-}
-
-function serializeAttributes(serializedObject: any): any {
-  const typesToSerialize = ['parentTypes', 'resourceTypes'];
-
   if (serializedObject.data) {
-    if (Array.isArray(serializedObject.data)) {
-      serializedObject.data.forEach((element: any) => {
-        if (typesToSerialize.includes(element.type)) {
-          const attributes = element.attributes.attributes;
-          element.attributes.attributes = serializeAttributesObject(attributes);
-        }
-      });
-    } else {
-      if (typesToSerialize.includes(serializedObject.data)) {
-        const attributes = serializedObject.data.attributes.attributes;
-        serializedObject.data.attributes.attributes = serializeAttributesObject(attributes);
-      }
-    }
+    serializedObject.data = serializeAttributesOfResourceTypes(serializedObject.data);
   }
   if (serializedObject.included) {
-    serializedObject.included.forEach((element: any) => {
-      const attributes = element.attributes.attributes;
-      element.attributes.attributes = serializeAttributesObject(attributes);
+    serializedObject.included = serializeAttributesOfResourceTypes(serializedObject.included);
+  }
+  return serializedObject;
+}
+
+function serializeAttributesOfResourceTypes(serializedObject: any[] | any): any {
+  if (Array.isArray(serializedObject)) {
+    return serializedObject.map((element: any) => {
+      return serializeAttributesOfResourceType(element);
     });
+  } else {
+    return serializeAttributesOfResourceType(serializedObject);
+  }
+}
+
+function serializeAttributesOfResourceType(serializedObject: any) {
+  if (typesToSerialize.includes(serializedObject.type)) {
+    const attributes = serializedObject.attributes.attributes;
+    serializedObject.attributes.attributes = serializeAttributesObject(attributes);
   }
   return serializedObject;
 }
