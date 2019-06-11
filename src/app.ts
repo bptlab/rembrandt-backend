@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
-import helloWorldRouter from '@/routes/helloWorld';
 import resourceTypeRouter from '@/routes/resourceTypes';
 import resourceInstanceRouter from '@/routes/resourceInstances';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
@@ -40,7 +39,6 @@ async function startApiServer(): Promise<void> {
   app.use('/', enforceContentType);
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
-  app.use('/hello-world', helloWorldRouter);
   app.use('/resource-types', resourceTypeRouter);
   app.use('/resource-instances', resourceInstanceRouter);
 
