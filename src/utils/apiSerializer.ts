@@ -32,6 +32,10 @@ function serializeAttributesOfResourceType(serializedObject: any) {
 }
 
 function serializeAttributesObject(attributeObject: any) {
+  if (!Array.isArray(attributeObject)) {
+    return attributeObject;
+  }
+
   const serializedAttributes = attributeObject.map((attribute: any) => {
     attribute = attribute.toJSON();
     attribute.id = attribute._id;
