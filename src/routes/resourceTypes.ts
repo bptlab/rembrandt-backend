@@ -103,6 +103,9 @@ router.get('/:typeId', async (req: express.Request, res: express.Response) => {
 router.post('/', async (req: express.Request, res: express.Response) => {
   try {
     const newResourceTypeJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    if (newResourceTypeJSON.parentType.id) {
+      newResourceTypeJSON.parentType = newResourceTypeJSON.parentType.id;
+    }
     const newResourceType = new ResourceTypeModel(newResourceTypeJSON);
     await newResourceType.save();
     res.status(201).send(apiSerializer(newResourceType, resourceTypeSerializer));

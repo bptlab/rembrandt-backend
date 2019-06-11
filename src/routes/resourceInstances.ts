@@ -96,6 +96,9 @@ router.get('/:instanceId', async (req: express.Request, res: express.Response) =
 router.post('/', async (req: express.Request, res: express.Response) => {
   try {
     const newInstanceJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    if (newInstanceJSON.resourceType.id) {
+      newInstanceJSON.resourceType = newInstanceJSON.resourceType.id;
+    }
     const newInstance = new ResourceInstance(newInstanceJSON);
     await newInstance.save();
     res.status(201).send(apiSerializer(newInstance, resourceInstanceSerializer));
