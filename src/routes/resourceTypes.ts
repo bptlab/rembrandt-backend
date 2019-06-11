@@ -2,6 +2,7 @@ import express from 'express';
 import ResourceTypeModel, { resourceTypeSerializer, ResourceType } from '@/models/ResourceType';
 import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
+import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
 
 const router: express.Router = express.Router();
@@ -36,7 +37,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
     for (const resourceType of resourceTypes) {
       resourceType.attributes = await resourceType.getCompleteListOfAttributes();
     }
-    res.send(resourceTypeSerializer.serialize(resourceTypes));
+    res.send(apiSerializer(resourceTypes, resourceTypeSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
@@ -76,7 +77,7 @@ router.get('/:typeId', async (req: express.Request, res: express.Response) => {
       throw Error(`Resource type with id ${req.params.id} could not be found.`);
     }
     resourceType.attributes = await resourceType.getCompleteListOfAttributes();
-    res.send(resourceTypeSerializer.serialize(resourceType));
+    res.send(apiSerializer(resourceType, resourceTypeSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));
