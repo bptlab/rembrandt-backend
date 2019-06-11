@@ -2,6 +2,7 @@ import express from 'express';
 import ResourceInstance, { resourceInstanceSerializer } from '@/models/ResourceInstance';
 import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
+import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
 
 const router: express.Router = express.Router();
@@ -33,7 +34,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
       .find({})
       .populate(populateResourceTypeOptions)
       .exec();
-    res.send(resourceInstanceSerializer.serialize(resourceInstances));
+    res.send(apiSerializer(resourceInstances, resourceInstanceSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
@@ -69,7 +70,7 @@ router.get('/:instanceId', async (req: express.Request, res: express.Response) =
       .findById(req.params.instanceId)
       .populate(populateResourceTypeOptions)
       .exec();
-    res.send(resourceInstanceSerializer.serialize(resourceInstance));
+    res.send(apiSerializer(resourceInstance, resourceInstanceSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
@@ -97,7 +98,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     const newInstanceJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
     const newInstance = new ResourceInstance(newInstanceJSON);
     await newInstance.save();
-    res.status(201).send(resourceInstanceSerializer.serialize(newInstance));
+    res.status(201).send(apiSerializer(newInstance, resourceInstanceSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));

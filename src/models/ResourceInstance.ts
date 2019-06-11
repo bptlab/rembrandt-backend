@@ -58,8 +58,20 @@ import winston from 'winston';
  *                    type: array
  *                    items:
  *                      $ref: '#/components/schemas/ResourceAttributeValue'
- *                  resourceType:
- *                    $ref: '#/components/schemas/ResourceType'
+ *      PopulatedResourceInstance:
+ *        allOf:
+ *          - $ref: '#/components/schemas/ResourceInstance'
+ *          - type: object
+ *            properties:
+ *              relationships:
+ *                $ref: '#/components/schemas/ResourceTypeRelationship'
+ *      FlatResourceInstance:
+ *        allOf:
+ *          - $ref: '#/components/schemas/ResourceInstance'
+ *          - type: object
+ *            properties:
+ *              resourceType:
+ *                type: string
  */
 
 export class ResourceInstance extends Typegoose {
@@ -113,5 +125,16 @@ export const resourceInstanceSerializer = new Serializer('resourceInstance', {
     'attributes',
     'resourceType',
   ],
+  resourceType: {
+    ref: '_id',
+    type: 'resourceType',
+    attributes: [
+      'name',
+      'abstract',
+      'attributes',
+      'parentType',
+      'eponymousAttribute',
+    ],
+  },
   keyForAttribute: 'camelCase',
-});
+} as any);
