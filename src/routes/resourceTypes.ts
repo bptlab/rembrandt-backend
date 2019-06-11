@@ -105,7 +105,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     const newResourceTypeJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
     const newResourceType = new ResourceTypeModel(newResourceTypeJSON);
     await newResourceType.save();
-    res.status(201).send(resourceTypeSerializer.serialize(newResourceType));
+    res.status(201).send(apiSerializer(newResourceType, resourceTypeSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));

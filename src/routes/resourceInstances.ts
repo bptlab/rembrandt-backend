@@ -98,7 +98,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     const newInstanceJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
     const newInstance = new ResourceInstance(newInstanceJSON);
     await newInstance.save();
-    res.status(201).send(resourceInstanceSerializer.serialize(newInstance));
+    res.status(201).send(apiSerializer(newInstance, resourceInstanceSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
