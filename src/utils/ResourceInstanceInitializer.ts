@@ -1,8 +1,10 @@
 import ResourceType from '@/models/ResourceType';
 import winston from 'winston';
+import resourceInstances from '@/utils/resourceInstances';
 import ResourceInstance from '@/models/ResourceInstance';
 import axios from 'axios';
 import { capitalize } from '@/utils/utils';
+import config from '@/config.json';
 
 const targetAmountOfHumanResources = 10;
 const humanResourceName = 'Human Resource';
@@ -34,12 +36,15 @@ export default class ResourceInstanceInitializer {
 
     winston.info('Begin initializing resourceInstance...');
 
-    await ResourceInstanceInitializer.initializeHumans();
-    await ResourceInstanceInitializer.initializeExhaustibles();
+    if (config.resourceInstanceInitializer.random) {
+      await ResourceInstanceInitializer.initializeHumans();
+      await ResourceInstanceInitializer.initializeExhaustibles();
+    } else {
+      await ResourceInstanceInitializer.initializeFromFile();
+    }
 
     winston.info('Finished saving all instances.');
   }
-
   // endregion
 
   // region private static methods
@@ -184,6 +189,7 @@ export default class ResourceInstanceInitializer {
       }
       return defaultExhaustibles;
     }
+  }
 
     /*
       Random names:
@@ -196,6 +202,26 @@ export default class ResourceInstanceInitializer {
       });
 
     */
+
+  private static async initializeFromFile() {
+    winston.debug('Initializing Resource Instances from file...');
+
+    for (const instance of resourceInstances) {
+      const resource = new ResourceInstance({ attributes: instance.attributes });
+      try {
+        await resource.setResourceTypeByName(instance.resourceType);
+      } catch (error) {
+        winston.error(`Resource type ${instance.resourceType} not found.`);
+      }
+
+      try {
+        await resource.save();
+        winston.debug(`saved instance of type ${instance.resourceType}`);
+      } catch (error) {
+        winston.error(error.message);
+        winston.error(`instance for type ${instance.resourceType} could not be initialized. See error above.`);
+      }
+    }
   }
   // endregion
 
