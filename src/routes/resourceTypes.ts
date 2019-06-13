@@ -1,5 +1,5 @@
 import express from 'express';
-import ResourceTypeModel, { resourceTypeSerializer, ResourceType } from '@/models/ResourceType';
+import ResourceTypeModel, { resourceTypeSerializer } from '@/models/ResourceType';
 import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
