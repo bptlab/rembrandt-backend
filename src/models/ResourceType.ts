@@ -55,9 +55,24 @@ import { ObjectId } from 'bson';
  *                    items:
  *                      $ref: '#/components/schemas/ResourceAttribute'
  *                  eponymousAttribute:
- *                    $ref: '#/components/schemas/ResourceAttribute'
+ *                    type: string
+ *      PopulatedResourceType:
+ *        allOf:
+ *          - $ref: '#/components/schemas/ResourceType'
+ *          - type: object
+ *            properties:
+ *              relationships:
+ *                $ref: '#/components/schemas/ParentTypeRelationship'
+ *      FlatResourceType:
+ *        allOf:
+ *          - $ref: '#/components/schemas/ResourceType'
+ *          - type: object
+ *            properties:
+ *              attributes:
+ *                type: object
+ *                properties:
  *                  parentType:
- *                    $ref: '#/components/schemas/ResourceType'
+ *                    type: string
  */
 
 export class ResourceType extends Typegoose {
@@ -157,5 +172,16 @@ export const resourceTypeSerializer = new Serializer('resourceType', {
     'parentType',
     'eponymousAttribute',
   ],
+  parentType: {
+    ref: '_id',
+    type: 'resourceType',
+    attributes: [
+      'name',
+      'abstract',
+      'attributes',
+      'parentType',
+      'eponymousAttribute',
+    ],
+  },
   keyForAttribute: 'camelCase',
-});
+} as any);

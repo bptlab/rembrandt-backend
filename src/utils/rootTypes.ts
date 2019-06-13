@@ -2,13 +2,7 @@ export default [
   {
     name: 'Resource',
     abstract: true,
-    attributes: [
-      {
-        name: 'part of',
-        dataType: 'ref',
-        required: false,
-      },
-    ],
+    attributes: [],
   },
   {
     name: 'Machinery Resource',

@@ -254,11 +254,33 @@
           }
         }
       },
+      "RelationshipObject": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
       "ResourceTypeResponse": {
         "type": "object",
         "properties": {
           "data": {
-            "$ref": "#/components/schemas/ResourceType"
+            "$ref": "#/components/schemas/PopulatedResourceType"
+          },
+          "included": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlatResourceType"
+            }
           }
         }
       },
@@ -268,8 +290,22 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ResourceType"
+              "$ref": "#/components/schemas/PopulatedResourceType"
             }
+          },
+          "included": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlatResourceType"
+            }
+          }
+        }
+      },
+      "ParentTypeRelationship": {
+        "type": "object",
+        "properties": {
+          "parentType": {
+            "$ref": "#/components/schemas/RelationshipObject"
           }
         }
       },
@@ -277,7 +313,13 @@
         "type": "object",
         "properties": {
           "data": {
-            "$ref": "#/components/schemas/ResourceInstance"
+            "$ref": "#/components/schemas/PopulatedResourceInstance"
+          },
+          "included": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlatResourceType"
+            }
           }
         }
       },
@@ -287,68 +329,61 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ResourceInstance"
+              "$ref": "#/components/schemas/PopulatedResourceInstance"
+            }
+          },
+          "included": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlatResourceType"
             }
           }
         }
       },
-      "ResourceAttribute": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/JsonApiObject"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "attributes": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "dataType",
-                  "required"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "dataType": {
-                    "type": "string"
-                  },
-                  "required": {
-                    "type": "boolean"
-                  }
-                }
-              }
-            }
+      "ResourceTypeRelationship": {
+        "type": "object",
+        "properties": {
+          "resourceType": {
+            "$ref": "#/components/schemas/RelationshipObject"
           }
-        ]
+        }
+      },
+      "ResourceAttribute": {
+        "type": "object",
+        "required": [
+          "name",
+          "dataType",
+          "required"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "dataType": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          }
+        }
       },
       "ResourceAttributeValue": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/JsonApiObject"
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
           },
-          {
-            "type": "object",
-            "properties": {
-              "attributes": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "value"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "value": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
+          "value": {
+            "type": "string"
           }
-        ]
+        }
       },
       "ResourceInstance": {
         "allOf": [
@@ -370,11 +405,38 @@
                     "items": {
                       "$ref": "#/components/schemas/ResourceAttributeValue"
                     }
-                  },
-                  "resourceType": {
-                    "$ref": "#/components/schemas/ResourceType"
                   }
                 }
+              }
+            }
+          }
+        ]
+      },
+      "PopulatedResourceInstance": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ResourceInstance"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "relationships": {
+                "$ref": "#/components/schemas/ResourceTypeRelationship"
+              }
+            }
+          }
+        ]
+      },
+      "FlatResourceInstance": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ResourceInstance"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "resourceType": {
+                "type": "string"
               }
             }
           }
@@ -409,10 +471,42 @@
                     }
                   },
                   "eponymousAttribute": {
-                    "$ref": "#/components/schemas/ResourceAttribute"
-                  },
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "PopulatedResourceType": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ResourceType"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "relationships": {
+                "$ref": "#/components/schemas/ParentTypeRelationship"
+              }
+            }
+          }
+        ]
+      },
+      "FlatResourceType": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ResourceType"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "properties": {
                   "parentType": {
-                    "$ref": "#/components/schemas/ResourceType"
+                    "type": "string"
                   }
                 }
               }

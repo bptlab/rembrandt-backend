@@ -2,116 +2,131 @@ import express from 'express';
 import ResourceInstance, { resourceInstanceSerializer } from '@/models/ResourceInstance';
 import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
+import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
 
 const router: express.Router = express.Router();
 
-  /**
-   * @swagger
-   *
-   *  /resource-instances:
-   *    get:
-   *      summary: Get list of all resource instances
-   *      tags:
-   *        - ResourceInstances
-   *      responses:
-   *        '200':
-   *          description: Successful
-   *          content:
-   *            application/vnd.api+json:
-   *              schema:
-   *                $ref: '#/components/schemas/ResourceInstancesResponse'
-   */
+const populateResourceTypeOptions = {
+  path: 'resourceType',
+  model: 'ResourceType',
+};
+
+/**
+ * @swagger
+ *
+ *  /resource-instances:
+ *    get:
+ *      summary: Get list of all resource instances
+ *      tags:
+ *        - ResourceInstances
+ *      responses:
+ *        '200':
+ *          description: Successful
+ *          content:
+ *            application/vnd.api+json:
+ *              schema:
+ *                $ref: '#/components/schemas/ResourceInstancesResponse'
+ */
 router.get('/', async (req: express.Request, res: express.Response) => {
   try {
-    const resourceInstances = await ResourceInstance.find({}).exec();
-    res.send(resourceInstanceSerializer.serialize(resourceInstances));
+    const resourceInstances = await ResourceInstance
+      .find({})
+      .populate(populateResourceTypeOptions)
+      .exec();
+    res.send(apiSerializer(resourceInstances, resourceInstanceSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
   }
 });
 
-  /**
-   * @swagger
-   *
-   *  /resource-instances/{id}:
-   *    get:
-   *      summary: Get a resource instance by ID
-   *      tags:
-   *        - ResourceInstances
-   *      parameters:
-   *        - name: id
-   *          in: path
-   *          description: Resource-Instance ID
-   *          required: true
-   *          schema:
-   *            type: string
-   *      responses:
-   *        '200':
-   *          description: Successful
-   *          content:
-   *            application/vnd.api+json:
-   *              schema:
-   *                $ref: '#/components/schemas/ResourceInstanceResponse'
-   */
+/**
+ * @swagger
+ *
+ *  /resource-instances/{id}:
+ *    get:
+ *      summary: Get a resource instance by ID
+ *      tags:
+ *        - ResourceInstances
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Resource-Instance ID
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        '200':
+ *          description: Successful
+ *          content:
+ *            application/vnd.api+json:
+ *              schema:
+ *                $ref: '#/components/schemas/ResourceInstanceResponse'
+ */
 router.get('/:instanceId', async (req: express.Request, res: express.Response) => {
   try {
-    const resourceInstance = await ResourceInstance.findById(req.params.instanceId).exec();
-    res.send(resourceInstanceSerializer.serialize(resourceInstance));
+    const resourceInstance = await ResourceInstance
+      .findById(req.params.instanceId)
+      .populate(populateResourceTypeOptions)
+      .exec();
+    res.send(apiSerializer(resourceInstance, resourceInstanceSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
   }
 });
 
-  /**
-   * @swagger
-   *
-   *  /resource-instances:
-   *    post:
-   *      summary: Create a new resource instance
-   *      tags:
-   *        - ResourceInstances
-   *      responses:
-   *        '201':
-   *          description: Successful
-   *          content:
-   *            application/vnd.api+json:
-   *              schema:
-   *                $ref: '#/components/schemas/ResourceInstanceResponse'
-   */
+/**
+ * @swagger
+ *
+ *  /resource-instances:
+ *    post:
+ *      summary: Create a new resource instance
+ *      tags:
+ *        - ResourceInstances
+ *      responses:
+ *        '201':
+ *          description: Successful
+ *          content:
+ *            application/vnd.api+json:
+ *              schema:
+ *                $ref: '#/components/schemas/ResourceInstanceResponse'
+ */
 router.post('/', async (req: express.Request, res: express.Response) => {
   try {
     const newInstanceJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    if (newInstanceJSON.resourceType.id) {
+      newInstanceJSON.resourceType = newInstanceJSON.resourceType.id;
+    }
     const newInstance = new ResourceInstance(newInstanceJSON);
     await newInstance.save();
-    res.status(201).send(resourceInstanceSerializer.serialize(newInstance));
+    res.status(201).send(apiSerializer(newInstance, resourceInstanceSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
   }
 });
 
-  /**
-   * @swagger
-   *
-   *  /resource-instances/{id}:
-   *    patch:
-   *      summary: Update a resource instance with a given ID
-   *      tags:
-   *        - ResourceInstances
-   *      parameters:
-   *        - name: id
-   *          in: path
-   *          description: Resource-Instance ID
-   *          required: true
-   *          schema:
-   *            type: string
-   *      responses:
-   *        '200':
-   *          description: Successfully updated
-   */
+/**
+ * @swagger
+ *
+ *  /resource-instances/{id}:
+ *    patch:
+ *      summary: Update a resource instance with a given ID
+ *      tags:
+ *        - ResourceInstances
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Resource-Instance ID
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        '200':
+ *          description: Successfully updated
+ */
 router.patch('/:instanceId', async (req: express.Request, res: express.Response) => {
   try {
     const newAttributeValues = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
@@ -132,25 +147,25 @@ router.patch('/:instanceId', async (req: express.Request, res: express.Response)
   }
 });
 
-  /**
-   * @swagger
-   *
-   *  /resource-instances/{id}:
-   *    delete:
-   *      summary: Delete a resource instance with a given ID
-   *      tags:
-   *        - ResourceInstances
-   *      parameters:
-   *        - name: id
-   *          in: path
-   *          description: Resource-Instance ID
-   *          required: true
-   *          schema:
-   *            type: string
-   *      responses:
-   *        '204':
-   *          description: Successfully deleted
-   */
+/**
+ * @swagger
+ *
+ *  /resource-instances/{id}:
+ *    delete:
+ *      summary: Delete a resource instance with a given ID
+ *      tags:
+ *        - ResourceInstances
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Resource-Instance ID
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        '204':
+ *          description: Successfully deleted
+ */
 router.delete('/:instanceId', async (req: express.Request, res: express.Response) => {
   try {
     const resourceInstance = await ResourceInstance.findById(req.params.instanceId).exec();
