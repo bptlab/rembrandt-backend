@@ -191,18 +191,6 @@ export default class ResourceInstanceInitializer {
     }
   }
 
-    /*
-      Random names:
-
-      await axios.get('https://uzby.com/api.php', {
-        params: {
-          min: 5,
-          max: 10,
-        },
-      });
-
-    */
-
   private static async initializeFromFile() {
     winston.debug('Initializing Resource Instances from file...');
 
