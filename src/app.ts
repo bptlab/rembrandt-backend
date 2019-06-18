@@ -8,6 +8,7 @@ import resourceInstanceRouter from '@/routes/resourceInstances';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
+import config from '@/config.json';
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
@@ -48,8 +49,12 @@ async function startApiServer(): Promise<void> {
 
   app.listen(port);
 
-  await RootTypeInitializer.initializeRootTypes();
-  await ResourceInstanceInitializer.initializeResourceInstances();
+  if (config.resourceTypeInitializer.enable) {
+    await RootTypeInitializer.initializeRootTypes();
+  }
+  if (config.resourceInstanceInitializer.enable) {
+    await ResourceInstanceInitializer.initializeResourceInstances();
+  }
 }
 
 const db = mongoose.connection;
