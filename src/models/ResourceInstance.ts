@@ -4,8 +4,12 @@ import ResourceAttribute from '@/models/ResourceAttribute';
 import ResourceAttributeValue from '@/models/ResourceAttributeValue';
 import { Serializer } from 'jsonapi-serializer';
 import winston from 'winston';
+import { ObjectId } from 'bson';
 
 @pre<ResourceInstance>('save', async function() {
+  if (typeof this.resourceType === 'string') {
+    this.resourceType = new ObjectId(this.resourceType);
+  }
 
   const foundType = await ResourceTypeModel.findById( this.resourceType ).exec();
 
