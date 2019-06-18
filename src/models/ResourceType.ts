@@ -93,8 +93,8 @@ export class ResourceType extends Typegoose {
   @arrayProp({ required: true, items: ResourceAttribute })
   public attributes: ResourceAttribute[] = [];
 
-  @prop({ ref: ResourceAttribute })
-  public eponymousAttribute?: Ref<ResourceAttribute>;
+  @prop({ required: false })
+  public eponymousAttribute?: string;
 
   @prop({ ref: ResourceType })
   public parentType?: Ref<ResourceType>;
@@ -134,9 +134,8 @@ export class ResourceType extends Typegoose {
   @instanceMethod
   public getEponymousAttribute(): ResourceAttribute | undefined {
     const attributes: ResourceAttribute[] = this.attributes;
-    const eponymousAttributeId = this.eponymousAttribute as ObjectId;
     return attributes.find((attribute: any) => {
-      return (attribute.id === eponymousAttributeId.toString());
+      return (attribute.name === this.eponymousAttribute);
     });
   }
 
