@@ -58,7 +58,7 @@ export default class ResourceInstanceInitializer {
       return;
     }
     const currentAmountOfHumans = await ResourceInstance.countDocuments({
-      resourceType: humanResourceType.id,
+      resourceType: humanResourceType._id,
     }).exec();
 
     const deviationFromTarget = targetAmountOfHumanResources - currentAmountOfHumans;
@@ -80,7 +80,7 @@ export default class ResourceInstanceInitializer {
           },
         ],
       });
-      newHumanResource.resourceType = humanResourceType.id;
+      newHumanResource.resourceType = humanResourceType._id;
       try {
         await newHumanResource.save();
         winston.debug(`Created human instance '${newName}'`);
@@ -128,7 +128,7 @@ export default class ResourceInstanceInitializer {
     }
 
     const currentAmountOfExhaustibles = await ResourceInstance.countDocuments({
-      resourceType: exhaustibleResourceType.id,
+      resourceType: exhaustibleResourceType._id,
     }).exec();
 
     const deviationFromTarget = targetAmountOfExhaustibleResources - currentAmountOfExhaustibles;
@@ -152,7 +152,7 @@ export default class ResourceInstanceInitializer {
           },
         ],
       });
-      newExhaustible.resourceType = exhaustibleResourceType.id;
+      newExhaustible.resourceType = exhaustibleResourceType._id;
       try {
         await newExhaustible.save();
         winston.debug(`Created new exhaustible resource at '${exhaustible.limit}'`);
