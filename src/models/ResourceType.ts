@@ -2,13 +2,24 @@ import { Typegoose, prop, arrayProp, Ref, pre, instanceMethod } from 'typegoose'
 import ResourceInstanceModel from '@/models/ResourceInstance';
 import ResourceAttribute from '@/models/ResourceAttribute';
 import { Serializer } from 'jsonapi-serializer';
-import { ObjectId } from 'bson';
 
 @pre<ResourceType>('save', async function(): Promise<void> {
   if (!this.parentType && this.name !== 'Resource') {
     return new Promise((resolve, reject) => {
       reject(new Error(`Parent resource type for new type '${this.name}' must be defined.`));
     });
+  }
+
+  if (this.eponymousAttribute) {
+    const allAttributes = await this.getCompleteListOfAttributes();
+    const eponymousAttributeDefined = allAttributes.some((attribute) => {
+      return attribute.name === this.eponymousAttribute;
+    });
+    if (!eponymousAttributeDefined) {
+      return new Promise((resolve, reject) => {
+        reject(new Error(`The attribute marked as eponymous '${this.eponymousAttribute}' is not defined on this resource type.`));
+      });
+    }
   }
 })
 
