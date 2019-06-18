@@ -6,9 +6,9 @@ import axios from 'axios';
 import { capitalize } from '@/utils/utils';
 import config from '@/config.json';
 
-const targetAmountOfHumanResources = 10;
-const humanResourceName = 'Human Resource';
-const targetAmountOfExhaustibleResources = 10;
+const targetAmountOfHumanResources = config.resourceInstanceInitializer.targetAmountOfHumanResources;
+const humanResourceTypeName = 'Human Resource';
+const targetAmountOfExhaustibleResources = config.resourceInstanceInitializer.targetAmountOfExhaustibleResources;
 const exhaustibleResourceName = 'Exhaustible Resource';
 
 interface Human {
@@ -51,7 +51,7 @@ export default class ResourceInstanceInitializer {
   private static async initializeHumans() {
     winston.debug('Initializing Humans...');
 
-    const humanResourceType = await ResourceType.findOne({ name: humanResourceName }).exec();
+    const humanResourceType = await ResourceType.findOne({ name: humanResourceTypeName }).exec();
 
     if (!humanResourceType) {
       winston.warn('Could not initialize human resources as the type could not be found.');
@@ -64,7 +64,7 @@ export default class ResourceInstanceInitializer {
     const deviationFromTarget = targetAmountOfHumanResources - currentAmountOfHumans;
 
     if (deviationFromTarget <= 0) {
-      winston.debug('You already have ' + currentAmountOfHumans + ' humans in your database.');
+      winston.debug(`You already have ${currentAmountOfHumans} humans in your database.`);
       return;
     }
 
@@ -133,11 +133,11 @@ export default class ResourceInstanceInitializer {
 
     const deviationFromTarget = targetAmountOfExhaustibleResources - currentAmountOfExhaustibles;
     if (deviationFromTarget <= 0) {
-      winston.debug('You already have ' + currentAmountOfExhaustibles + ' exhaustible resources in your database.');
+      winston.debug(`You already have ${currentAmountOfExhaustibles} exhaustible resources in your database.`);
       return;
     }
 
-    winston.debug('Generating ' + deviationFromTarget + ' exhaustible resources for you.');
+    winston.debug(`Generating ${deviationFromTarget} exhaustible resources for you.`);
     const exhaustibles = await ResourceInstanceInitializer.fetchExhaustibleNames(deviationFromTarget);
     for (const exhaustible of exhaustibles) {
       const newExhaustible = new ResourceInstance({
