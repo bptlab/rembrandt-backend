@@ -4,7 +4,7 @@
   },
   "resourceInstanceInitializer": {
     "enable": true,
-    "random": false,
+    "random": true,
     "targetAmountOfHumanResources": 10,
     "targetAmountOfExhaustibleResources": 10
   }
