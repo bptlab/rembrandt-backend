@@ -15,7 +15,7 @@ const populateParentTypeOptions = {
 /**
  * @swagger
  *
- *  /resource-types:
+ *  /organization/resource-types:
  *    get:
  *      summary: Get list of all resource types
  *      tags:
@@ -47,7 +47,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
 /**
  * @swagger
  *
- *  /resource-types/{id}:
+ *  /organization/resource-types/{id}:
  *    get:
  *      summary: Get a resource type by ID
  *      tags:
@@ -87,7 +87,7 @@ router.get('/:typeId', async (req: express.Request, res: express.Response) => {
 /**
  * @swagger
  *
- *  /resource-types:
+ *  /organization/resource-types:
  *    post:
  *      summary: Create a new resource type
  *      tags:
@@ -118,7 +118,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
 /**
  * @swagger
  *
- *  /resource-types/{id}:
+ *  /organization/resource-types/{id}:
  *    patch:
  *      summary: Update a resource type with a given ID
  *      tags:
@@ -157,7 +157,7 @@ router.patch('/:typeId', async (req: express.Request, res: express.Response) => 
 /**
  * @swagger
  *
- *  /resource-types/{id}:
+ *  /organization/resource-types/{id}:
  *    delete:
  *      summary: Delete a resource type with a given ID
  *      tags:

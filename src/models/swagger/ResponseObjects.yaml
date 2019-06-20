@@ -50,3 +50,15 @@ components:
       properties:
         resourceType:
           $ref: '#/components/schemas/RelationshipObject'
+    OptimizationAlgorithmsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OptimizationAlgorithm'
+    OptimizationAlgorithmResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/OptimizationAlgorithm'
