@@ -35,7 +35,7 @@ const DockerConfigurationNullObject = {
  *                  inputs:
  *                    type: array
  *                    items:
- *                      $ref: '#/components/schemas/ResourceType'
+ *                      type: string
  *                  outputs:
  *                    type: string
  *                  dockerConfig:

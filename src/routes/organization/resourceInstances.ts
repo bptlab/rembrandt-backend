@@ -15,7 +15,7 @@ const populateResourceTypeOptions = {
 /**
  * @swagger
  *
- *  /resource-instances:
+ *  /organization/resource-instances:
  *    get:
  *      summary: Get list of all resource instances
  *      tags:
@@ -44,7 +44,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
 /**
  * @swagger
  *
- *  /resource-instances/{id}:
+ *  /organization/resource-instances/{id}:
  *    get:
  *      summary: Get a resource instance by ID
  *      tags:
@@ -80,7 +80,7 @@ router.get('/:instanceId', async (req: express.Request, res: express.Response) =
 /**
  * @swagger
  *
- *  /resource-instances:
+ *  /organization/resource-instances:
  *    post:
  *      summary: Create a new resource instance
  *      tags:
@@ -111,7 +111,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
 /**
  * @swagger
  *
- *  /resource-instances/{id}:
+ *  /organization/resource-instances/{id}:
  *    patch:
  *      summary: Update a resource instance with a given ID
  *      tags:
@@ -150,7 +150,7 @@ router.patch('/:instanceId', async (req: express.Request, res: express.Response)
 /**
  * @swagger
  *
- *  /resource-instances/{id}:
+ *  /organization/resource-instances/{id}:
  *    delete:
  *      summary: Delete a resource instance with a given ID
  *      tags:

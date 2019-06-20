@@ -12,6 +12,6 @@ module.exports = {
   apis: [
     'src/models/swagger/*.yaml',
     'src/models/*.ts',
-    'src/routes/*.ts',
+    'src/routes/**/*.ts',
   ],
 };

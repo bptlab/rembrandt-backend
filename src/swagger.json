@@ -10,7 +10,120 @@
   },
   "openapi": "3.0.2",
   "paths": {
-    "/resource-instances": {
+    "/optimization/algorithms": {
+      "get": {
+        "summary": "Get list of all optimization algorithms",
+        "tags": [
+          "OptimizationAlgorithm"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationAlgorithmsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new optimization algorithm",
+        "tags": [
+          "OptimizationAlgorithm"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationAlgorithmResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/optimization/algorithms/{id}": {
+      "get": {
+        "summary": "Get a optimization algorithm by ID",
+        "tags": [
+          "OptimizationAlgorithm"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Algorithm ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationAlgorithmResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a optimization algorithm with a given ID",
+        "tags": [
+          "OptimizationAlgorithm"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Algorithm ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a optimization algorithm with a given ID",
+        "tags": [
+          "OptimizationAlgorithm"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Algorithm ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          }
+        }
+      }
+    },
+    "/organization/resource-instances": {
       "get": {
         "summary": "Get list of all resource instances",
         "tags": [
@@ -48,7 +161,7 @@
         }
       }
     },
-    "/resource-instances/{id}": {
+    "/organization/resource-instances/{id}": {
       "get": {
         "summary": "Get a resource instance by ID",
         "tags": [
@@ -123,7 +236,7 @@
         }
       }
     },
-    "/resource-types": {
+    "/organization/resource-types": {
       "get": {
         "summary": "Get list of all resource types",
         "tags": [
@@ -161,7 +274,7 @@
         }
       }
     },
-    "/resource-types/{id}": {
+    "/organization/resource-types/{id}": {
       "get": {
         "summary": "Get a resource type by ID",
         "tags": [
@@ -347,6 +460,77 @@
             "$ref": "#/components/schemas/RelationshipObject"
           }
         }
+      },
+      "OptimizationAlgorithmsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OptimizationAlgorithm"
+            }
+          }
+        }
+      },
+      "OptimizationAlgorithmResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OptimizationAlgorithm"
+          }
+        }
+      },
+      "OptimizationAlgorithm": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "inputs",
+                  "outputs",
+                  "dockerConfig"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "inputs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "outputs": {
+                    "type": "string"
+                  },
+                  "dockerConfig": {
+                    "type": "object",
+                    "required": [
+                      "name"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "tag": {
+                        "type": "string"
+                      },
+                      "digest": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
       },
       "ResourceAttribute": {
         "type": "object",

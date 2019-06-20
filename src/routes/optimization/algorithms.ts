@@ -10,18 +10,18 @@ const router: express.Router = express.Router();
 /**
  * @swagger
  *
- *  /resource-types:
+ *  /optimization/algorithms:
  *    get:
- *      summary: Get list of all resource types
+ *      summary: Get list of all optimization algorithms
  *      tags:
- *        - ResourceTypes
+ *        - OptimizationAlgorithm
  *      responses:
  *        '200':
  *          description: Successful
  *          content:
  *            application/vnd.api+json:
  *              schema:
- *                $ref: '#/components/schemas/ResourceTypesResponse'
+ *                $ref: '#/components/schemas/OptimizationAlgorithmsResponse'
  */
 router.get('/', async (req: express.Request, res: express.Response) => {
   try {
@@ -36,15 +36,15 @@ router.get('/', async (req: express.Request, res: express.Response) => {
 /**
  * @swagger
  *
- *  /resource-types/{id}:
+ *  /optimization/algorithms/{id}:
  *    get:
- *      summary: Get a resource type by ID
+ *      summary: Get a optimization algorithm by ID
  *      tags:
- *        - ResourceTypes
+ *        - OptimizationAlgorithm
  *      parameters:
  *        - name: id
  *          in: path
- *          description: Resource-Type ID
+ *          description: Optimization Algorithm ID
  *          required: true
  *          schema:
  *            type: string
@@ -54,7 +54,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  *          content:
  *            application/vnd.api+json:
  *              schema:
- *                $ref: '#/components/schemas/ResourceTypeResponse'
+ *                $ref: '#/components/schemas/OptimizationAlgorithmResponse'
  */
 router.get('/:algorithmId', async (req: express.Request, res: express.Response) => {
   try {
@@ -72,18 +72,18 @@ router.get('/:algorithmId', async (req: express.Request, res: express.Response) 
 /**
  * @swagger
  *
- *  /resource-types:
+ *  /optimization/algorithms:
  *    post:
- *      summary: Create a new resource type
+ *      summary: Create a new optimization algorithm
  *      tags:
- *        - ResourceTypes
+ *        - OptimizationAlgorithm
  *      responses:
  *        '201':
  *          description: Successful
  *          content:
  *            application/vnd.api+json:
  *              schema:
- *                $ref: '#/components/schemas/ResourceTypeResponse'
+ *                $ref: '#/components/schemas/OptimizationAlgorithmResponse'
  */
 router.post('/', async (req: express.Request, res: express.Response) => {
   try {
@@ -100,15 +100,15 @@ router.post('/', async (req: express.Request, res: express.Response) => {
 /**
  * @swagger
  *
- *  /resource-types/{id}:
+ *  /optimization/algorithms/{id}:
  *    patch:
- *      summary: Update a resource type with a given ID
+ *      summary: Update a optimization algorithm with a given ID
  *      tags:
- *        - ResourceTypes
+ *        - OptimizationAlgorithm
  *      parameters:
  *        - name: id
  *          in: path
- *          description: Resource-Type ID
+ *          description: Optimization Algorithm ID
  *          required: true
  *          schema:
  *            type: string
@@ -139,15 +139,15 @@ router.patch('/:algorithmId', async (req: express.Request, res: express.Response
 /**
  * @swagger
  *
- *  /resource-types/{id}:
+ *  /optimization/algorithms/{id}:
  *    delete:
- *      summary: Delete a resource type with a given ID
+ *      summary: Delete a optimization algorithm with a given ID
  *      tags:
- *        - ResourceTypes
+ *        - OptimizationAlgorithm
  *      parameters:
  *        - name: id
  *          in: path
- *          description: Resource-Type ID
+ *          description: Optimization Algorithm ID
  *          required: true
  *          schema:
  *            type: string
