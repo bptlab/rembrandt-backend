@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
 import resourceTypeRouter from '@/routes/resourceTypes';
 import resourceInstanceRouter from '@/routes/resourceInstances';
+import optimizationAlgorithmRouter from '@/routes/algorithms';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
@@ -42,6 +43,8 @@ async function startApiServer(): Promise<void> {
 
   app.use('/resource-types', resourceTypeRouter);
   app.use('/resource-instances', resourceInstanceRouter);
+
+  app.use('/optimization-algorithms', optimizationAlgorithmRouter);
 
   app.get('/', (req: express.Request, res: express.Response) => {
     res.send('hello world!');
