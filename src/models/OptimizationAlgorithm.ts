@@ -67,7 +67,7 @@ export class OptimizationAlgorithm extends Typegoose {
   public inputs: Array<Ref<ResourceType>> = [];
 
   @prop({ ref: ResourceType })
-  public outputs?: Ref<ResourceType>;
+  public outputs!: Ref<ResourceType>;
 
   @prop({ required: true })
   public dockerConfig: DockerConfiguration = DockerConfigurationNullObject;
