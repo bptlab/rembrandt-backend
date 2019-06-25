@@ -1,4 +1,4 @@
-import { Typegoose, prop, arrayProp, Ref } from 'typegoose';
+import { Typegoose, prop, arrayProp, Ref, instanceMethod } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
 import { ResourceType } from './ResourceType';
 
@@ -80,6 +80,16 @@ export class OptimizationAlgorithm extends Typegoose {
   // endregion
 
   // region public methods
+  @instanceMethod
+  public getImageIdentifier(): string {
+    let imageIdentifier = this.dockerConfig.name;
+    if (this.dockerConfig.tag) {
+      imageIdentifier += ':' + this.dockerConfig.tag;
+    } else if (this.dockerConfig.digest) {
+      imageIdentifier += '@' + this.dockerConfig.digest;
+    }
+    return imageIdentifier;
+  }
   // endregion
 
   // region private methods
