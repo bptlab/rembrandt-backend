@@ -129,8 +129,8 @@ router.post('/', async (req: express.Request, res: express.Response) => {
  */
 router.patch('/:instanceId', async (req: express.Request, res: express.Response) => {
   try {
-    const newAttributeValues = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
-    if (req.params.instanceId !== newAttributeValues.id) {
+    const updatedInstance = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    if (req.params.instanceId !== updatedInstance.id) {
       throw Error('ObjectId provided in body does not match id in url. Denying update.');
     }
 
@@ -138,7 +138,7 @@ router.patch('/:instanceId', async (req: express.Request, res: express.Response)
     if (!resourceInstance) {
       throw Error(`Resource instance with id ${req.params.id} could not be found.`);
     }
-    resourceInstance.set(newAttributeValues);
+    resourceInstance.set({ attributes: updatedInstance.attributes });
     await resourceInstance.save();
     res.status(200).send();
   } catch (error) {
