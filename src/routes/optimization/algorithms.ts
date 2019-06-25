@@ -4,7 +4,7 @@ import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
-import OptimizationExecution from '@/controllers/docker';
+import OptimizationManager from '@/controllers/OptimizationManager';
 
 const router: express.Router = express.Router();
 

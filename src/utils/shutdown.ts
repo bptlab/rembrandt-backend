@@ -1,9 +1,9 @@
 import winston = require('winston');
-import OptimizationExecution from '@/controllers/docker';
+import OptimizationManager from '@/controllers/OptimizationManager';
 
 export default async function shutdown() {
   winston.info('Shutting down...');
-  const optimizationExecution = new OptimizationExecution();
-  await optimizationExecution.stopAndRemoveAll();
+  const optimizationManager = new OptimizationManager();
+  await optimizationManager.stopAndRemoveAll();
   winston.info('Goodbye!');
 }

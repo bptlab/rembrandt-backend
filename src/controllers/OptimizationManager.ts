@@ -2,8 +2,9 @@ import Docker from 'dockerode';
 import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import config from '@/config.json';
 import winston = require('winston');
+import OptimizationExecution from '@/models/OptimizationExecution';
 
-export default class OptimizationExecution {
+export default class OptimizationManager {
   // region public static methods
   // endregion
 
@@ -27,18 +28,22 @@ export default class OptimizationExecution {
 
   // region public methods
   public async run(optimizationAlgorithm: OptimizationAlgorithm) {
-    this.optimizationAlgorithm = optimizationAlgorithm;
     if (!this.docker) {
       return;
     }
 
+    this.optimizationAlgorithm = optimizationAlgorithm;
+    const executionInstance = new OptimizationExecution();
+    executionInstance.optimizationAlgorithm = optimizationAlgorithm;
+
     try {
-      // Image: this.optimizationAlgorithm.getImageIdentifier(),
       const container = await this.docker.createContainer({
-        Image: 'ubuntu',
-        Cmd: ['bash'],
-        name: OptimizationExecution.imageNamePrefix + 'ubuntu-test',
+        Image: this.optimizationAlgorithm.imageIdentifier,
+        Cmd: ['/bin/bash', '-c', 'sleep 5m'],
+        name: OptimizationManager.imageNamePrefix + executionInstance.identifier,
       });
+      executionInstance.containerId = container.id;
+      await executionInstance.save();
       container.start();
     } catch (error) {
       winston.error(error);
@@ -50,7 +55,7 @@ export default class OptimizationExecution {
     const containers = await this.docker.listContainers({ all: true });
     const containerStopStatus: Array<Promise<void>> = [];
     containers.forEach((containerInfo) => {
-      if (containerInfo.Names.some((name) => name.startsWith('/' + OptimizationExecution.imageNamePrefix))) {
+      if (containerInfo.Names.some((name) => name.startsWith('/' + OptimizationManager.imageNamePrefix))) {
         containerStopStatus.push(this.stopAndRemoveOne(containerInfo));
       }
     });
