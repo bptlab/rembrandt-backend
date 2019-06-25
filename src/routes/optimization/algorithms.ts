@@ -80,7 +80,8 @@ router.get('/:algorithmId', async (req: express.Request, res: express.Response) 
     if (!optimizationAlgorithm) {
       throw Error(`Optimization algorithm with id ${req.params.algorithmId} could not be found.`);
     }
-    const dockerCont = new OptimizationExecution(optimizationAlgorithm);
+    const optimizationExecution = new OptimizationExecution();
+    optimizationExecution.run(optimizationAlgorithm);
     res.send(apiSerializer(optimizationAlgorithm, optimizationAlgorithmSerializer));
   } catch (error) {
     winston.error(error.message);
