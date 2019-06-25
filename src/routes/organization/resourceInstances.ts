@@ -124,7 +124,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
  *          schema:
  *            type: string
  *      responses:
- *        '200':
+ *        '204':
  *          description: Successfully updated
  */
 router.patch('/:instanceId', async (req: express.Request, res: express.Response) => {
@@ -140,7 +140,7 @@ router.patch('/:instanceId', async (req: express.Request, res: express.Response)
     }
     resourceInstance.set({ attributes: updatedInstance.attributes });
     await resourceInstance.save();
-    res.status(200).send();
+    res.status(204).send();
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
