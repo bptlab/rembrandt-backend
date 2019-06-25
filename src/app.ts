@@ -10,6 +10,7 @@ import RootTypeInitializer from '@/utils/RootTypeInitializer';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
+import shutdown from '@/utils/shutdown';
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
@@ -66,3 +67,8 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', startApiServer);
 
 mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/rembrandt`, { useNewUrlParser: true });
+
+process.on('SIGINT', async () => {
+  await shutdown();
+  process.exit(0);
+});
