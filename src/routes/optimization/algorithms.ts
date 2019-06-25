@@ -4,6 +4,7 @@ import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
+import OptimizationExecution from '@/controllers/docker';
 
 const router: express.Router = express.Router();
 
@@ -79,6 +80,7 @@ router.get('/:algorithmId', async (req: express.Request, res: express.Response) 
     if (!optimizationAlgorithm) {
       throw Error(`Optimization algorithm with id ${req.params.algorithmId} could not be found.`);
     }
+    const dockerCont = new OptimizationExecution(optimizationAlgorithm);
     res.send(apiSerializer(optimizationAlgorithm, optimizationAlgorithmSerializer));
   } catch (error) {
     winston.error(error.message);
