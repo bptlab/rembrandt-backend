@@ -5,6 +5,7 @@ import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
 import OptimizationManager from '@/controllers/OptimizationManager';
+import { optimizationExecutionSerializer } from '@/models/OptimizationExecution';
 
 const router: express.Router = express.Router();
 
@@ -94,8 +95,8 @@ router.get('/:algorithmId/execute', async (req: express.Request, res: express.Re
       throw Error(`Optimization algorithm with id ${req.params.algorithmId} could not be found.`);
     }
     const optimizationManager = new OptimizationManager();
-    optimizationManager.run(optimizationAlgorithm);
-    res.status(204).send();
+    const executionInstance = await optimizationManager.run(optimizationAlgorithm);
+    res.status(201).send(apiSerializer(executionInstance, optimizationExecutionSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in OptimizationAlgorithm-Router', error.message));

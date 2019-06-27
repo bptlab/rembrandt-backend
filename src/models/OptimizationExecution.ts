@@ -83,7 +83,7 @@ const OptimizationExecutionModel = new OptimizationExecution().getModelForClass(
 
 export default OptimizationExecutionModel;
 
-export const OptimizationExecutionSerializer = new Serializer('optimizationExecution', {
+export const optimizationExecutionSerializer = new Serializer('optimizationExecution', {
   id: '_id',
   attributes: [
     'identifier',
