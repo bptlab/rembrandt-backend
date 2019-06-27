@@ -7,6 +7,15 @@ import createJSONError from '@/utils/errorSerializer';
 
 const router: express.Router = express.Router();
 
+const populateResourceTypeInputsOptions = {
+  path: 'inputs',
+  model: 'ResourceType',
+};
+const populateResourceTypeOutputsOptions = {
+  path: 'outputs',
+  model: 'ResourceType',
+};
+
 /**
  * @swagger
  *
@@ -25,7 +34,11 @@ const router: express.Router = express.Router();
  */
 router.get('/', async (req: express.Request, res: express.Response) => {
   try {
-    const optimizationAlgorithms = await OptimizationAlgorithmModel.find({}).exec();
+    const optimizationAlgorithms = await OptimizationAlgorithmModel
+      .find({})
+      .populate(populateResourceTypeInputsOptions)
+      .populate(populateResourceTypeOutputsOptions)
+      .exec();
     res.send(apiSerializer(optimizationAlgorithms, optimizationAlgorithmSerializer));
   } catch (error) {
     winston.error(error.message);
@@ -58,7 +71,11 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  */
 router.get('/:algorithmId', async (req: express.Request, res: express.Response) => {
   try {
-    const optimizationAlgorithm = await OptimizationAlgorithmModel.findById(req.params.algorithmId).exec();
+    const optimizationAlgorithm = await OptimizationAlgorithmModel
+      .findById(req.params.algorithmId)
+      .populate(populateResourceTypeInputsOptions)
+      .populate(populateResourceTypeOutputsOptions)
+      .exec();
     if (!optimizationAlgorithm) {
       throw Error(`Optimization algorithm with id ${req.params.algorithmId} could not be found.`);
     }
