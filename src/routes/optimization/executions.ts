@@ -77,8 +77,7 @@ router.get('/:executionId/stop', async (req: express.Request, res: express.Respo
       throw Error(`Optimization execution with id ${req.params.executionId} could not be found.`);
     }
     const optimizationManager = new OptimizationManager();
-    // const executionInstance = await optimizationManager.run(optimizationExecution);
-    // res.status(201).send(apiSerializer(executionInstance, optimizationExecutionSerializer));
+    optimizationManager.stopExecution(optimizationExecution);
     res.status(201).send();
   } catch (error) {
     winston.error(error.message);

@@ -47,7 +47,7 @@ export default class OptimizationManager {
 
       this.docker.run(
         this.optimizationAlgorithm.imageIdentifier,
-        ['/bin/bash', '-c', 'sleep 10s'],
+        ['/bin/bash', '-c', 'sleep 30s'],
         process.stdout,
         { name: containerName })
         .then((container) => {
@@ -58,11 +58,18 @@ export default class OptimizationManager {
         });
 
       return executionInstance;
-    } catch (error) {
-      return new Promise((resolve, reject) => {
-        reject(new Error(`Could not start docker container for algorithm: ${optimizationAlgorithm.name}. ${error}`));
-      });
+      } catch (error) {
+        return new Promise((resolve, reject) => {
+          reject(new Error(`Could not start docker container for algorithm: ${optimizationAlgorithm.name}. ${error}`));
+        });
     }
+  }
+
+  public stopExecution(executionInstance: OptimizationExecution) {
+    const containerName = OptimizationManager.getImageNameForExecution(executionInstance);
+    winston.debug(`Stopping ${containerName}`);
+    const container = this.docker.getContainer(OptimizationManager.getImageNameForExecution(executionInstance));
+    container.stop();
   }
 
   public async stopAndRemoveAll() {
