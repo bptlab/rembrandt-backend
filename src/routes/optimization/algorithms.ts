@@ -105,6 +105,10 @@ router.get('/:algorithmId', async (req: express.Request, res: express.Response) 
 router.post('/', async (req: express.Request, res: express.Response) => {
   try {
     const newOpAlJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    newOpAlJSON.inputs = newOpAlJSON.inputs.map((input: any) => input.id ? input.id : input);
+    if (newOpAlJSON.outputs.id) {
+      newOpAlJSON.outputs = newOpAlJSON.outputs.id;
+    }
     const newOpAl = new OptimizationAlgorithmModel(newOpAlJSON);
     await newOpAl.save();
     res.status(201).send(apiSerializer(newOpAl, optimizationAlgorithmSerializer));
