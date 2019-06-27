@@ -99,5 +99,27 @@ export const optimizationAlgorithmSerializer = new Serializer('optimizationAlgor
     'outputs',
     'dockerConfig',
   ],
+  inputs: {
+    ref: '_id',
+    type: 'resourceType',
+    attributes: [
+      'name',
+      'abstract',
+      'attributes',
+      'parentType',
+      'eponymousAttribute',
+    ],
+  },
+  outputs: {
+    ref: '_id',
+    type: 'resourceType',
+    attributes: [
+      'name',
+      'abstract',
+      'attributes',
+      'parentType',
+      'eponymousAttribute',
+    ],
+  },
   keyForAttribute: 'camelCase',
 } as any);
