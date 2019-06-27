@@ -148,7 +148,10 @@ router.patch('/:algorithmId', async (req: express.Request, res: express.Response
     if (!optimizationAlgorithm) {
       throw Error(`Optimization algorithm with id ${req.params.algorithmId} could not be found.`);
     }
-    optimizationAlgorithm.set(newSettings);
+    optimizationAlgorithm.set({
+      name: newSettings.name,
+      dockerConfig: newSettings.dockerConfig,
+    });
     await optimizationAlgorithm.save();
     res.status(200).send();
   } catch (error) {
