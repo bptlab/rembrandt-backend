@@ -6,6 +6,9 @@ import OptimizationExecutionModel, { OptimizationExecution } from '@/models/Opti
 
 export default class OptimizationManager {
   // region public static methods
+  public static getImageNameForExecution(executionInstance: OptimizationExecution) {
+    return OptimizationManager.imageNamePrefix + executionInstance.identifier;
+  }
   // endregion
 
   // region private static methods
@@ -39,14 +42,21 @@ export default class OptimizationManager {
     executionInstance.optimizationAlgorithm = optimizationAlgorithm;
 
     try {
-      const container = await this.docker.createContainer({
-        Image: this.optimizationAlgorithm.imageIdentifier,
-        Cmd: ['/bin/bash', '-c', 'sleep 5m'],
-        name: OptimizationManager.imageNamePrefix + executionInstance.identifier,
-      });
-      executionInstance.containerId = container.id;
       await executionInstance.save();
-      await container.start();
+      const containerName = OptimizationManager.getImageNameForExecution(executionInstance);
+
+      this.docker.run(
+        this.optimizationAlgorithm.imageIdentifier,
+        ['/bin/bash', '-c', 'sleep 10s'],
+        process.stdout,
+        { name: containerName })
+        .then((container) => {
+          executionInstance.finishedAt = new Date();
+          executionInstance.terminationCode = container.output.StatusCode;
+          executionInstance.save();
+          winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}`);
+        });
+
       return executionInstance;
     } catch (error) {
       return new Promise((resolve, reject) => {
