@@ -1,4 +1,4 @@
-import { Typegoose, prop, pre, Ref } from 'typegoose';
+import { Typegoose, prop, Ref } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
 import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import nanoId from 'nanoid/generate';
@@ -47,19 +47,16 @@ export class OptimizationExecution extends Typegoose {
   public identifier: string = nanoId('0123456789abcdefghijklmnopqrstuvwxyz', 8);
 
   @prop({ default: () => new Date()})
-  public createdAt?: Date = new Date();
-
-  @prop()
-  public startedAt?: Date;
+  public startedAt?: Date = new Date();
 
   @prop()
   public finishedAt?: Date;
 
   @prop()
-  public caller?: string = '';
+  public terminationCode?: number;
 
   @prop()
-  public containerId: string = '';
+  public caller?: string = '';
 
   @prop({ ref: OptimizationAlgorithm })
   public algorithm!: Ref<OptimizationAlgorithm>;
@@ -87,10 +84,10 @@ export const optimizationExecutionSerializer = new Serializer('optimizationExecu
   id: '_id',
   attributes: [
     'identifier',
-    'createdAt',
     'startedAt',
     'finishedAt',
-    'containerId',
+    'terminationCode',
+    'caller',
     'algorithm',
   ],
   keyForAttribute: 'camelCase',
