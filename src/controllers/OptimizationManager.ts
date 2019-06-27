@@ -2,7 +2,7 @@ import Docker from 'dockerode';
 import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import config from '@/config.json';
 import winston = require('winston');
-import OptimizationExecution from '@/models/OptimizationExecution';
+import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
 
 export default class OptimizationManager {
   // region public static methods
@@ -27,13 +27,15 @@ export default class OptimizationManager {
   // endregion
 
   // region public methods
-  public async run(optimizationAlgorithm: OptimizationAlgorithm) {
+  public async run(optimizationAlgorithm: OptimizationAlgorithm): Promise<OptimizationExecution> {
     if (!this.docker) {
-      return;
+      return new Promise((resolve, reject) => {
+        reject(new Error('No docker connection!'));
+      });
     }
 
     this.optimizationAlgorithm = optimizationAlgorithm;
-    const executionInstance = new OptimizationExecution();
+    const executionInstance = new OptimizationExecutionModel();
     executionInstance.optimizationAlgorithm = optimizationAlgorithm;
 
     try {
@@ -44,9 +46,12 @@ export default class OptimizationManager {
       });
       executionInstance.containerId = container.id;
       await executionInstance.save();
-      container.start();
+      await container.start();
+      return executionInstance;
     } catch (error) {
-      winston.error(error);
+      return new Promise((resolve, reject) => {
+        reject(new Error(`Could not start docker container for algorithm: ${optimizationAlgorithm.name}. ${error}`));
+      });
     }
   }
 
