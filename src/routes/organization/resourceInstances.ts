@@ -7,7 +7,7 @@ import createJSONError from '@/utils/errorSerializer';
 
 const router: express.Router = express.Router();
 
-const populateResourceTypeOptions = {
+export const populateResourceTypeOptions = {
   path: 'resourceType',
   model: 'ResourceType',
 };
