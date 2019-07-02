@@ -11,11 +11,11 @@ const router: express.Router = express.Router();
 /**
  * @swagger
  *
- *  /optimization/algorithms:
+ *  /optimization/executions:
  *    get:
- *      summary: Get list of all optimization algorithms
+ *      summary: Get list of all optimization executions
  *      tags:
- *        - OptimizationAlgorithm
+ *        - OptimizationExecution
  *      responses:
  *        '200':
  *          description: Successful
@@ -37,11 +37,11 @@ router.get('/', async (req: express.Request, res: express.Response) => {
 /**
  * @swagger
  *
- *  /optimization/algorithms/{id}:
+ *  /optimization/executions/{id}:
  *    get:
- *      summary: Get a optimization algorithm by ID
+ *      summary: Get a optimization execution by ID
  *      tags:
- *        - OptimizationAlgorithm
+ *        - OptimizationExecution
  *      parameters:
  *        - name: id
  *          in: path
