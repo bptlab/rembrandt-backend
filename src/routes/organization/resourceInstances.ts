@@ -15,7 +15,7 @@ const populateResourceTypeOptions = {
 /**
  * @swagger
  *
- *  /resource-instances:
+ *  /organization/resource-instances:
  *    get:
  *      summary: Get list of all resource instances
  *      tags:
@@ -44,7 +44,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
 /**
  * @swagger
  *
- *  /resource-instances/{id}:
+ *  /organization/resource-instances/{id}:
  *    get:
  *      summary: Get a resource instance by ID
  *      tags:
@@ -80,7 +80,7 @@ router.get('/:instanceId', async (req: express.Request, res: express.Response) =
 /**
  * @swagger
  *
- *  /resource-instances:
+ *  /organization/resource-instances:
  *    post:
  *      summary: Create a new resource instance
  *      tags:
@@ -111,7 +111,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
 /**
  * @swagger
  *
- *  /resource-instances/{id}:
+ *  /organization/resource-instances/{id}:
  *    patch:
  *      summary: Update a resource instance with a given ID
  *      tags:
@@ -124,13 +124,13 @@ router.post('/', async (req: express.Request, res: express.Response) => {
  *          schema:
  *            type: string
  *      responses:
- *        '200':
+ *        '204':
  *          description: Successfully updated
  */
 router.patch('/:instanceId', async (req: express.Request, res: express.Response) => {
   try {
-    const newAttributeValues = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
-    if (req.params.instanceId !== newAttributeValues.id) {
+    const updatedInstance = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
+    if (req.params.instanceId !== updatedInstance.id) {
       throw Error('ObjectId provided in body does not match id in url. Denying update.');
     }
 
@@ -138,9 +138,9 @@ router.patch('/:instanceId', async (req: express.Request, res: express.Response)
     if (!resourceInstance) {
       throw Error(`Resource instance with id ${req.params.id} could not be found.`);
     }
-    resourceInstance.set(newAttributeValues);
+    resourceInstance.set({ attributes: updatedInstance.attributes });
     await resourceInstance.save();
-    res.status(200).send();
+    res.status(204).send();
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceInstance-Router', error.message));
@@ -150,7 +150,7 @@ router.patch('/:instanceId', async (req: express.Request, res: express.Response)
 /**
  * @swagger
  *
- *  /resource-instances/{id}:
+ *  /organization/resource-instances/{id}:
  *    delete:
  *      summary: Delete a resource instance with a given ID
  *      tags:

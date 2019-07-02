@@ -2,7 +2,6 @@ import { Typegoose, prop, arrayProp, Ref, pre, instanceMethod } from 'typegoose'
 import ResourceInstanceModel from '@/models/ResourceInstance';
 import ResourceAttribute from '@/models/ResourceAttribute';
 import { Serializer } from 'jsonapi-serializer';
-import { ObjectId } from 'bson';
 
 @pre<ResourceType>('save', async function(): Promise<void> {
   if (!this.parentType && this.name !== 'Resource') {
@@ -10,10 +9,22 @@ import { ObjectId } from 'bson';
       reject(new Error(`Parent resource type for new type '${this.name}' must be defined.`));
     });
   }
+
+  if (this.eponymousAttribute) {
+    const allAttributes = await this.getCompleteListOfAttributes();
+    const eponymousAttributeDefined = allAttributes.some((attribute) => {
+      return attribute.name === this.eponymousAttribute;
+    });
+    if (!eponymousAttributeDefined) {
+      return new Promise((resolve, reject) => {
+        reject(new Error(`The attribute marked as eponymous '${this.eponymousAttribute}' is not defined on this resource type.`));
+      });
+    }
+  }
 })
 
 @pre<ResourceType>('remove', async function(): Promise<void> {
-  const childTypesCount = await ResourceTypeModel.countDocuments({ parentType: this._id });
+  const childTypesCount = await ResourceTypeModel.countDocuments({ parentType: this._id }).exec();
   if (childTypesCount > 0) {
     return new Promise((resolve, reject) => {
       reject(new Error(`There are ${childTypesCount} resource types with '${this.name}' as parent. ` +
@@ -21,7 +32,7 @@ import { ObjectId } from 'bson';
     });
   }
 
-  const instancesCount = await ResourceInstanceModel.countDocuments({ resourceType: this._id });
+  const instancesCount = await ResourceInstanceModel.countDocuments({ resourceType: this._id }).exec();
   if (instancesCount > 0) {
     return new Promise((resolve, reject) => {
       reject(new Error(`There are ${instancesCount} instances of type '${this.name}'. Type can not be deleted.`));
@@ -93,8 +104,8 @@ export class ResourceType extends Typegoose {
   @arrayProp({ required: true, items: ResourceAttribute })
   public attributes: ResourceAttribute[] = [];
 
-  @prop({ ref: ResourceAttribute })
-  public eponymousAttribute?: Ref<ResourceAttribute>;
+  @prop({ required: false })
+  public eponymousAttribute?: string;
 
   @prop({ ref: ResourceType })
   public parentType?: Ref<ResourceType>;
@@ -134,9 +145,8 @@ export class ResourceType extends Typegoose {
   @instanceMethod
   public getEponymousAttribute(): ResourceAttribute | undefined {
     const attributes: ResourceAttribute[] = this.attributes;
-    const eponymousAttributeId = this.eponymousAttribute as ObjectId;
     return attributes.find((attribute: any) => {
-      return (attribute.id === eponymousAttributeId.toString());
+      return (attribute.name === this.eponymousAttribute);
     });
   }
 
