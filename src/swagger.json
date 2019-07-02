@@ -123,6 +123,119 @@
         }
       }
     },
+    "/optimization/transformers": {
+      "get": {
+        "summary": "Get list of all optimization transformers",
+        "tags": [
+          "OptimizationTransformer"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationTransformersResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new optimization transformer",
+        "tags": [
+          "OptimizationTransformer"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationTransformerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/optimization/transformers/{id}": {
+      "get": {
+        "summary": "Get an optimization transformer by ID",
+        "tags": [
+          "OptimizationTransformer"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Transformer ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationTransformerResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update the body of an optimization transformer with a given ID",
+        "tags": [
+          "OptimizationTransformer"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Transformer ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an optimization transformer with a given ID",
+        "tags": [
+          "OptimizationTransformer"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Transformer ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          }
+        }
+      }
+    },
     "/organization/resource-instances": {
       "get": {
         "summary": "Get list of all resource instances",
@@ -208,7 +321,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "Successfully updated"
           }
         }
@@ -480,6 +593,25 @@
           }
         }
       },
+      "OptimizationTransformersResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OptimizationTransformer"
+            }
+          }
+        }
+      },
+      "OptimizationTransformerResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OptimizationTransformer"
+          }
+        }
+      },
       "OptimizationAlgorithm": {
         "allOf": [
           {
@@ -525,6 +657,46 @@
                         "type": "string"
                       }
                     }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "OptimizationTransformer": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "resourceType",
+                  "transformerType",
+                  "body"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "resourceType": {
+                    "type": "string"
+                  },
+                  "transformerType": {
+                    "type": "string",
+                    "enum": [
+                      "map",
+                      "filter",
+                      "reduce"
+                    ]
+                  },
+                  "body": {
+                    "type": "string"
                   }
                 }
               }

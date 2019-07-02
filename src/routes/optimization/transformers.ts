@@ -42,7 +42,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  *
  *  /optimization/transformers/{id}:
  *    get:
- *      summary: Get a optimization transformer by ID
+ *      summary: Get an optimization transformer by ID
  *      tags:
  *        - OptimizationTransformer
  *      parameters:
@@ -153,7 +153,7 @@ router.patch('/:transformerId', async (req: express.Request, res: express.Respon
  *
  *  /optimization/transformers/{id}:
  *    delete:
- *      summary: Delete a optimization transformer with a given ID
+ *      summary: Delete an optimization transformer with a given ID
  *      tags:
  *        - OptimizationTransformer
  *      parameters:
