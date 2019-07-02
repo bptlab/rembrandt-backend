@@ -1,8 +1,8 @@
-import { Typegoose, prop, arrayProp, Ref } from 'typegoose';
+import { Typegoose, prop, Ref } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
 import { ResourceType } from './ResourceType';
 
-enum TransformerType {
+export enum TransformerType {
   MAP = 'map',
   FILTER = 'filter',
   REDUCE = 'reduce',
