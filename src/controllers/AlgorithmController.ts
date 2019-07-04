@@ -1,5 +1,4 @@
 import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
-import config from '@/config.json';
 import winston = require('winston');
 import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
 import Ingredient from './IngredientInterface';
@@ -7,9 +6,6 @@ import DockerController from './DockerController';
 
 export default class AlgorithmController implements Ingredient {
   // region public static methods
-  public static getImageNameForExecution(executionInstance: OptimizationExecution) {
-    return config.docker.containerPrefix + executionInstance.identifier;
-  }
   // endregion
 
   // region private static methods
@@ -37,7 +33,7 @@ export default class AlgorithmController implements Ingredient {
 
     try {
       await executionInstance.save();
-      const containerName = AlgorithmController.getImageNameForExecution(executionInstance);
+      const containerName = executionInstance.containerName;
 
       this.dockerController.run(
         this.optimizationAlgorithm.imageIdentifier,
@@ -49,13 +45,19 @@ export default class AlgorithmController implements Ingredient {
           executionInstance.terminationCode = container.output.StatusCode;
           executionInstance.save();
           winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}`);
+        }).catch((error) => {
+          return new Promise((resolve, reject) => {
+            reject(
+              new Error(`Could not start docker container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),
+            );
+          });
         });
 
       return executionInstance;
       } catch (error) {
         return new Promise((resolve, reject) => {
           reject(
-            new Error(`Could not start docker container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`)
+            new Error(`Could not start docker container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),
           );
         });
     }

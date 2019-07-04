@@ -2,6 +2,7 @@ import { Typegoose, prop, Ref } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
 import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import nanoId from 'nanoid/generate';
+import config from '@/config.json';
 
 /**
  * @swagger
@@ -60,6 +61,11 @@ export class OptimizationExecution extends Typegoose {
 
   @prop({ ref: OptimizationAlgorithm })
   public algorithm!: Ref<OptimizationAlgorithm>;
+
+  @prop()
+  get containerName(): string {
+    return config.docker.containerPrefix + this.identifier;
+  }
   // endregion
 
   // region private members

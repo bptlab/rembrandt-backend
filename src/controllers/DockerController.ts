@@ -5,13 +5,9 @@ import { OptimizationExecution } from '@/models/OptimizationExecution';
 
 export default class DockerController {
   // region public static methods
-  public static getImageNameForExecution(executionInstance: OptimizationExecution) {
-    return config.docker.containerPrefix + executionInstance.identifier;
-  }
   // endregion
 
   // region private static methods
-  private static imageNamePrefix = 'rembrandt-';
   // endregion
 
   // region public members
@@ -30,18 +26,13 @@ export default class DockerController {
   // region public methods
   public run(image: string, command: string[],
              outputStream: NodeJS.WritableStream | NodeJS.WritableStream[], createOptions: {}): Promise<any> {
-    if (!this.docker) {
-      return new Promise((resolve, reject) => {
-        reject(new Error('No docker connection!'));
-      });
-    }
     return this.docker.run(image, command, outputStream, createOptions);
   }
 
   public stopExecution(executionInstance: OptimizationExecution) {
-    const containerName = DockerController.getImageNameForExecution(executionInstance);
+    const containerName = executionInstance.containerName;
     winston.debug(`Stopping ${containerName}`);
-    const container = this.docker.getContainer(DockerController.getImageNameForExecution(executionInstance));
+    const container = this.docker.getContainer(containerName);
     container.stop();
   }
 
