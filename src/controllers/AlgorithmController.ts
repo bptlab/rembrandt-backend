@@ -8,12 +8,11 @@ import Ingredient from './IngredientInterface';
 export default class AlgorithmController implements Ingredient {
   // region public static methods
   public static getImageNameForExecution(executionInstance: OptimizationExecution) {
-    return AlgorithmController.imageNamePrefix + executionInstance.identifier;
+    return config.docker.containerPrefix + executionInstance.identifier;
   }
   // endregion
 
   // region private static methods
-  private static imageNamePrefix = 'rembrandt-';
   // endregion
 
   // region public members
