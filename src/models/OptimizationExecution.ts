@@ -1,4 +1,4 @@
-import { Typegoose, prop, Ref } from 'typegoose';
+import { Typegoose, prop, Ref, instanceMethod } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
 import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import nanoId from 'nanoid/generate';
@@ -75,6 +75,12 @@ export class OptimizationExecution extends Typegoose {
   // endregion
 
   // region public methods
+  @instanceMethod
+  public terminate(statusCode: number) {
+    this.finishedAt = new Date();
+    this.terminationCode = statusCode;
+    this.save();
+  }
   // endregion
 
   // region private methods

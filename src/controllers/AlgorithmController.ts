@@ -41,9 +41,7 @@ export default class AlgorithmController implements Ingredient {
         process.stdout,
         { name: containerName })
         .then((container) => {
-          executionInstance.finishedAt = new Date();
-          executionInstance.terminationCode = container.output.StatusCode;
-          executionInstance.save();
+          executionInstance.terminate(container.output.StatusCode);
           winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}`);
         });
 
