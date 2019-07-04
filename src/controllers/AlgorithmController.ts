@@ -3,6 +3,7 @@ import winston = require('winston');
 import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
 import Ingredient from './IngredientInterface';
 import DockerController from './DockerController';
+import IntermediateResult from '@/models/IntermediateResult';
 
 export default class AlgorithmController implements Ingredient {
   // region public static methods
@@ -27,7 +28,9 @@ export default class AlgorithmController implements Ingredient {
   // endregion
 
   // region public methods
-  public async execute(): Promise<OptimizationExecution> {
+  public async execute(input: IntermediateResult): Promise<OptimizationExecution> {
+    this.writeRequiredAlgorithmInputFiles(input);
+
     const executionInstance = new OptimizationExecutionModel();
     executionInstance.optimizationAlgorithm = this.optimizationAlgorithm;
 
@@ -57,5 +60,8 @@ export default class AlgorithmController implements Ingredient {
   // endregion
 
   // region private methods
+  private writeRequiredAlgorithmInputFiles(input: IntermediateResult) {
+    return;
+  }
   // endregion
 }

@@ -1,3 +1,5 @@
+import IntermediateResult from '@/models/IntermediateResult';
+
 export default interface Ingredient {
   // region public static methods
   // endregion
@@ -15,7 +17,7 @@ export default interface Ingredient {
   // endregion
 
   // region public methods
-  execute(input: any): any;
+  execute(input: IntermediateResult): any;
   // endregion
 
   // region private methods

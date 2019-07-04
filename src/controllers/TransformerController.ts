@@ -1,6 +1,7 @@
 import { OptimizationTransformer } from '@/models/OptimizationTransformer';
 import Ingredient from '@/controllers/IngredientInterface';
 import { ResourceInstance } from '@/models/ResourceInstance';
+import IntermediateResult from '@/models/IntermediateResult';
 
 export default class TransformerController implements Ingredient {
   // region public static methods
@@ -23,11 +24,11 @@ export default class TransformerController implements Ingredient {
   // endregion
 
   // region public methods
-  public execute(input: ResourceInstance[]): ResourceInstance[] {
+  public execute(input: IntermediateResult): ResourceInstance[] {
     const functionBody = `return inputArray.${this.transformer.transformerType}((instance) => {
       ${this.transformer.body}});`;
     const transform = new Function('inputArray', functionBody);
-    return transform(input);
+    return transform(input.getResultsForResourceType(this.transformer.resourceType));
   }
   // endregion
 
