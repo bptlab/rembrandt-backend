@@ -1,9 +1,7 @@
 import Docker from 'dockerode';
-import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import config from '@/config.json';
 import winston = require('winston');
-import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
-import Ingredient from './IngredientInterface';
+import { OptimizationExecution } from '@/models/OptimizationExecution';
 
 export default class DockerController {
   // region public static methods
@@ -30,6 +28,16 @@ export default class DockerController {
   // endregion
 
   // region public methods
+  public run(image: string, command: string[],
+             outputStream: NodeJS.WritableStream | NodeJS.WritableStream[], createOptions: {}): Promise<any> {
+    if (!this.docker) {
+      return new Promise((resolve, reject) => {
+        reject(new Error('No docker connection!'));
+      });
+    }
+    return this.docker.run(image, command, outputStream, createOptions);
+  }
+
   public stopExecution(executionInstance: OptimizationExecution) {
     const containerName = DockerController.getImageNameForExecution(executionInstance);
     winston.debug(`Stopping ${containerName}`);

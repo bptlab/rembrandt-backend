@@ -1,9 +1,9 @@
-import Docker from 'dockerode';
 import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import config from '@/config.json';
 import winston = require('winston');
 import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
 import Ingredient from './IngredientInterface';
+import DockerController from './DockerController';
 
 export default class AlgorithmController implements Ingredient {
   // region public static methods
@@ -20,24 +20,18 @@ export default class AlgorithmController implements Ingredient {
   // endregion
 
   // region private members
-  private docker: Docker;
+  private dockerController: DockerController;
   // endregion
 
   // region constructor
   constructor(optimizationAlgorithm: OptimizationAlgorithm) {
-    this.docker = new Docker(config.docker.configuration);
+    this.dockerController = new DockerController();
     this.optimizationAlgorithm = optimizationAlgorithm;
   }
   // endregion
 
   // region public methods
   public async execute(): Promise<OptimizationExecution> {
-    if (!this.docker) {
-      return new Promise((resolve, reject) => {
-        reject(new Error('No docker connection!'));
-      });
-    }
-
     const executionInstance = new OptimizationExecutionModel();
     executionInstance.optimizationAlgorithm = this.optimizationAlgorithm;
 
@@ -45,7 +39,7 @@ export default class AlgorithmController implements Ingredient {
       await executionInstance.save();
       const containerName = AlgorithmController.getImageNameForExecution(executionInstance);
 
-      this.docker.run(
+      this.dockerController.run(
         this.optimizationAlgorithm.imageIdentifier,
         ['/bin/bash', '-c', 'sleep 30s'],
         process.stdout,
