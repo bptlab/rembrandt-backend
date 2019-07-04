@@ -26,7 +26,7 @@ export default class AlgorithmController implements Ingredient {
 
   // region constructor
   constructor(optimizationAlgorithm: OptimizationAlgorithm) {
-    this.docker = new Docker(config.docker);
+    this.docker = new Docker(config.docker.configuration);
     this.optimizationAlgorithm = optimizationAlgorithm;
   }
   // endregion

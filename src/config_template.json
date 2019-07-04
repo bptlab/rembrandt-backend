@@ -9,6 +9,8 @@
     "targetAmountOfExhaustibleResources": 10
   },
   "docker": {
-    "Refer to the docs": "https://github.com/apocas/dockerode#getting-started"
+    "configuration": {
+      "Refer to the docs": "https://github.com/apocas/dockerode#getting-started"
+    }
   }
 }
