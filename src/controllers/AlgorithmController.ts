@@ -3,8 +3,9 @@ import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import config from '@/config.json';
 import winston = require('winston');
 import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
+import Ingredient from './IngredientInterface';
 
-export default class AlgorithmController {
+export default class AlgorithmController implements Ingredient {
   // region public static methods
   public static getImageNameForExecution(executionInstance: OptimizationExecution) {
     return AlgorithmController.imageNamePrefix + executionInstance.identifier;
@@ -16,30 +17,30 @@ export default class AlgorithmController {
   // endregion
 
   // region public members
-  public optimizationAlgorithm?: OptimizationAlgorithm;
+  public optimizationAlgorithm: OptimizationAlgorithm;
   // endregion
 
   // region private members
-  private docker!: Docker;
+  private docker: Docker;
   // endregion
 
   // region constructor
-  constructor() {
+  constructor(optimizationAlgorithm: OptimizationAlgorithm) {
     this.docker = new Docker(config.docker);
+    this.optimizationAlgorithm = optimizationAlgorithm;
   }
   // endregion
 
   // region public methods
-  public async run(optimizationAlgorithm: OptimizationAlgorithm): Promise<OptimizationExecution> {
+  public async execute(): Promise<OptimizationExecution> {
     if (!this.docker) {
       return new Promise((resolve, reject) => {
         reject(new Error('No docker connection!'));
       });
     }
 
-    this.optimizationAlgorithm = optimizationAlgorithm;
     const executionInstance = new OptimizationExecutionModel();
-    executionInstance.optimizationAlgorithm = optimizationAlgorithm;
+    executionInstance.optimizationAlgorithm = this.optimizationAlgorithm;
 
     try {
       await executionInstance.save();
@@ -60,7 +61,9 @@ export default class AlgorithmController {
       return executionInstance;
       } catch (error) {
         return new Promise((resolve, reject) => {
-          reject(new Error(`Could not start docker container for algorithm: ${optimizationAlgorithm.name}. ${error}`));
+          reject(
+            new Error(`Could not start docker container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`)
+          );
         });
     }
   }

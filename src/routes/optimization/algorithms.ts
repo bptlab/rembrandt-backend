@@ -94,8 +94,8 @@ router.get('/:algorithmId/execute', async (req: express.Request, res: express.Re
     if (!optimizationAlgorithm) {
       throw Error(`Optimization algorithm with id ${req.params.algorithmId} could not be found.`);
     }
-    const algorithmController = new AlgorithmController();
-    const executionInstance = await algorithmController.run(optimizationAlgorithm);
+    const algorithmController = new AlgorithmController(optimizationAlgorithm);
+    const executionInstance = await algorithmController.execute();
     res.status(201).send(apiSerializer(executionInstance, optimizationExecutionSerializer));
   } catch (error) {
     winston.error(error.message);
