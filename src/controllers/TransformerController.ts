@@ -1,8 +1,6 @@
 import { OptimizationTransformer } from '@/models/OptimizationTransformer';
 import Ingredient from '@/controllers/IngredientInterface';
 import { ResourceInstance } from '@/models/ResourceInstance';
-import { ResourceType } from '@/models/ResourceType';
-import { Ref } from 'typegoose';
 
 export default class TransformerController implements Ingredient {
   // region public static methods
@@ -30,10 +28,6 @@ export default class TransformerController implements Ingredient {
       ${this.transformer.body}});`;
     const transform = new Function('inputArray', functionBody);
     return transform(input);
-  }
-
-  public returnType(): Ref<ResourceType> {
-    return this.transformer.resourceType;
   }
   // endregion
 

@@ -1,6 +1,3 @@
-import { ResourceType } from '@/models/ResourceType';
-import { Ref } from 'typegoose';
-
 export default interface Ingredient {
   // region public static methods
   // endregion
@@ -19,7 +16,6 @@ export default interface Ingredient {
 
   // region public methods
   execute(input: any): any;
-  returnType(): Ref<ResourceType>;
   // endregion
 
   // region private methods
