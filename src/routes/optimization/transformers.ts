@@ -5,9 +5,6 @@ import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
-import ResourceInstance from '@/models/ResourceInstance';
-import TransformerController from '@/controllers/TransformerController';
-import { ResourceType } from '@/models/ResourceType';
 
 const router: express.Router = express.Router();
 
@@ -72,13 +69,6 @@ router.get('/:transformerId', async (req: express.Request, res: express.Response
     if (!optimizationTransformer) {
       throw Error(`Optimization transformer with id ${req.params.transformerId} could not be found.`);
     }
-
-    const resourceInstances = await ResourceInstance
-      .find({ resourceType: (optimizationTransformer.resourceType as ResourceType)._id })
-      .exec();
-    const controller = new TransformerController(optimizationTransformer);
-    controller.execute(resourceInstances);
-
     res.send(apiSerializer(optimizationTransformer, optimizationTransformerSerializer));
   } catch (error) {
     winston.error(error.message);
