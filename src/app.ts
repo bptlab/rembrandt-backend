@@ -6,6 +6,7 @@ import cors from 'cors';
 import resourceTypeRouter from '@/routes/organization/resourceTypes';
 import resourceInstanceRouter from '@/routes/organization/resourceInstances';
 import optimizationAlgorithmRouter from '@/routes/optimization/algorithms';
+import optimizationTransformerRouter from '@/routes/optimization/transformers';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
@@ -45,6 +46,7 @@ async function startApiServer(): Promise<void> {
   app.use('/organization/resource-instances', resourceInstanceRouter);
 
   app.use('/optimization/algorithms', optimizationAlgorithmRouter);
+  app.use('/optimization/transformers', optimizationTransformerRouter);
 
   app.get('/', (req: express.Request, res: express.Response) => {
     res.send('hello world!');

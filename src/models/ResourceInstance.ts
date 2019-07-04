@@ -113,6 +113,27 @@ export class ResourceInstance extends Typegoose {
     }
     this.resourceType = foundType._id;
   }
+
+  @instanceMethod
+  public getAttribute(attributeKey: string): string|undefined {
+    const foundAttribute = this.attributes.find((attribute) => attribute.name === attributeKey);
+    if (foundAttribute) {
+      return foundAttribute.value;
+    }
+    return undefined;
+  }
+
+  @instanceMethod
+  public setAttribute(attributeKey: string, attributeValue: string): boolean {
+    return this.attributes.some((attribute) => {
+      if (attribute.name === attributeKey) {
+        attribute.value = attributeValue;
+        this.markModified('attributes');
+        return true;
+      }
+      return false;
+    });
+  }
   // endregion
 
   // region private methods

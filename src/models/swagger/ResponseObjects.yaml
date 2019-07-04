@@ -62,3 +62,15 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/OptimizationAlgorithm'
+    OptimizationTransformersResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OptimizationTransformer'
+    OptimizationTransformerResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/OptimizationTransformer'
