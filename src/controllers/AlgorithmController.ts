@@ -45,21 +45,15 @@ export default class AlgorithmController implements Ingredient {
           executionInstance.terminationCode = container.output.StatusCode;
           executionInstance.save();
           winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}`);
-        }).catch((error) => {
-          return new Promise((resolve, reject) => {
-            reject(
-              new Error(`Could not start docker container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),
-            );
-          });
         });
 
       return executionInstance;
-      } catch (error) {
-        return new Promise((resolve, reject) => {
-          reject(
-            new Error(`Could not start docker container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),
-          );
-        });
+    } catch (error) {
+      return new Promise((resolve, reject) => {
+        reject(
+          new Error(`Could not start docker container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),
+        );
+      });
     }
   }
   // endregion
