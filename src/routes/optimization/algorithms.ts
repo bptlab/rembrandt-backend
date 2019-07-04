@@ -134,7 +134,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
  *          schema:
  *            type: string
  *      responses:
- *        '200':
+ *        '204':
  *          description: Successfully updated
  */
 router.patch('/:algorithmId', async (req: express.Request, res: express.Response) => {
@@ -153,7 +153,7 @@ router.patch('/:algorithmId', async (req: express.Request, res: express.Response
       dockerConfig: newSettings.dockerConfig,
     });
     await optimizationAlgorithm.save();
-    res.status(200).send();
+    res.status(204).send();
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in OptimizationAlgorithm-Router', error.message));

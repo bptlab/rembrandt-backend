@@ -123,7 +123,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
  *          schema:
  *            type: string
  *      responses:
- *        '200':
+ *        '204':
  *          description: Successfully updated
  */
 router.patch('/:transformerId', async (req: express.Request, res: express.Response) => {
@@ -141,7 +141,7 @@ router.patch('/:transformerId', async (req: express.Request, res: express.Respon
       body: patchedTransformer.body,
     });
     await optimizationTransformer.save();
-    res.status(200).send();
+    res.status(204).send();
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in OptimizationTransformer-Router', error.message));

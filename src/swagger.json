@@ -95,7 +95,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "Successfully updated"
           }
         }
@@ -208,7 +208,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "Successfully updated"
           }
         }
@@ -434,7 +434,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "Successfully updated"
           }
         }
