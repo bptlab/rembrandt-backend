@@ -1,4 +1,4 @@
-import { OptimizationTransformer, TransformerType } from '@/models/OptimizationTransformer';
+import { OptimizationTransformer } from '@/models/OptimizationTransformer';
 import Ingredient from '@/controllers/IngredientInterface';
 import { ResourceInstance } from '@/models/ResourceInstance';
 import { ResourceType } from '@/models/ResourceType';
