@@ -4,7 +4,7 @@ import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
-import OptimizationManager from '@/controllers/OptimizationManager';
+import AlgorithmController from '@/controllers/AlgorithmController';
 
 const router: express.Router = express.Router();
 
@@ -76,8 +76,8 @@ router.get('/:executionId/stop', async (req: express.Request, res: express.Respo
     if (!optimizationExecution) {
       throw Error(`Optimization execution with id ${req.params.executionId} could not be found.`);
     }
-    const optimizationManager = new OptimizationManager();
-    optimizationManager.stopExecution(optimizationExecution);
+    const algorithmController = new AlgorithmController();
+    algorithmController.stopExecution(optimizationExecution);
     res.status(201).send();
   } catch (error) {
     winston.error(error.message);

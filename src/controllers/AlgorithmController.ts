@@ -4,10 +4,10 @@ import config from '@/config.json';
 import winston = require('winston');
 import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
 
-export default class OptimizationManager {
+export default class AlgorithmController {
   // region public static methods
   public static getImageNameForExecution(executionInstance: OptimizationExecution) {
-    return OptimizationManager.imageNamePrefix + executionInstance.identifier;
+    return AlgorithmController.imageNamePrefix + executionInstance.identifier;
   }
   // endregion
 
@@ -43,7 +43,7 @@ export default class OptimizationManager {
 
     try {
       await executionInstance.save();
-      const containerName = OptimizationManager.getImageNameForExecution(executionInstance);
+      const containerName = AlgorithmController.getImageNameForExecution(executionInstance);
 
       this.docker.run(
         this.optimizationAlgorithm.imageIdentifier,
@@ -66,9 +66,9 @@ export default class OptimizationManager {
   }
 
   public stopExecution(executionInstance: OptimizationExecution) {
-    const containerName = OptimizationManager.getImageNameForExecution(executionInstance);
+    const containerName = AlgorithmController.getImageNameForExecution(executionInstance);
     winston.debug(`Stopping ${containerName}`);
-    const container = this.docker.getContainer(OptimizationManager.getImageNameForExecution(executionInstance));
+    const container = this.docker.getContainer(AlgorithmController.getImageNameForExecution(executionInstance));
     container.stop();
   }
 
@@ -77,7 +77,7 @@ export default class OptimizationManager {
     const containers = await this.docker.listContainers({ all: true });
     const containerStopStatus: Array<Promise<void>> = [];
     containers.forEach((containerInfo) => {
-      if (containerInfo.Names.some((name) => name.startsWith('/' + OptimizationManager.imageNamePrefix))) {
+      if (containerInfo.Names.some((name) => name.startsWith('/' + AlgorithmController.imageNamePrefix))) {
         containerStopStatus.push(this.stopAndRemoveOne(containerInfo));
       }
     });

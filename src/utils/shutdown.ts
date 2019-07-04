@@ -1,9 +1,9 @@
 import winston = require('winston');
-import OptimizationManager from '@/controllers/OptimizationManager';
+import AlgorithmController from '@/controllers/AlgorithmController';
 
 export default async function shutdown() {
   winston.info('Shutting down...');
-  const optimizationManager = new OptimizationManager();
-  await optimizationManager.stopAndRemoveAll();
+  const algorithmController = new AlgorithmController();
+  await algorithmController.stopAndRemoveAll();
   winston.info('Goodbye!');
 }
