@@ -1,9 +1,9 @@
 import winston = require('winston');
-import AlgorithmController from '@/controllers/AlgorithmController';
+import DockerController from '@/controllers/DockerController';
 
 export default async function shutdown() {
   winston.info('Shutting down...');
-  const algorithmController = new AlgorithmController();
-  await algorithmController.stopAndRemoveAll();
+  const dockerController = new DockerController();
+  await dockerController.stopAndRemoveAll();
   winston.info('Goodbye!');
 }

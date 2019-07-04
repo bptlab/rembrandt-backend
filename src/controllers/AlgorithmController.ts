@@ -66,40 +66,6 @@ export default class AlgorithmController implements Ingredient {
         });
     }
   }
-
-  public stopExecution(executionInstance: OptimizationExecution) {
-    const containerName = AlgorithmController.getImageNameForExecution(executionInstance);
-    winston.debug(`Stopping ${containerName}`);
-    const container = this.docker.getContainer(AlgorithmController.getImageNameForExecution(executionInstance));
-    container.stop();
-  }
-
-  public async stopAndRemoveAll() {
-    winston.info('Stopping all containers...');
-    const containers = await this.docker.listContainers({ all: true });
-    const containerStopStatus: Array<Promise<void>> = [];
-    containers.forEach((containerInfo) => {
-      if (containerInfo.Names.some((name) => name.startsWith('/' + AlgorithmController.imageNamePrefix))) {
-        containerStopStatus.push(this.stopAndRemoveOne(containerInfo));
-      }
-    });
-    await Promise.all(containerStopStatus);
-    winston.info(`Stopped and removed all rembrandt containers (${containerStopStatus.length}).`);
-  }
-
-  public async stopAndRemoveOne(containerInfo: Docker.ContainerInfo): Promise<void> {
-    try {
-      const container = this.docker.getContainer(containerInfo.Id);
-      if (containerInfo.State === 'running') {
-        winston.debug(`Stopping container ${containerInfo.Names[0]} (${containerInfo.Id})`);
-        await container.stop();
-      }
-      winston.debug(`Removing container ${containerInfo.Names[0]} (${containerInfo.Id})`);
-      await container.remove();
-    } catch (error) {
-      winston.error(error);
-    }
-  }
   // endregion
 
   // region private methods
