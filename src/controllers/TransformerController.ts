@@ -24,11 +24,15 @@ export default class TransformerController implements IngredientController {
   // endregion
 
   // region public methods
-  public execute(input: IntermediateResult): ResourceInstance[] {
+  public async execute(input: IntermediateResult): Promise<IntermediateResult> {
     const functionBody = `return inputArray.${this.transformer.transformerType}((instance) => {
       ${this.transformer.body}});`;
     const transform = new Function('inputArray', functionBody);
-    return transform(input.getResultsForResourceType(this.transformer.resourceType));
+    const transformedResourceInstanceList = transform(input.getResultsForResourceType(this.transformer.resourceType));
+
+    const response = new IntermediateResult();
+    response.addResultsForResourceType(this.transformer.resourceType, transformedResourceInstanceList);
+    return response;
   }
   // endregion
 
