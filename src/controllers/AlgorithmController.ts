@@ -1,7 +1,7 @@
 import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import winston = require('winston');
 import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
-import Ingredient from './IngredientInterface';
+import IngredientController from './IngredientControllerInterface';
 import DockerController from './DockerController';
 import IntermediateResult from '@/models/IntermediateResult';
 import { promises as fs } from 'fs';
@@ -9,7 +9,7 @@ import path from 'path';
 import config from '@/config.json';
 import { ResourceInstance } from '@/models/ResourceInstance';
 
-export default class AlgorithmController implements Ingredient {
+export default class AlgorithmController implements IngredientController {
   // region public static methods
   // endregion
 

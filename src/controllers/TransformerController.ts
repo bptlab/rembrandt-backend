@@ -1,9 +1,9 @@
 import { OptimizationTransformer } from '@/models/OptimizationTransformer';
-import Ingredient from '@/controllers/IngredientInterface';
+import IngredientController from '@/controllers/IngredientControllerInterface';
 import { ResourceInstance } from '@/models/ResourceInstance';
 import IntermediateResult from '@/models/IntermediateResult';
 
-export default class TransformerController implements Ingredient {
+export default class TransformerController implements IngredientController {
   // region public static methods
   // endregion
 

@@ -1,6 +1,7 @@
 import IntermediateResult from '@/models/IntermediateResult';
+import { OptimizationExecution } from '@/models/OptimizationExecution';
 
-export default interface Ingredient {
+export default interface IngredientController {
   // region public static methods
   // endregion
 
@@ -17,7 +18,7 @@ export default interface Ingredient {
   // endregion
 
   // region public methods
-  execute(input: IntermediateResult): any;
+  execute(input: IntermediateResult): Promise<IntermediateResult> | Promise<OptimizationExecution>;
   // endregion
 
   // region private methods
