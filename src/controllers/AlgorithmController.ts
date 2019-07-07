@@ -4,6 +4,10 @@ import OptimizationExecutionModel, { OptimizationExecution } from '@/models/Opti
 import Ingredient from './IngredientInterface';
 import DockerController from './DockerController';
 import IntermediateResult from '@/models/IntermediateResult';
+import { promises as fs } from 'fs';
+import path from 'path';
+import config from '@/config.json';
+import { ResourceInstance } from '@/models/ResourceInstance';
 
 export default class AlgorithmController implements Ingredient {
   // region public static methods
@@ -18,6 +22,7 @@ export default class AlgorithmController implements Ingredient {
 
   // region private members
   private dockerController: DockerController;
+  private filePathForDataExchange!: string;
   // endregion
 
   // region constructor
@@ -29,10 +34,10 @@ export default class AlgorithmController implements Ingredient {
 
   // region public methods
   public async execute(input: IntermediateResult): Promise<OptimizationExecution> {
-    this.writeRequiredAlgorithmInputFiles(input);
-
     const executionInstance = new OptimizationExecutionModel();
     executionInstance.optimizationAlgorithm = this.optimizationAlgorithm;
+    await this.createDirectoryForDataExchange(executionInstance.identifier);
+    this.writeRequiredAlgorithmInputFiles(input);
 
     try {
       await executionInstance.save();
@@ -60,8 +65,36 @@ export default class AlgorithmController implements Ingredient {
   // endregion
 
   // region private methods
-  private writeRequiredAlgorithmInputFiles(input: IntermediateResult) {
-    return;
+  private async createDirectoryForDataExchange(executionId: string): Promise<any> {
+    this.filePathForDataExchange = path.join(path.normalize(config.docker.dataExchangeDirectory), executionId);
+
+    // CREATE FOLDER FOR DATA EXCHANGE
+    try {
+      await fs.mkdir(this.filePathForDataExchange);
+    } catch (error) {
+      return new Promise((resolve, reject) => {
+        reject(
+          new Error(`Could not create directory for docker data exchange in ${config.docker.dataExchangeDirectory}.
+            ${error}`),
+        );
+      });
+    }
+
+  }
+
+  private async writeRequiredAlgorithmInputFiles(input: IntermediateResult): Promise<Array<Promise<void>>> {
+    const fileWriters: Array<Promise<void>> = [];
+
+    this.optimizationAlgorithm.inputs.forEach((algorithmInput) => {
+      const inputData = input.getResultsForResourceType(algorithmInput);
+      fileWriters.push(this.writeRequiredAlgorithmInputFile(inputData));
+    });
+
+    return fileWriters;
+  }
+
+  private async writeRequiredAlgorithmInputFile(inputData: ResourceInstance[]): Promise<void> {
+    return fs.writeFile(path.join(this.filePathForDataExchange, 'test.txt'), JSON.stringify(inputData));
   }
   // endregion
 }

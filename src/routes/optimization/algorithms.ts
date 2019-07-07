@@ -6,6 +6,7 @@ import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
 import AlgorithmController from '@/controllers/AlgorithmController';
 import { optimizationExecutionSerializer } from '@/models/OptimizationExecution';
+import IntermediateResult from '@/models/IntermediateResult';
 
 const router: express.Router = express.Router();
 
@@ -95,7 +96,8 @@ router.get('/:algorithmId/execute', async (req: express.Request, res: express.Re
       throw Error(`Optimization algorithm with id ${req.params.algorithmId} could not be found.`);
     }
     const algorithmController = new AlgorithmController(optimizationAlgorithm);
-    const executionInstance = await algorithmController.execute();
+    const intermediateResult = new IntermediateResult();
+    const executionInstance = await algorithmController.execute(intermediateResult);
     res.status(201).send(apiSerializer(executionInstance, optimizationExecutionSerializer));
   } catch (error) {
     winston.error(error.message);

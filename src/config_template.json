@@ -12,6 +12,7 @@
     "configuration": {
       "Refer to the docs": "https://github.com/apocas/dockerode#getting-started"
     },
-    "containerPrefix": "rembrandt-"
+    "containerPrefix": "rembrandt-",
+    "dataExchangeDirectory": "dataExchange"
   }
 }
