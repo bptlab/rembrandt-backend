@@ -51,6 +51,7 @@ export default class AlgorithmController implements IngredientController {
         .then((container) => {
           executionInstance.terminate(container.output.StatusCode);
           winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}`);
+          this.readProducedAlgorithmOutputFiles();
         });
 
       return executionInstance;
@@ -95,6 +96,10 @@ export default class AlgorithmController implements IngredientController {
 
   private async writeRequiredAlgorithmInputFile(inputData: ResourceInstance[]): Promise<void> {
     return fs.writeFile(path.join(this.filePathForDataExchange, 'test.txt'), JSON.stringify(inputData));
+  }
+
+  private async readProducedAlgorithmOutputFiles(): Promise<void> {
+    return;
   }
   // endregion
 }

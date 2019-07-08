@@ -22,7 +22,7 @@ export default interface Ingredient {
   // region public members
   inputs: Ingredient[] | IntermediateResult;
   outputs: Ingredient[] | IntermediateResult;
-  ingredient: OptimizationTransformer | OptimizationAlgorithm | InputIngredient | OutputIngredient;
+  ingredientDefinition: OptimizationTransformer | OptimizationAlgorithm | InputIngredient | OutputIngredient;
   // endregion
 
   // region private members

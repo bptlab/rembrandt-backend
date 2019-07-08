@@ -3,9 +3,9 @@ import ResourceInstanceModel from '@/models/ResourceInstance';
 import IntermediateResult from '@/models/IntermediateResult';
 import { Ref } from 'typegoose';
 import { ResourceType } from '@/models/ResourceType';
-import { InputIngredient } from '@/models/IngredientInterface';
+import { OutputIngredient } from '@/models/IngredientInterface';
 
-export default class InputController implements IngredientController {
+export default class OutputController implements IngredientController {
   // region public static methods
   // endregion
 
@@ -20,18 +20,15 @@ export default class InputController implements IngredientController {
   // endregion
 
   // region constructor
-  constructor(input: InputIngredient) {
-    this.resourceType = input.inputResourceType;
+  constructor(output: OutputIngredient) {
+    this.resourceType = output.outputResourceType;
   }
   // endregion
 
   // region public methods
   public async execute(): Promise<IntermediateResult> {
-    const resourceInstances = await ResourceInstanceModel
-      .find({ resourceType: this.resourceType })
-      .exec();
+    // TODO
     const response = new IntermediateResult();
-    response.addResultsForResourceType(this.resourceType, resourceInstances);
     return response;
   }
   // endregion
