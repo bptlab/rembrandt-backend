@@ -3,7 +3,7 @@ import ResourceInstanceModel from '@/models/ResourceInstance';
 import IntermediateResult from '@/models/IntermediateResult';
 import { Ref } from 'typegoose';
 import { ResourceType } from '@/models/ResourceType';
-import { InputIngredient } from '@/models/IngredientInterface';
+import { InputIngredient } from '@/models/Ingredient';
 
 export default class InputController implements IngredientController {
   // region public static methods

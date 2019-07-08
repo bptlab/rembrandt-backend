@@ -1,38 +1,13 @@
 import IngredientController from '@/controllers/IngredientControllerInterface';
-import ResourceInstanceModel from '@/models/ResourceInstance';
 import IntermediateResult from '@/models/IntermediateResult';
-import { Ref } from 'typegoose';
-import { ResourceType } from '@/models/ResourceType';
-import Ingredient, { InputIngredient, OutputIngredient } from '@/models/IngredientInterface';
-import { OptimizationTransformer } from '@/models/OptimizationTransformer';
-import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
-import AlgorithmController from '@/controllers/AlgorithmController';
-import TransformerController from '@/controllers/TransformerController';
-import InputController from '@/controllers/InputController';
-import OutputController from '@/controllers/OutputController';
-import { OptimizationExecution } from '@/models/OptimizationExecution';
+import Ingredient from '@/models/Ingredient';
+import winston = require('winston');
 
 export default class RecipeController implements IngredientController {
   // region public static methods
   // endregion
 
   // region private static methods
-  private static getControllerForIngredient(node: Ingredient): IngredientController {
-    if (node.ingredientDefinition instanceof OptimizationAlgorithm) {
-      return new AlgorithmController(node.ingredientDefinition);
-    }
-    if (node.ingredientDefinition instanceof OptimizationTransformer) {
-      return new TransformerController(node.ingredientDefinition);
-    }
-    // https://www.typescriptlang.org/docs/handbook/advanced-types.html#using-type-predicates
-    if ((node.ingredientDefinition as InputIngredient).inputResourceType !== undefined) {
-      return new InputController(node.ingredientDefinition as InputIngredient);
-    }
-    if ((node.ingredientDefinition as OutputIngredient).outputResourceType !== undefined) {
-      return new OutputController(node.ingredientDefinition as OutputIngredient);
-    }
-    throw new Error(`Could not find proper controller for ingredient of type ${typeof(node.ingredientDefinition)}.`);
-  }
   // endregion
 
   // region public members
@@ -51,29 +26,41 @@ export default class RecipeController implements IngredientController {
   // region public methods
   public async execute(): Promise<IntermediateResult> {
 
+    winston.debug('=======================');
+    winston.debug('Start executing recipe.');
 
+    while (this.nodes.some((node) => node.isExecutable())) {
+      winston.debug(' + Executing another step');
+      await this.executeStep();
+      winston.debug(' + Finished step');
+    }
+    winston.debug('Finished executing recipe.');
+    winston.debug('==========================');
     const response = new IntermediateResult();
     return response;
   }
   // endregion
 
   // region private methods
-  private async executeStep() {
-    const executedInThisStep: Array<Promise<IntermediateResult> | Promise<OptimizationExecution>> = [];
+  private async executeStep(): Promise<void[]> {
+    const executedInThisStep: Array<Promise<void>> = [];
+
     this.nodes.forEach((node) => {
-      if (node.inputs instanceof IntermediateResult || node.inputs.length === 0) {
-        let inputForNode;
-        if (node.inputs instanceof IntermediateResult) {
-          inputForNode = node.inputs;
-        } else {
-          inputForNode = new IntermediateResult();
-        }
+      if (node.isExecutable()) {
+        winston.debug(` +-- Found executable node of type ${typeof node.ingredientDefinition}`);
+        const inputForNode = node.result ? node.result : new IntermediateResult();
         // CREATE AND START CONTROLLER FOR THIS ONE
-        const controller = RecipeController.getControllerForIngredient(node);
-        executedInThisStep.push(controller.execute(inputForNode));
+        const controller = node.instantiateController();
+
+        executedInThisStep.push(
+          controller.execute(inputForNode).then((result) => {
+            winston.debug(` +-- Finished node of type ${typeof node.ingredientDefinition}`);
+            node.result = result;
+          }),
+        );
       }
     });
-    const nodesResults = await Promise.all(executedInThisStep);
+    return Promise.all(executedInThisStep);
   }
   // endregion
 }

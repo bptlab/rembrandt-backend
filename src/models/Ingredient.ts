@@ -1,0 +1,68 @@
+import { OptimizationTransformer } from './OptimizationTransformer';
+import { OptimizationAlgorithm } from './OptimizationAlgorithm';
+import { Ref } from 'typegoose';
+import { ResourceType } from './ResourceType';
+import IntermediateResult from './IntermediateResult';
+import IngredientController from '@/controllers/IngredientControllerInterface';
+import AlgorithmController from '@/controllers/AlgorithmController';
+import TransformerController from '@/controllers/TransformerController';
+import InputController from '@/controllers/InputController';
+import OutputController from '@/controllers/OutputController';
+
+export interface InputIngredient {
+  inputResourceType: Ref<ResourceType>;
+}
+
+export interface OutputIngredient {
+  outputResourceType: Ref<ResourceType>;
+}
+
+export default class Ingredient {
+  // region public static methods
+  // endregion
+
+  // region private static methods
+  // endregion
+
+  // region public members
+  public inputs: Ingredient[] = [];
+  public outputs: Ingredient[] = [];
+  public ingredientDefinition!: OptimizationTransformer | OptimizationAlgorithm | InputIngredient | OutputIngredient;
+  public result: IntermediateResult | undefined = undefined;
+  // endregion
+
+  // region private members
+  // endregion
+
+  // region constructor
+  // endregion
+
+  // region public methods
+  public isExecutable(): boolean {
+    if (this.result || this.inputs.length === 0) {
+      return true;
+    }
+    return false;
+  }
+
+  public instantiateController(): IngredientController {
+    if (this.ingredientDefinition instanceof OptimizationAlgorithm) {
+      return new AlgorithmController(this.ingredientDefinition);
+    }
+    if (this.ingredientDefinition instanceof OptimizationTransformer) {
+      return new TransformerController(this.ingredientDefinition);
+    }
+    // https://www.typescriptlang.org/docs/handbook/advanced-types.html#using-type-predicates
+    if ((this.ingredientDefinition as InputIngredient).inputResourceType !== undefined) {
+      return new InputController(this.ingredientDefinition as InputIngredient);
+    }
+    if ((this.ingredientDefinition as OutputIngredient).outputResourceType !== undefined) {
+      return new OutputController(this.ingredientDefinition as OutputIngredient);
+    }
+    throw new Error(`Could not find proper controller for ingredient of type ${typeof (this.ingredientDefinition)}.`);
+  }
+  // endregion
+
+  // region private methods
+  // endregion
+}

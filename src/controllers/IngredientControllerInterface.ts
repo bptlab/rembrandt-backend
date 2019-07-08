@@ -18,7 +18,7 @@ export default interface IngredientController {
   // endregion
 
   // region public methods
-  execute(input: IntermediateResult): Promise<IntermediateResult> | Promise<OptimizationExecution>;
+  execute(input: IntermediateResult): Promise<IntermediateResult>;
   // endregion
 
   // region private methods

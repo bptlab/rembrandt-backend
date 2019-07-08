@@ -33,7 +33,36 @@ export default class AlgorithmController implements IngredientController {
   // endregion
 
   // region public methods
-  public async execute(input: IntermediateResult): Promise<OptimizationExecution> {
+  public async execute(input: IntermediateResult): Promise<IntermediateResult> {
+    const executionInstance = new OptimizationExecutionModel();
+    executionInstance.optimizationAlgorithm = this.optimizationAlgorithm;
+    await this.createDirectoryForDataExchange(executionInstance.identifier);
+    this.writeRequiredAlgorithmInputFiles(input);
+
+    try {
+      await executionInstance.save();
+      const containerName = executionInstance.containerName;
+
+      await this.dockerController.run(
+        this.optimizationAlgorithm.imageIdentifier,
+        ['/bin/bash', '-c', 'sleep 30s'],
+        process.stdout,
+        { name: containerName })
+        .then((container) => {
+          executionInstance.terminate(container.output.StatusCode);
+          winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}`);
+        });
+
+      return await this.readProducedAlgorithmOutputFiles();
+    } catch (error) {
+      return new Promise((resolve, reject) => {
+        reject(
+          new Error(`Could not start docker container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),
+        );
+      });
+    }
+  }
+  public async executeAsynchronous(input: IntermediateResult): Promise<OptimizationExecution> {
     const executionInstance = new OptimizationExecutionModel();
     executionInstance.optimizationAlgorithm = this.optimizationAlgorithm;
     await this.createDirectoryForDataExchange(executionInstance.identifier);
@@ -98,8 +127,8 @@ export default class AlgorithmController implements IngredientController {
     return fs.writeFile(path.join(this.filePathForDataExchange, 'test.txt'), JSON.stringify(inputData));
   }
 
-  private async readProducedAlgorithmOutputFiles(): Promise<void> {
-    return;
+  private async readProducedAlgorithmOutputFiles(): Promise<IntermediateResult> {
+    return new IntermediateResult();
   }
   // endregion
 }
