@@ -2,6 +2,7 @@ import { ResourceInstance } from './ResourceInstance';
 import { ResourceType } from './ResourceType';
 import { Ref } from 'typegoose';
 import { getIdFromRef } from '@/utils/utils';
+import { throws } from 'assert';
 
 interface IntermediateResultObject {
   [index: string]: ResourceInstance[];
@@ -9,6 +10,21 @@ interface IntermediateResultObject {
 
 export default class IntermediateResult {
   // region public static methods
+  public static merge(ir1: IntermediateResult, ir2: IntermediateResult): IntermediateResult {
+    if ((!ir1.finished) || (!ir2.finished)) {
+      throw new Error('Can not merge unfinished intermediate results.');
+    }
+    const mergedResult = new IntermediateResult(ir1.data);
+    Object.keys(ir2.data).forEach((key) => {
+      if (key in ir1.data) {
+        mergedResult.data[key] = ir1.data[key].concat(ir2.data[key]);
+      } else {
+        mergedResult.data[key] = ir2.data[key];
+      }
+    });
+
+    return mergedResult;
+  }
   // endregion
 
   // region private static methods
@@ -40,6 +56,9 @@ export default class IntermediateResult {
   }
 
   public addResultsForResourceType(resourceType: Ref<ResourceType>, resultList: ResourceInstance[]) {
+    if (this.finished) {
+      throw new Error('Can not add results to intermediate result marked as finished.');
+    }
     this.data[getIdFromRef(resourceType)] = resultList;
   }
 

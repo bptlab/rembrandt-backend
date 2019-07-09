@@ -31,7 +31,10 @@ export default class RecipeController implements IngredientController {
 
     while (this.nodes.some((node) => node.isExecutable())) {
       winston.debug(' + Executing another step');
+      winston.debug(' +- Start execution');
       await this.executeStep();
+      winston.debug(' +- Start resolving');
+      this.tryToResolveFinishedIngredients();
       winston.debug(' + Finished step');
     }
     winston.debug('Finished executing recipe.');
@@ -48,7 +51,7 @@ export default class RecipeController implements IngredientController {
     this.nodes.forEach((node) => {
       if (node.isExecutable()) {
         winston.debug(` +-- Found executable node of type ${typeof node.ingredientDefinition}`);
-        const inputForNode = node.result ? node.result : new IntermediateResult();
+        const inputForNode = (node.inputs instanceof IntermediateResult) ? node.inputs : new IntermediateResult();
         // CREATE AND START CONTROLLER FOR THIS ONE
         const controller = node.instantiateController();
 
@@ -61,6 +64,20 @@ export default class RecipeController implements IngredientController {
       }
     });
     return Promise.all(executedInThisStep);
+  }
+
+  private tryToResolveFinishedIngredients(): void {
+    this.nodes.forEach((node) => {
+      if (node.inputs instanceof IntermediateResult) {
+        return;
+      }
+      if (node.inputs.every((input) => input.result)) {
+        node.result = node.inputs.reduce(
+          (mergedResult, currentInput) =>
+            IntermediateResult.merge(mergedResult, currentInput.result as IntermediateResult),
+          new IntermediateResult());
+      }
+    });
   }
   // endregion
 }
