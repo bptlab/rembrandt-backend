@@ -2,7 +2,6 @@ import { ResourceInstance } from './ResourceInstance';
 import { ResourceType } from './ResourceType';
 import { Ref } from 'typegoose';
 import { getIdFromRef } from '@/utils/utils';
-import { throws } from 'assert';
 
 interface IntermediateResultObject {
   [index: string]: ResourceInstance[];

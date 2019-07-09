@@ -8,7 +8,6 @@ import AlgorithmController from '@/controllers/AlgorithmController';
 import TransformerController from '@/controllers/TransformerController';
 import InputController from '@/controllers/InputController';
 import OutputController from '@/controllers/OutputController';
-import winston = require('winston');
 
 export interface InputIngredient {
   inputResourceType: Ref<ResourceType>;
