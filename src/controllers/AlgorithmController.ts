@@ -128,7 +128,13 @@ export default class AlgorithmController implements IngredientController {
   }
 
   private async readProducedAlgorithmOutputFiles(): Promise<IntermediateResult> {
-    return new IntermediateResult();
+    const resultJSON = await fs.readFile(path.join(this.filePathForDataExchange, 'result.txt'), 'utf8');
+    const resultObjects = JSON.parse(resultJSON);
+
+    const intermediateResult = new IntermediateResult();
+    intermediateResult.addResultsForResourceType(this.optimizationAlgorithm.outputs, resultObjects);
+    intermediateResult.finish();
+    return intermediateResult;
   }
   // endregion
 }
