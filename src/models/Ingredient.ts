@@ -1,5 +1,5 @@
-import { OptimizationTransformer } from './OptimizationTransformer';
-import { OptimizationAlgorithm } from './OptimizationAlgorithm';
+import OptimizationTransformerModel, { OptimizationTransformer } from './OptimizationTransformer';
+import OptimizationAlgorithmModel, { OptimizationAlgorithm } from './OptimizationAlgorithm';
 import { Ref } from 'typegoose';
 import { ResourceType } from './ResourceType';
 import IntermediateResult from './IntermediateResult';
@@ -8,6 +8,7 @@ import AlgorithmController from '@/controllers/AlgorithmController';
 import TransformerController from '@/controllers/TransformerController';
 import InputController from '@/controllers/InputController';
 import OutputController from '@/controllers/OutputController';
+import winston = require('winston');
 
 export interface InputIngredient {
   inputResourceType: Ref<ResourceType>;
@@ -25,9 +26,9 @@ export default class Ingredient {
   // endregion
 
   // region public members
-  public inputs: Ingredient[] = [];
+  public inputs: Ingredient[] | IntermediateResult = [];
   public outputs: Ingredient[] = [];
-  public ingredientDefinition!: OptimizationTransformer | OptimizationAlgorithm | InputIngredient | OutputIngredient;
+  public ingredientDefinition: OptimizationTransformer | OptimizationAlgorithm | InputIngredient | OutputIngredient;
   public result: IntermediateResult | undefined = undefined;
   // endregion
 
@@ -35,22 +36,30 @@ export default class Ingredient {
   // endregion
 
   // region constructor
+  constructor(ingredientDefinition: OptimizationTransformer | OptimizationAlgorithm |
+    InputIngredient | OutputIngredient) {
+
+    this.ingredientDefinition = ingredientDefinition;
+  }
   // endregion
 
   // region public methods
   public isExecutable(): boolean {
-    if (this.result || this.inputs.length === 0) {
+    if (this.result) {
+      return false;
+    }
+    if (this.inputs instanceof IntermediateResult || this.inputs.length === 0) {
       return true;
     }
     return false;
   }
 
   public instantiateController(): IngredientController {
-    if (this.ingredientDefinition instanceof OptimizationAlgorithm) {
-      return new AlgorithmController(this.ingredientDefinition);
+    if (this.ingredientDefinition instanceof OptimizationAlgorithmModel) {
+      return new AlgorithmController(this.ingredientDefinition as OptimizationAlgorithm);
     }
-    if (this.ingredientDefinition instanceof OptimizationTransformer) {
-      return new TransformerController(this.ingredientDefinition);
+    if (this.ingredientDefinition instanceof OptimizationTransformerModel) {
+      return new TransformerController(this.ingredientDefinition as OptimizationTransformer);
     }
     // https://www.typescriptlang.org/docs/handbook/advanced-types.html#using-type-predicates
     if ((this.ingredientDefinition as InputIngredient).inputResourceType !== undefined) {

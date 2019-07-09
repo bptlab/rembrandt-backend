@@ -68,14 +68,14 @@ export default class RecipeController implements IngredientController {
 
   private tryToResolveFinishedIngredients(): void {
     this.nodes.forEach((node) => {
-      if (node.inputs instanceof IntermediateResult) {
+      if (node.inputs instanceof IntermediateResult || node.inputs.length === 0) {
         return;
       }
-      if (node.inputs.every((input) => input.result)) {
-        node.result = node.inputs.reduce(
+      if (node.inputs.every((input) => input.result !== undefined)) {
+        node.inputs = node.inputs.reduce(
           (mergedResult, currentInput) =>
             IntermediateResult.merge(mergedResult, currentInput.result as IntermediateResult),
-          new IntermediateResult());
+          new IntermediateResult({}, true));
       }
     });
   }

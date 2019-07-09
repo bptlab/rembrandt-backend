@@ -32,6 +32,7 @@ export default class InputController implements IngredientController {
       .exec();
     const response = new IntermediateResult();
     response.addResultsForResourceType(this.resourceType, resourceInstances);
+    response.finish();
     return response;
   }
   // endregion

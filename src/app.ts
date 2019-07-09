@@ -13,6 +13,7 @@ import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
 import shutdown from '@/utils/shutdown';
+import { testRecipe } from './utils/testRecipe';
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
@@ -63,6 +64,8 @@ async function startApiServer(): Promise<void> {
   if (config.resourceInstanceInitializer.enable) {
     await ResourceInstanceInitializer.initializeResourceInstances();
   }
+
+  testRecipe();
 }
 
 const db = mongoose.connection;

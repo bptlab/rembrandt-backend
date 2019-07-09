@@ -28,10 +28,12 @@ export default class TransformerController implements IngredientController {
     const functionBody = `return inputArray.${this.transformer.transformerType}((instance) => {
       ${this.transformer.body}});`;
     const transform = new Function('inputArray', functionBody);
-    const transformedResourceInstanceList = transform(input.getResultsForResourceType(this.transformer.resourceType));
+    const inputForTransformer = input.getResultsForResourceType(this.transformer.resourceType);
+    const transformedResourceInstanceList = transform(inputForTransformer);
 
     const response = new IntermediateResult();
     response.addResultsForResourceType(this.transformer.resourceType, transformedResourceInstanceList);
+    response.finish();
     return response;
   }
   // endregion

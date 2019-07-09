@@ -39,9 +39,10 @@ export default class IntermediateResult {
   // endregion
 
   // region constructor
-  constructor(results?: IntermediateResultObject) {
+  constructor(results?: IntermediateResultObject, finished = false) {
     if (results) {
       this.data = results;
+      this.finished = finished;
     }
   }
   // endregion
