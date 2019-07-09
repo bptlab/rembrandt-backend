@@ -1,5 +1,5 @@
 import IngredientController from '@/controllers/IngredientControllerInterface';
-import ResourceInstanceModel from '@/models/ResourceInstance';
+import ResourceInstanceModel, { ResourceInstance } from '@/models/ResourceInstance';
 import IntermediateResult from '@/models/IntermediateResult';
 import { Ref } from 'typegoose';
 import { ResourceType } from '@/models/ResourceType';
@@ -29,7 +29,13 @@ export default class InputController implements IngredientController {
   public async execute(): Promise<IntermediateResult> {
     const resourceInstances = await ResourceInstanceModel
       .find({ resourceType: this.resourceType })
+      .lean()
       .exec();
+
+    resourceInstances.forEach((instance: ResourceInstance) => {
+      instance.attributes = ResourceInstance.convertAttributeArrayToObject(instance.attributes);
+    });
+
     const response = new IntermediateResult();
     response.addResultsForResourceType(this.resourceType, resourceInstances);
     response.finish();
