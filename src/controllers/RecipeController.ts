@@ -35,6 +35,8 @@ export default class RecipeController implements IngredientController {
       await this.executeStep();
       winston.debug(' +- Start resolving');
       this.tryToResolveFinishedIngredients();
+      winston.debug(' +- Clean up recipe tree');
+      this.cleanUpResolvedNodes();
       winston.debug(' + Finished step');
     }
     winston.debug('Finished executing recipe.');
@@ -45,19 +47,25 @@ export default class RecipeController implements IngredientController {
   // endregion
 
   // region private methods
+  /**
+   * Iterates over all nodes and executes all nodes that are executable.
+   * "Executable" if node has no inputs or all inputs were resolved to an intermediate result.
+   *
+   * @returns Promise<void[]> that is resolved when all nodes terminated
+   */
   private async executeStep(): Promise<void[]> {
     const executedInThisStep: Array<Promise<void>> = [];
 
     this.nodes.forEach((node) => {
       if (node.isExecutable()) {
-        winston.debug(` +-- Found executable node of type ${typeof node.ingredientDefinition}`);
         const inputForNode = (node.inputs instanceof IntermediateResult) ? node.inputs : new IntermediateResult();
         // CREATE AND START CONTROLLER FOR THIS ONE
         const controller = node.instantiateController();
+        winston.debug(` +-- Create controller of type ${typeof controller}`);
 
         executedInThisStep.push(
           controller.execute(inputForNode).then((result) => {
-            winston.debug(` +-- Finished node of type ${typeof node.ingredientDefinition}`);
+            winston.debug(` +-- Executed controller of type ${typeof controller}`);
             node.result = result;
           }),
         );
@@ -66,17 +74,29 @@ export default class RecipeController implements IngredientController {
     return Promise.all(executedInThisStep);
   }
 
+  /**
+   * Iterates over all nodes. If a node is detected where all inputs have a result, these results are merged.
+   * The resulting IntermediateResult, containing all results of the inputs, is used as new input for the node.
+   */
   private tryToResolveFinishedIngredients(): void {
     this.nodes.forEach((node) => {
-      if (node.inputs instanceof IntermediateResult || node.inputs.length === 0) {
-        return;
-      }
-      if (node.inputs.every((input) => input.result !== undefined)) {
-        node.inputs = node.inputs.reduce(
+      if (node.isReadyToResolve()) {
+        node.inputs = (node.inputs as Ingredient[]).reduce(
           (mergedResult, currentInput) =>
             IntermediateResult.merge(mergedResult, currentInput.result as IntermediateResult),
           new IntermediateResult({}, true));
       }
+    });
+  }
+
+  /**
+   * Iterates over all nodes. If a node was already executed and the subsequent node too,
+   * we can safely remove the node from the list
+   */
+  private cleanUpResolvedNodes(): void {
+    this.nodes = this.nodes.filter((node) => {
+      return (!(node.result && node.outputs.every((output) => (output.result !== undefined))))
+        || node.outputs.length === 0;
     });
   }
   // endregion

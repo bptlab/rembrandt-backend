@@ -54,6 +54,13 @@ export default class Ingredient {
     return false;
   }
 
+  public isReadyToResolve(): boolean {
+    if (this.inputs instanceof IntermediateResult || this.inputs.length === 0) {
+      return false;
+    }
+    return this.inputs.every((input) => input.result !== undefined);
+  }
+
   public instantiateController(): IngredientController {
     if (this.ingredientDefinition instanceof OptimizationAlgorithmModel) {
       return new AlgorithmController(this.ingredientDefinition as OptimizationAlgorithm);
