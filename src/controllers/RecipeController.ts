@@ -96,7 +96,6 @@ export default class RecipeController implements IngredientController {
             IntermediateResult.merge(mergedResult, currentInput.result as IntermediateResult),
           new IntermediateResult({}, true));
       }
-
     });
   }
 

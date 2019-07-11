@@ -21,7 +21,7 @@ export default class IntermediateResult {
         mergedResult.data[key] = ir2.data[key];
       }
     });
-
+    mergedResult.finish();
     return mergedResult;
   }
   // endregion
