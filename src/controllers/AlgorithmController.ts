@@ -65,7 +65,7 @@ export default class AlgorithmController implements IngredientController {
     } catch (error) {
       return new Promise((resolve, reject) => {
         reject(
-          new Error(`Could not start docker container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),
+          new Error(`Error while executing container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),
         );
       });
     }
