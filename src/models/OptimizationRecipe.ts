@@ -101,29 +101,7 @@ export const optimizationRecipeSerializer = new Serializer('optimizationRecipe',
   id: '_id',
   attributes: [
     'name',
-    'definition',
+    'ingredients',
   ],
-  inputs: {
-    ref: '_id',
-    type: 'resourceType',
-    attributes: [
-      'name',
-      'abstract',
-      'attributes',
-      'parentType',
-      'eponymousAttribute',
-    ],
-  },
-  outputs: {
-    ref: '_id',
-    type: 'resourceType',
-    attributes: [
-      'name',
-      'abstract',
-      'attributes',
-      'parentType',
-      'eponymousAttribute',
-    ],
-  },
   keyForAttribute: 'camelCase',
 } as any);
