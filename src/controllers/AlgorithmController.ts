@@ -40,8 +40,12 @@ export default class AlgorithmController implements IngredientController {
   public async execute(input: IntermediateResult): Promise<IntermediateResult> {
     const executionInstance = new OptimizationExecutionModel();
     executionInstance.optimizationAlgorithm = this.optimizationAlgorithm;
-    await this.createDirectoryForDataExchange(executionInstance.identifier);
-    this.writeRequiredAlgorithmInputFiles(input);
+    try {
+      await this.createDirectoryForDataExchange(executionInstance.identifier);
+      await Promise.all(await this.writeRequiredAlgorithmInputFiles(input));
+    } catch (error) {
+      throw new Error(`Error while creating input files for algorithm. ${error}`);
+    }
 
     try {
       await executionInstance.save();
@@ -54,7 +58,7 @@ export default class AlgorithmController implements IngredientController {
         { name: containerName })
         .then((container) => {
           executionInstance.terminate(container.output.StatusCode);
-          winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}`);
+          winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}.`);
         });
 
       return await this.readProducedAlgorithmOutputFiles();
@@ -108,8 +112,8 @@ export default class AlgorithmController implements IngredientController {
     } catch (error) {
       return new Promise((resolve, reject) => {
         reject(
-          new Error(`Could not create directory for docker data exchange in ${config.docker.dataExchangeDirectory}.
-            ${error}`),
+          // tslint:disable-next-line: max-line-length
+          new Error(`Could not create directory for docker data exchange in ${config.docker.dataExchangeDirectory}. ${error}`),
         );
       });
     }

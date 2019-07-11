@@ -7,12 +7,13 @@ import { OptimizationRecipe } from '@/models/OptimizationRecipe';
 export default class RecipeController implements IngredientController {
   // region public static methods
   public static async createFromOptimizationIngredient(recipe: OptimizationRecipe) {
-    const recipeConroller = new RecipeController();
+    const recipeController = new RecipeController();
+    recipeController.name = recipe.name;
     const recipeIngredientsPromise = recipe.ingredients.map((ingredient) => {
       return Ingredient.createFromOptimizationIngredient(ingredient);
     });
-    recipeConroller.ingredients = await Promise.all(recipeIngredientsPromise);
-    return recipeConroller;
+    recipeController.ingredients = await Promise.all(recipeIngredientsPromise);
+    return recipeController;
   }
   // endregion
 
@@ -21,6 +22,7 @@ export default class RecipeController implements IngredientController {
 
   // region public members
   public ingredients!: Ingredient[];
+  public name!: string;
   // endregion
 
   // region private members
@@ -38,7 +40,15 @@ export default class RecipeController implements IngredientController {
     while (this.ingredients.some((node) => node.isExecutable())) {
       winston.debug(' + Executing another step');
       winston.debug(' +- Start execution');
-      await this.executeStep();
+      try {
+        await this.executeStep();
+      } catch (error) {
+        winston.error(`[Recipe '${this.name}'] ${error}`);
+        winston.error('Aborting execution of recipe.');
+        const errorResult = new IntermediateResult();
+        errorResult.setError(`[Recipe '${this.name}'] ${error}`);
+        return errorResult;
+      }
       winston.debug(' +- Start resolving');
       this.tryToResolveFinishedIngredients();
       winston.debug(' +- Clean up recipe tree');
@@ -73,6 +83,9 @@ export default class RecipeController implements IngredientController {
           controller.execute(inputForNode).then((result) => {
             winston.debug(` +-- Executed controller of type ${typeof controller}`);
             node.result = result;
+          }).catch((error) => {
+            // tslint:disable-next-line: max-line-length
+            throw new Error(`Error while executing ${node.ingredientType} controller for ingredient ${node.id}. ${error}`);
           }),
         );
       }
