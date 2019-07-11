@@ -35,6 +35,7 @@ export default class IntermediateResult {
 
   // region private members
   private finished: boolean = false;
+  private error: string | undefined = undefined;
   // endregion
 
   // region constructor
@@ -53,6 +54,24 @@ export default class IntermediateResult {
 
   public finish() {
     this.finished = true;
+  }
+
+  get erroneous(): boolean {
+    if (this.error) {
+      return true;
+    }
+    return false;
+  }
+
+  public getError(): string {
+    if (this.error) {
+      return this.error;
+    }
+    return '';
+  }
+
+  public setError(errorMessage: string) {
+    this.error = errorMessage;
   }
 
   public addResultsForResourceType(resourceType: Ref<ResourceType>, resultList: ResourceInstance[]) {
