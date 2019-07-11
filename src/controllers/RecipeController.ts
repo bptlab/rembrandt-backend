@@ -2,25 +2,31 @@ import IngredientController from '@/controllers/IngredientControllerInterface';
 import IntermediateResult from '@/models/IntermediateResult';
 import Ingredient from '@/models/Ingredient';
 import winston = require('winston');
+import { OptimizationRecipe } from '@/models/OptimizationRecipe';
 
 export default class RecipeController implements IngredientController {
   // region public static methods
+  public static async createFromOptimizationIngredient(recipe: OptimizationRecipe) {
+    const recipeConroller = new RecipeController();
+    const recipeIngredientsPromise = recipe.ingredients.map((ingredient) => {
+      return Ingredient.createFromOptimizationIngredient(ingredient);
+    });
+    recipeConroller.ingredients = await Promise.all(recipeIngredientsPromise);
+    return recipeConroller;
+  }
   // endregion
 
   // region private static methods
   // endregion
 
   // region public members
-  public nodes: Ingredient[];
+  public ingredients!: Ingredient[];
   // endregion
 
   // region private members
   // endregion
 
   // region constructor
-  constructor(nodes: Ingredient[]) {
-    this.nodes = nodes;
-  }
   // endregion
 
   // region public methods
@@ -29,14 +35,14 @@ export default class RecipeController implements IngredientController {
     winston.debug('=======================');
     winston.debug('Start executing recipe.');
 
-    while (this.nodes.some((node) => node.isExecutable())) {
+    while (this.ingredients.some((node) => node.isExecutable())) {
       winston.debug(' + Executing another step');
       winston.debug(' +- Start execution');
       await this.executeStep();
       winston.debug(' +- Start resolving');
       this.tryToResolveFinishedIngredients();
       winston.debug(' +- Clean up recipe tree');
-      this.cleanUpResolvedNodes();
+      // this.cleanUpResolvedNodes();
       winston.debug(' + Finished step');
     }
     winston.debug('Finished executing recipe.');
@@ -56,7 +62,7 @@ export default class RecipeController implements IngredientController {
   private async executeStep(): Promise<void[]> {
     const executedInThisStep: Array<Promise<void>> = [];
 
-    this.nodes.forEach((node) => {
+    this.ingredients.forEach((node) => {
       if (node.isExecutable()) {
         const inputForNode = (node.inputs instanceof IntermediateResult) ? node.inputs : new IntermediateResult();
         // CREATE AND START CONTROLLER FOR THIS ONE
@@ -79,25 +85,42 @@ export default class RecipeController implements IngredientController {
    * The resulting IntermediateResult, containing all results of the inputs, is used as new input for the node.
    */
   private tryToResolveFinishedIngredients(): void {
-    this.nodes.forEach((node) => {
-      if (node.isReadyToResolve()) {
-        node.inputs = (node.inputs as Ingredient[]).reduce(
+    this.ingredients.forEach((node) => {
+      if (this.isReadyToResolve(node)) {
+        node.inputs = this.getInputIngredientsOfNode(node).reduce(
           (mergedResult, currentInput) =>
             IntermediateResult.merge(mergedResult, currentInput.result as IntermediateResult),
           new IntermediateResult({}, true));
       }
+
     });
+  }
+
+  private isReadyToResolve(node: Ingredient): boolean {
+    if (node.inputs instanceof IntermediateResult || node.inputs.length === 0) {
+      return false;
+    }
+    return this.getInputIngredientsOfNode(node).every((input) => {
+      return input.result !== undefined;
+    });
+  }
+
+  private getInputIngredientsOfNode(node: Ingredient): Ingredient[] {
+    if (node.inputs instanceof IntermediateResult) {
+      return [];
+    }
+    return this.ingredients.filter((ingredient) => (node.inputs as string[]).includes(ingredient.id));
   }
 
   /**
    * Iterates over all nodes. If a node was already executed and the subsequent node too,
    * we can safely remove the node from the list
    */
-  private cleanUpResolvedNodes(): void {
-    this.nodes = this.nodes.filter((node) => {
-      return (!(node.result && node.outputs.every((output) => (output.result !== undefined))))
-        || node.outputs.length === 0;
-    });
-  }
+  // private cleanUpResolvedNodes(): void {
+  //   this.ingredients = this.ingredients.filter((node) => {
+  //     return (!(node.result && node.outputs.every((output) => (output.result !== undefined))))
+  //       || node.outputs.length === 0;
+  //   });
+  // }
   // endregion
 }
