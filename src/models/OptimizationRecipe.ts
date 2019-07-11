@@ -56,6 +56,7 @@ export class OptimizationRecipe extends Typegoose {
 
     ingredientDef.ingredientDefinition = ingredientStructure.ingredientObject.definitionId;
     ingredientDef.ingredientType = ingredientStructure.ingredientObject.type;
+    ingredientDef.position = ingredientStructure.ingredientObject.position;
 
     if (ingredientStructure.inputs) {
       ingredientDef.inputs = ingredientStructure.inputs.map((input) => {

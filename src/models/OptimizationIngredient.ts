@@ -11,6 +11,11 @@ export enum IngredientType {
   ALGORITHM = 'algorithm',
 }
 
+interface Position {
+  x: number;
+  y: number;
+}
+
 export default class OptimizationIngredient extends Typegoose {
   [index: string]: any;
   // region public static methods
@@ -61,6 +66,9 @@ export default class OptimizationIngredient extends Typegoose {
 
   @prop({ required: true, enum: IngredientType })
   public ingredientType!: IngredientType;
+
+  @prop()
+  public position?: Position;
   // endregion
 
   // region private members
