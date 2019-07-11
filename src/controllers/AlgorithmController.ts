@@ -8,6 +8,10 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import config from '@/config.json';
 import { ResourceInstance } from '@/models/ResourceInstance';
+import { Ref } from 'typegoose';
+import ResourceTypeModel, { ResourceType } from '@/models/ResourceType';
+import { ObjectId } from 'bson';
+import { getIdFromRef } from '@/utils/utils';
 
 export default class AlgorithmController implements IngredientController {
   // region public static methods
@@ -115,16 +119,30 @@ export default class AlgorithmController implements IngredientController {
   private async writeRequiredAlgorithmInputFiles(input: IntermediateResult): Promise<Array<Promise<void>>> {
     const fileWriters: Array<Promise<void>> = [];
 
-    this.optimizationAlgorithm.inputs.forEach((algorithmInput) => {
-      const inputData = input.getResultsForResourceType(algorithmInput);
-      fileWriters.push(this.writeRequiredAlgorithmInputFile(inputData));
+    this.optimizationAlgorithm.inputs.forEach((algorithmInputType) => {
+      const inputData = input.getResultsForResourceType(algorithmInputType);
+      fileWriters.push(this.writeRequiredAlgorithmInputFile(algorithmInputType, inputData));
     });
 
     return fileWriters;
   }
 
-  private async writeRequiredAlgorithmInputFile(inputData: ResourceInstance[]): Promise<void> {
-    return fs.writeFile(path.join(this.filePathForDataExchange, 'test.txt'), JSON.stringify(inputData));
+  private async writeRequiredAlgorithmInputFile(resourceType: Ref<ResourceType>,
+                                                inputData: ResourceInstance[]): Promise<void> {
+
+    let resourceTypeName = '';
+    if (resourceType instanceof ObjectId) {
+      const resourceTypeObject = await ResourceTypeModel.findById(getIdFromRef(resourceType)).lean().exec();
+      if (resourceTypeObject) {
+        resourceTypeName = resourceTypeObject.name;
+      } else {
+        throw new Error(`Could not find name of input resource type of algorithm ${this.optimizationAlgorithm.name}.`);
+      }
+    } else {
+      resourceTypeName = resourceType.name;
+    }
+
+    return fs.writeFile(path.join(this.filePathForDataExchange, `${resourceTypeName}.txt`), JSON.stringify(inputData));
   }
 
   private async readProducedAlgorithmOutputFiles(): Promise<IntermediateResult> {
