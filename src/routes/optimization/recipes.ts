@@ -4,6 +4,7 @@ import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
+import RecipeController from '@/controllers/RecipeController';
 
 const router: express.Router = express.Router();
 
@@ -66,6 +67,23 @@ router.get('/:recipeId', async (req: express.Request, res: express.Response) => 
     if (!optimizationRecipe) {
       throw Error(`Optimization recipe with id ${req.params.recipeId} could not be found.`);
     }
+    res.send(apiSerializer(optimizationRecipe, optimizationRecipeSerializer));
+  } catch (error) {
+    winston.error(error.message);
+    res.status(500).send(createJSONError('500', 'Error in OptimizationRecipe-Router', error.message));
+  }
+});
+
+router.get('/:recipeId/execute', async (req: express.Request, res: express.Response) => {
+  try {
+    const optimizationRecipe = await OptimizationRecipeModel
+      .findById(req.params.recipeId)
+      .exec();
+    if (!optimizationRecipe) {
+      throw Error(`Optimization recipe with id ${req.params.recipeId} could not be found.`);
+    }
+    const recipeController = await RecipeController.createFromOptimizationIngredient(optimizationRecipe);
+    await recipeController.execute();
     res.send(apiSerializer(optimizationRecipe, optimizationRecipeSerializer));
   } catch (error) {
     winston.error(error.message);
