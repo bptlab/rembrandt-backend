@@ -8,6 +8,7 @@ import resourceInstanceRouter from '@/routes/organization/resourceInstances';
 import optimizationAlgorithmRouter from '@/routes/optimization/algorithms';
 import optimizationExecutionRouter from '@/routes/optimization/executions';
 import optimizationTransformerRouter from '@/routes/optimization/transformers';
+import optimizationRecipeRouter from '@/routes/optimization/recipes';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
@@ -51,6 +52,7 @@ async function startApiServer(): Promise<void> {
   app.use('/optimization/algorithms', optimizationAlgorithmRouter);
   app.use('/optimization/executions', optimizationExecutionRouter);
   app.use('/optimization/transformers', optimizationTransformerRouter);
+  app.use('/optimization/recipes', optimizationRecipeRouter);
 
   app.get('/', (req: express.Request, res: express.Response) => {
     res.send('hello world!');
