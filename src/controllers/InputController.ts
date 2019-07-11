@@ -34,6 +34,9 @@ export default class InputController implements IngredientController {
 
     resourceInstances.forEach((instance: ResourceInstance) => {
       instance.attributes = ResourceInstance.convertAttributeArrayToObject(instance.attributes);
+      instance.id = instance._id;
+      delete instance._id;
+      delete instance.__v;
     });
 
     const response = new IntermediateResult();
