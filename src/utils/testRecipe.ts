@@ -58,7 +58,5 @@ export async function testRecipe() {
     winston.debug(`New test recipe '${nameOfTestRecipe}' created and saved.`);
   }
   const recipeController = await RecipeController.createFromOptimizationIngredient(testRecipeInstance);
-  winston.debug(`Start executing test recipe '${nameOfTestRecipe}'...`);
   await recipeController.execute();
-  winston.debug(`Finished test recipe '${nameOfTestRecipe}'...`);
 }

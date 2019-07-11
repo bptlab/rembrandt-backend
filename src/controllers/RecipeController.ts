@@ -34,29 +34,21 @@ export default class RecipeController implements IngredientController {
   // region public methods
   public async execute(): Promise<IntermediateResult> {
 
-    winston.debug('=======================');
-    winston.debug('Start executing recipe.');
+    winston.debug(`[Recipe '${this.name}'] - Start execution.`);
 
     while (this.ingredients.some((node) => node.isExecutable())) {
-      winston.debug(' + Executing another step');
-      winston.debug(' +- Start execution');
       try {
         await this.executeStep();
       } catch (error) {
-        winston.error(`[Recipe '${this.name}'] ${error}`);
-        winston.error('Aborting execution of recipe.');
+        winston.error(`[Recipe '${this.name}'] - ${error}`);
+        winston.error(`[Recipe '${this.name}'] - Aborting execution of recipe.`);
         const errorResult = new IntermediateResult();
         errorResult.setError(`[Recipe '${this.name}'] ${error}`);
         return errorResult;
       }
-      winston.debug(' +- Start resolving');
       this.tryToResolveFinishedIngredients();
-      winston.debug(' +- Clean up recipe tree');
-      // this.cleanUpResolvedNodes();
-      winston.debug(' + Finished step');
     }
-    winston.debug('Finished executing recipe.');
-    winston.debug('==========================');
+    winston.debug(`[Recipe '${this.name}'] - Finished execution.`);
     const response = new IntermediateResult();
     return response;
   }
@@ -77,11 +69,10 @@ export default class RecipeController implements IngredientController {
         const inputForNode = (node.inputs instanceof IntermediateResult) ? node.inputs : new IntermediateResult();
         // CREATE AND START CONTROLLER FOR THIS ONE
         const controller = node.instantiateController();
-        winston.debug(` +-- Create controller of type ${typeof controller}`);
+        winston.debug(`[Recipe '${this.name}'] -- Execute controller of type ${node.ingredientType}.`);
 
         executedInThisStep.push(
           controller.execute(inputForNode).then((result) => {
-            winston.debug(` +-- Executed controller of type ${typeof controller}`);
             node.result = result;
           }).catch((error) => {
             // tslint:disable-next-line: max-line-length
@@ -124,16 +115,5 @@ export default class RecipeController implements IngredientController {
     }
     return this.ingredients.filter((ingredient) => (node.inputs as string[]).includes(ingredient.id));
   }
-
-  /**
-   * Iterates over all nodes. If a node was already executed and the subsequent node too,
-   * we can safely remove the node from the list
-   */
-  // private cleanUpResolvedNodes(): void {
-  //   this.ingredients = this.ingredients.filter((node) => {
-  //     return (!(node.result && node.outputs.every((output) => (output.result !== undefined))))
-  //       || node.outputs.length === 0;
-  //   });
-  // }
   // endregion
 }
