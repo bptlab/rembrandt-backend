@@ -89,22 +89,6 @@ router.get('/:algorithmId', async (req: express.Request, res: express.Response) 
   }
 });
 
-router.get('/:algorithmId/execute', async (req: express.Request, res: express.Response) => {
-  try {
-    const optimizationAlgorithm = await OptimizationAlgorithmModel.findById(req.params.algorithmId).exec();
-    if (!optimizationAlgorithm) {
-      throw Error(`Optimization algorithm with id ${req.params.algorithmId} could not be found.`);
-    }
-    const algorithmController = new AlgorithmController(optimizationAlgorithm);
-    const intermediateResult = new IntermediateResult();
-    const executionInstance = await algorithmController.execute(intermediateResult);
-    res.status(201).send(apiSerializer(executionInstance, optimizationExecutionSerializer));
-  } catch (error) {
-    winston.error(error.message);
-    res.status(500).send(createJSONError('500', 'Error in OptimizationAlgorithm-Router', error.message));
-  }
-});
-
 /**
  * @swagger
  *
