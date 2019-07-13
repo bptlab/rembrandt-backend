@@ -1,8 +1,9 @@
 import { Typegoose, prop, arrayProp, Ref, instanceMethod } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
-import OptimizationIngredient from './OptimizationIngredient';
+import OptimizationIngredient, { IngredientType } from './OptimizationIngredient';
 import { ObjectId } from 'bson';
 import { getIdFromRef } from '@/utils/utils';
+import ResourceTypeModel from './ResourceType';
 
 interface TreeRecipeStructure {
   ingredientObject: any;
@@ -90,7 +91,21 @@ export class OptimizationRecipe extends Typegoose {
   // region public methods
   @instanceMethod
   public async toNestedObject(ingredient: OptimizationIngredient): Promise<TreeRecipeStructure> {
-    const ingredientObject = await OptimizationIngredient.getIngredientObject(ingredient);
+    let ingredientObject;
+
+    switch (ingredient.ingredientType) {
+      case IngredientType.INPUT:
+        ingredientObject = await ResourceTypeModel.findById(ingredient.ingredientDefinition).lean().exec();
+        break;
+      case IngredientType.OUTPUT:
+        ingredientObject = await ResourceTypeModel.findById(ingredient.ingredientDefinition).lean().exec();
+        break;
+      default:
+        ingredientObject = await OptimizationIngredient.getIngredientObject(ingredient);
+        break;
+    }
+    (ingredientObject as any).position = ingredient.position;
+
     if (ingredient.inputs.length === 0) {
       return {
         ingredientObject,
