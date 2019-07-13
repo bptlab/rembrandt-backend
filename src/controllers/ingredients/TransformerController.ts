@@ -1,5 +1,5 @@
 import { OptimizationTransformer } from '@/models/OptimizationTransformer';
-import IngredientController from '@/controllers/IngredientControllerInterface';
+import IngredientController from '@/controllers/ingredients/IngredientControllerInterface';
 import IntermediateResult from '@/models/IntermediateResult';
 
 export default class TransformerController implements IngredientController {

@@ -4,7 +4,7 @@ import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
-import AlgorithmController from '@/controllers/AlgorithmController';
+import AlgorithmController from '@/controllers/ingredients/AlgorithmController';
 import { optimizationExecutionSerializer } from '@/models/OptimizationExecution';
 import IntermediateResult from '@/models/IntermediateResult';
 

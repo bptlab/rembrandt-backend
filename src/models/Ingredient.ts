@@ -3,11 +3,11 @@ import OptimizationAlgorithmModel, { OptimizationAlgorithm } from '@/models/Opti
 import { Ref } from 'typegoose';
 import { ResourceType } from './ResourceType';
 import IntermediateResult from './IntermediateResult';
-import IngredientController from '@/controllers/IngredientControllerInterface';
-import AlgorithmController from '@/controllers/AlgorithmController';
-import TransformerController from '@/controllers/TransformerController';
-import InputController from '@/controllers/InputController';
-import OutputController from '@/controllers/OutputController';
+import IngredientController from '@/controllers/ingredients/IngredientControllerInterface';
+import AlgorithmController from '@/controllers/ingredients/AlgorithmController';
+import TransformerController from '@/controllers/ingredients/TransformerController';
+import InputController from '@/controllers/ingredients/InputController';
+import OutputController from '@/controllers/ingredients/OutputController';
 import OptimizationIngredient, { IngredientType } from './OptimizationIngredient';
 import { getIdFromRef } from '@/utils/utils';
 

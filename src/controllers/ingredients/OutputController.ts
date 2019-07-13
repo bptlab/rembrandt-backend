@@ -1,4 +1,4 @@
-import IngredientController from '@/controllers/IngredientControllerInterface';
+import IngredientController from '@/controllers/ingredients/IngredientControllerInterface';
 import ResourceInstanceModel, { ResourceInstance } from '@/models/ResourceInstance';
 import IntermediateResult from '@/models/IntermediateResult';
 import { Ref } from 'typegoose';

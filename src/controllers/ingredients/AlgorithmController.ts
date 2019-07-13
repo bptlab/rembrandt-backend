@@ -1,7 +1,7 @@
 import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import winston = require('winston');
 import IngredientController from './IngredientControllerInterface';
-import DockerController from './DockerController';
+import DockerController from '../DockerController';
 import IntermediateResult from '@/models/IntermediateResult';
 import { promises as fs } from 'fs';
 import path from 'path';
