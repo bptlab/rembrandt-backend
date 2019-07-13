@@ -50,9 +50,13 @@ export default class AlgorithmController implements IngredientController {
           winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}.`);
         });
 
-      return await fileController.readProducedAlgorithmOutputFiles(this.optimizationAlgorithm.outputs);
+      const algorithmResult = await fileController.readProducedAlgorithmOutputFiles(this.optimizationAlgorithm.outputs);
+      fileController.removeDirectoryForDataExchange();
+      return algorithmResult;
 
     } catch (error) {
+      fileController.removeDirectoryForDataExchange();
+
       return new Promise((resolve, reject) => {
         reject(
           new Error(`Error while executing container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),

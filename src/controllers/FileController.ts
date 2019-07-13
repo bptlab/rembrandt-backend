@@ -7,6 +7,7 @@ import { Ref } from 'typegoose';
 import { ResourceInstance } from '@/models/ResourceInstance';
 import { getIdFromRef } from '@/utils/utils';
 import { ObjectId } from 'bson';
+import winston = require('winston');
 
 export default class FileController {
   // region public static methods
@@ -25,10 +26,13 @@ export default class FileController {
 
   // region private members
   private filePathForDataExchange: string;
+  private identifier: string;
+  private filesInDirectory: string[] = [];
   // endregion
 
   // region constructor
   constructor(identifier: string) {
+    this.identifier = identifier;
     this.filePathForDataExchange = path.join(path.normalize(config.docker.dataExchangeDirectory), identifier);
   }
   // endregion
@@ -52,10 +56,27 @@ export default class FileController {
     const resultJSON = await fs.readFile(path.join(this.filePathForDataExchange, 'result.txt'), 'utf8');
     const resultObjects = JSON.parse(resultJSON);
 
+    this.filesInDirectory.push('result.txt');
+
     const intermediateResult = new IntermediateResult();
     intermediateResult.addResultsForResourceType(requiredTypes, resultObjects);
     intermediateResult.finish();
     return intermediateResult;
+  }
+
+  public async removeDirectoryForDataExchange(): Promise<void> {
+    const filesDeleted: Array<Promise<void>> = [];
+    try {
+      this.filesInDirectory.forEach((file) => {
+        const pathToDelete = path.join(this.filePathForDataExchange, file);
+        filesDeleted.push(fs.unlink(pathToDelete));
+      });
+      await Promise.all(filesDeleted);
+
+      fs.rmdir(this.filePathForDataExchange);
+    } catch (error) {
+      winston.debug(`Could not delete data exchange folder ${this.identifier}. ${error}`);
+    }
   }
   // endregion
 
@@ -74,12 +95,12 @@ export default class FileController {
     } else {
       resourceTypeName = resourceType.name;
     }
-
-    return fs.writeFile(path.join(this.filePathForDataExchange, `${resourceTypeName}.txt`), JSON.stringify(inputData));
+    const nameOfFileToWrite = `${resourceTypeName}.txt`;
+    this.filesInDirectory.push(nameOfFileToWrite);
+    return fs.writeFile(path.join(this.filePathForDataExchange, nameOfFileToWrite), JSON.stringify(inputData));
   }
 
-  private async createDirectoryForDataExchange(): Promise<any> {
-    // CREATE FOLDER FOR DATA EXCHANGE
+  private async createDirectoryForDataExchange(): Promise<void> {
     try {
       await fs.mkdir(this.filePathForDataExchange);
     } catch (error) {
