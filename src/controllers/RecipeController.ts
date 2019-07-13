@@ -52,11 +52,13 @@ export default class RecipeController {
 
     winston.debug(`[Recipe '${this.name}'] - Start execution.`);
 
+    let currentIntermediateResults: IntermediateResult[] = [];
+
     while (this.ingredients.some((node) => node.isExecutable())) {
       try {
         const executedInStep = this.executeStep();
         await this.execution.save();
-        await executedInStep;
+        currentIntermediateResults = await executedInStep;
       } catch (error) {
         winston.error(`[Recipe '${this.name}'] - ${error}`);
         winston.error(`[Recipe '${this.name}'] - Aborting execution of recipe.`);
@@ -69,8 +71,10 @@ export default class RecipeController {
       }
       this.tryToResolveFinishedIngredients();
     }
-    winston.debug(`[Recipe '${this.name}'] - Finished execution.`);
-    const response = new IntermediateResult();
+    const response = currentIntermediateResults.reduce(
+      (mergedResult, currentInput) =>
+        IntermediateResult.merge(mergedResult, currentInput),
+      new IntermediateResult({}, true));
     this.terminateRecipeExecution(response);
     await this.execution.save();
     return;
@@ -84,8 +88,8 @@ export default class RecipeController {
    *
    * @returns Promise<void[]> that is resolved when all nodes terminated
    */
-  private async executeStep(): Promise<void[]> {
-    const executedInThisStep: Array<Promise<void>> = [];
+  private async executeStep(): Promise<IntermediateResult[]> {
+    const executedInThisStep: Array<Promise<IntermediateResult>> = [];
 
     this.ingredients.forEach((node) => {
       if (node.isExecutable()) {
@@ -101,6 +105,7 @@ export default class RecipeController {
           controller.execute(inputForNode, `${this.execution.identifier}-${nodeIdentifier}`).then((result) => {
             node.result = result;
             this.execution.ingredientFinished(node.id, true);
+            return result;
           }).catch((error) => {
             this.execution.ingredientFinished(node.id, false, error);
             // tslint:disable-next-line: max-line-length
