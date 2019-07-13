@@ -70,36 +70,6 @@ export default class AlgorithmController implements IngredientController {
       });
     }
   }
-  public async executeAsynchronous(input: IntermediateResult): Promise<OptimizationExecution> {
-    const executionInstance = new OptimizationExecutionModel();
-    executionInstance.optimizationAlgorithm = this.optimizationAlgorithm;
-    await this.createDirectoryForDataExchange(executionInstance.identifier);
-    this.writeRequiredAlgorithmInputFiles(input);
-
-    try {
-      await executionInstance.save();
-      const containerName = executionInstance.containerName;
-
-      this.dockerController.run(
-        this.optimizationAlgorithm.imageIdentifier,
-        ['/bin/bash', '-c', 'sleep 30s'],
-        process.stdout,
-        { name: containerName })
-        .then((container) => {
-          executionInstance.terminate(container.output.StatusCode);
-          winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}`);
-          this.readProducedAlgorithmOutputFiles();
-        });
-
-      return executionInstance;
-    } catch (error) {
-      return new Promise((resolve, reject) => {
-        reject(
-          new Error(`Could not start docker container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),
-        );
-      });
-    }
-  }
   // endregion
 
   // region private methods
