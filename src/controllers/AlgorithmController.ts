@@ -1,6 +1,5 @@
 import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import winston = require('winston');
-import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
 import IngredientController from './IngredientControllerInterface';
 import DockerController from './DockerController';
 import IntermediateResult from '@/models/IntermediateResult';
@@ -37,19 +36,16 @@ export default class AlgorithmController implements IngredientController {
   // endregion
 
   // region public methods
-  public async execute(input: IntermediateResult): Promise<IntermediateResult> {
-    const executionInstance = new OptimizationExecutionModel();
-    executionInstance.optimizationAlgorithm = this.optimizationAlgorithm;
+  public async execute(input: IntermediateResult, identifier: string): Promise<IntermediateResult> {
     try {
-      await this.createDirectoryForDataExchange(executionInstance.identifier);
+      await this.createDirectoryForDataExchange(identifier);
       await Promise.all(await this.writeRequiredAlgorithmInputFiles(input));
     } catch (error) {
       throw new Error(`Error while creating input files for algorithm. ${error}`);
     }
 
     try {
-      await executionInstance.save();
-      const containerName = executionInstance.containerName;
+      const containerName = config.docker.containerPrefix + identifier;
 
       await this.dockerController.run(
         this.optimizationAlgorithm.imageIdentifier,
@@ -57,7 +53,6 @@ export default class AlgorithmController implements IngredientController {
         process.stdout,
         { name: containerName })
         .then((container) => {
-          executionInstance.terminate(container.output.StatusCode);
           winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}.`);
         });
 

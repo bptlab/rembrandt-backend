@@ -1,4 +1,5 @@
 import { Typegoose, prop, Ref } from 'typegoose';
+import nanoId from 'nanoid/generate';
 import OptimizationIngredient from '@/models/OptimizationIngredient';
 
 export default class OptimizationExecutionIngredientState extends Typegoose {
@@ -10,6 +11,9 @@ export default class OptimizationExecutionIngredientState extends Typegoose {
   // endregion
 
   // region public members
+  @prop({ required: true, unique: true, default: () => nanoId('0123456789abcdefghijklmnopqrstuvwxyz', 4) })
+  public identifier: string = nanoId('0123456789abcdefghijklmnopqrstuvwxyz', 4);
+
   @prop({ ref: OptimizationIngredient, required: true })
   public ingredient!: Ref<OptimizationIngredient>;
 

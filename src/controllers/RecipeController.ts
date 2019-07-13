@@ -95,10 +95,10 @@ export default class RecipeController {
 
         winston.debug(`[Recipe '${this.name}'] -- Execute controller of type ${node.ingredientType}.`);
 
-        this.execution.ingredientStarted(node.id);
+        const nodeIdentifier = this.execution.ingredientStarted(node.id);
 
         executedInThisStep.push(
-          controller.execute(inputForNode).then((result) => {
+          controller.execute(inputForNode, `${this.execution.identifier}-${nodeIdentifier}`).then((result) => {
             node.result = result;
             this.execution.ingredientFinished(node.id, true);
           }).catch((error) => {

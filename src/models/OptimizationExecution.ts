@@ -95,20 +95,25 @@ export class OptimizationExecution extends Typegoose {
     this.save();
   }
   @instanceMethod
-  public ingredientStarted(ingredientId: string) {
+  public ingredientStarted(ingredientId: string): string {
     // tslint:disable-next-line: max-line-length
-    this.processingStates.find((state) => {
-      if (state instanceof ObjectId) {
+    const state = this.processingStates.find((currentState) => {
+      if (currentState instanceof ObjectId) {
         throw new Error('Method \'ingredientStarted\' can only be called on populated instances.');
       }
-      if (getIdFromRef(state.ingredient) === ingredientId) {
-        state.startedAt = new Date();
+      if (getIdFromRef(currentState.ingredient) === ingredientId) {
+        currentState.startedAt = new Date();
         this.markModified('processingStates');
         return true;
       }
       return false;
     });
+    if (!state) {
+      throw new Error(`Could not find state for ingredient ${ingredientId} in recipe execution ${this.identifier}!`);
+    }
+    return (state as OptimizationExecutionIngredientState).identifier;
   }
+
   @instanceMethod
   public ingredientFinished(ingredientId: string, successful: boolean, comment?: string) {
     // tslint:disable-next-line: max-line-length
