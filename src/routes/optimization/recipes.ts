@@ -1,5 +1,5 @@
 import express from 'express';
-import OptimizationRecipeModel, { optimizationRecipeSerializer } from '@/models/OptimizationRecipe';
+import OptimizationRecipeModel, { optimizationRecipeSerializer, OptimizationRecipe } from '@/models/OptimizationRecipe';
 import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
@@ -110,11 +110,9 @@ router.get('/:recipeId/execute', async (req: express.Request, res: express.Respo
 router.post('/', async (req: express.Request, res: express.Response) => {
   try {
     const newOpAlJSON = await new Deserializer({ keyForAttribute: 'camelCase' }).deserialize(req.body);
-    newOpAlJSON.inputs = newOpAlJSON.inputs.map((input: any) => input.id ? input.id : input);
-    if (newOpAlJSON.outputs.id) {
-      newOpAlJSON.outputs = newOpAlJSON.outputs.id;
-    }
-    const newOpAl = new OptimizationRecipeModel(newOpAlJSON);
+    const newOpAl = new OptimizationRecipeModel();
+    newOpAl.name = newOpAlJSON.name;
+    OptimizationRecipe.addIngredientFromJSON(newOpAl, newOpAlJSON.rootIngredient);
     await newOpAl.save();
     res.status(201).send(apiSerializer(newOpAl, optimizationRecipeSerializer));
   } catch (error) {
