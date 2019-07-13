@@ -1,7 +1,6 @@
 import { Typegoose, prop, Ref, instanceMethod, arrayProp } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
 import nanoId from 'nanoid/generate';
-import config from '@/config.json';
 import { OptimizationRecipe } from './OptimizationRecipe';
 import IntermediateResult from './IntermediateResult';
 import OptimizationExecutionIngredientState from './OptimizationExecutionIngredientState';
@@ -57,12 +56,6 @@ export class OptimizationExecution extends Typegoose {
   @prop()
   public finishedAt?: Date;
 
-  @prop()
-  public terminationCode?: number;
-
-  @prop()
-  public caller?: string = '';
-
   @prop({ ref: OptimizationRecipe })
   public recipe!: Ref<OptimizationRecipe>;
 
@@ -74,11 +67,6 @@ export class OptimizationExecution extends Typegoose {
 
   @prop()
   public result?: IntermediateResult;
-
-  @prop()
-  get containerName(): string {
-    return config.docker.containerPrefix + this.identifier;
-  }
   // endregion
 
   // region private members
@@ -88,12 +76,6 @@ export class OptimizationExecution extends Typegoose {
   // endregion
 
   // region public methods
-  @instanceMethod
-  public terminate(statusCode: number) {
-    this.finishedAt = new Date();
-    this.terminationCode = statusCode;
-    this.save();
-  }
   @instanceMethod
   public ingredientStarted(ingredientId: string): string {
     // tslint:disable-next-line: max-line-length
@@ -152,9 +134,10 @@ export const optimizationExecutionSerializer = new Serializer('optimizationExecu
     'identifier',
     'startedAt',
     'finishedAt',
-    'terminationCode',
-    'caller',
-    'algorithm',
+    'recipe',
+    'processingStates',
+    'successful',
+    'result',
   ],
   keyForAttribute: 'camelCase',
 } as any);
