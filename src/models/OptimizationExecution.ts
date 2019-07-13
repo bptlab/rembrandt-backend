@@ -1,8 +1,12 @@
-import { Typegoose, prop, Ref, instanceMethod } from 'typegoose';
+import { Typegoose, prop, Ref, instanceMethod, arrayProp } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
-import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import nanoId from 'nanoid/generate';
 import config from '@/config.json';
+import { OptimizationRecipe } from './OptimizationRecipe';
+import IntermediateResult from './IntermediateResult';
+import OptimizationExecutionIngredientState from './OptimizationExecutionIngredientState';
+import { ObjectId } from 'bson';
+import { getIdFromRef } from '@/utils/utils';
 
 /**
  * @swagger
@@ -59,8 +63,17 @@ export class OptimizationExecution extends Typegoose {
   @prop()
   public caller?: string = '';
 
-  @prop({ ref: OptimizationAlgorithm })
-  public algorithm!: Ref<OptimizationAlgorithm>;
+  @prop({ ref: OptimizationRecipe })
+  public recipe!: Ref<OptimizationRecipe>;
+
+  @arrayProp({ items: OptimizationExecutionIngredientState })
+  public processingStates!: Array<Ref<OptimizationExecutionIngredientState>>;
+
+  @prop()
+  public successful?: boolean;
+
+  @prop()
+  public result?: IntermediateResult;
 
   @prop()
   get containerName(): string {
@@ -80,6 +93,42 @@ export class OptimizationExecution extends Typegoose {
     this.finishedAt = new Date();
     this.terminationCode = statusCode;
     this.save();
+  }
+  @instanceMethod
+  public ingredientStarted(ingredientId: string) {
+    // tslint:disable-next-line: max-line-length
+    this.processingStates.find((state) => {
+      if (state instanceof ObjectId) {
+        throw new Error('Method \'ingredientStarted\' can only be called on populated instances.');
+      }
+      if (getIdFromRef(state.ingredient) === ingredientId) {
+        state.startedAt = new Date();
+        this.markModified('processingStates');
+        return true;
+      }
+      return false;
+    });
+  }
+  @instanceMethod
+  public ingredientFinished(ingredientId: string, successful: boolean, comment?: string) {
+    // tslint:disable-next-line: max-line-length
+    this.processingStates.find((state) => {
+      if (state instanceof ObjectId) {
+        throw new Error('Method \'ingredientFinished\' can only be called on populated instances.');
+      }
+      if (getIdFromRef(state.ingredient) === ingredientId) {
+        state.finishedAt = new Date();
+        state.successful = successful;
+
+        if (comment) {
+          state.comment = comment;
+        }
+
+        this.markModified('processingStates');
+        return true;
+      }
+      return false;
+    });
   }
   // endregion
 

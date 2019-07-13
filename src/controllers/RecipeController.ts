@@ -1,18 +1,28 @@
-import IngredientController from '@/controllers/IngredientControllerInterface';
 import IntermediateResult from '@/models/IntermediateResult';
 import Ingredient from '@/models/Ingredient';
 import winston = require('winston');
 import { OptimizationRecipe } from '@/models/OptimizationRecipe';
+import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
+import OptimizationExecutionIngredientState from '@/models/OptimizationExecutionIngredientState';
 
-export default class RecipeController implements IngredientController {
+export default class RecipeController {
   // region public static methods
-  public static async createFromOptimizationIngredient(recipe: OptimizationRecipe) {
+  public static async createFromOptimizationIngredient(recipe: OptimizationRecipe): Promise<RecipeController> {
     const recipeController = new RecipeController();
     recipeController.name = recipe.name;
+    recipeController.execution = new OptimizationExecutionModel();
+    recipeController.execution.recipe = recipe;
+
     const recipeIngredientsPromise = recipe.ingredients.map((ingredient) => {
+      const ingredientExecutionState = new OptimizationExecutionIngredientState();
+      ingredientExecutionState.ingredient = ingredient;
+      recipeController.execution.processingStates.push(ingredientExecutionState);
+
       return Ingredient.createFromOptimizationIngredient(ingredient);
     });
+
     recipeController.ingredients = await Promise.all(recipeIngredientsPromise);
+    await recipeController.execution.save();
     return recipeController;
   }
   // endregion
@@ -23,34 +33,47 @@ export default class RecipeController implements IngredientController {
   // region public members
   public ingredients!: Ingredient[];
   public name!: string;
+  public execution!: OptimizationExecution;
   // endregion
 
   // region private members
+  private isExecuted = false;
   // endregion
 
   // region constructor
   // endregion
 
   // region public methods
-  public async execute(): Promise<IntermediateResult> {
+  public async execute(): Promise<void> {
+    if (this.isExecuted) {
+      throw new Error(`[Recipe '${this.name}'] - Is already executed!`);
+    }
+    this.isExecuted = true;
 
     winston.debug(`[Recipe '${this.name}'] - Start execution.`);
 
     while (this.ingredients.some((node) => node.isExecutable())) {
       try {
-        await this.executeStep();
+        const executedInStep = this.executeStep();
+        await this.execution.save();
+        await executedInStep;
       } catch (error) {
         winston.error(`[Recipe '${this.name}'] - ${error}`);
         winston.error(`[Recipe '${this.name}'] - Aborting execution of recipe.`);
+        this.execution.finishedAt = new Date();
         const errorResult = new IntermediateResult();
         errorResult.setError(`[Recipe '${this.name}'] ${error}`);
-        return errorResult;
+        this.terminateRecipeExecution(errorResult);
+        await this.execution.save();
+        return;
       }
       this.tryToResolveFinishedIngredients();
     }
     winston.debug(`[Recipe '${this.name}'] - Finished execution.`);
     const response = new IntermediateResult();
-    return response;
+    this.terminateRecipeExecution(response);
+    await this.execution.save();
+    return;
   }
   // endregion
 
@@ -69,12 +92,17 @@ export default class RecipeController implements IngredientController {
         const inputForNode = (node.inputs instanceof IntermediateResult) ? node.inputs : new IntermediateResult();
         // CREATE AND START CONTROLLER FOR THIS ONE
         const controller = node.instantiateController();
+
         winston.debug(`[Recipe '${this.name}'] -- Execute controller of type ${node.ingredientType}.`);
+
+        this.execution.ingredientStarted(node.id);
 
         executedInThisStep.push(
           controller.execute(inputForNode).then((result) => {
             node.result = result;
+            this.execution.ingredientFinished(node.id, true);
           }).catch((error) => {
+            this.execution.ingredientFinished(node.id, false, error);
             // tslint:disable-next-line: max-line-length
             throw new Error(`Error while executing ${node.ingredientType} controller for ingredient ${node.id}. ${error}`);
           }),
@@ -83,6 +111,15 @@ export default class RecipeController implements IngredientController {
     });
     return Promise.all(executedInThisStep);
   }
+
+  private terminateRecipeExecution(result: IntermediateResult) {
+    this.execution.successful = !result.erroneous;
+    this.execution.finishedAt = new Date();
+    this.execution.result = result;
+  }
+  // private setExecutionFinished(node: Ingredient) {
+
+  // }
 
   /**
    * Iterates over all nodes. If a node is detected where all inputs have a result, these results are merged.
