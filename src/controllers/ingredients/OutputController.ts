@@ -28,8 +28,12 @@ export default class OutputController implements IngredientController {
 
   // region public methods
   public async execute(input: IntermediateResult): Promise<IntermediateResult> {
+    const finalResultInstances = new IntermediateResult();
+
     Object.keys(input.data).forEach((resourceTypeId) => {
       const resourceTypeRef = new ObjectId(resourceTypeId);
+
+      const listOfNewResourceInstances: ResourceInstance[] = [];
 
       input.data[resourceTypeId].forEach((newInstance) => {
         const newResourceInstance = new ResourceInstanceModel();
@@ -37,11 +41,14 @@ export default class OutputController implements IngredientController {
         newResourceInstance.attributes = ResourceInstance.convertAttributeObjectToArray(newInstance.attributes);
         newResourceInstance.resourceType = resourceTypeRef;
 
+        listOfNewResourceInstances.push(newResourceInstance);
+
         newResourceInstance.save();
       });
+      finalResultInstances.addResultsForResourceType(resourceTypeRef, listOfNewResourceInstances);
     });
-    const response = new IntermediateResult({}, true);
-    return response;
+    finalResultInstances.finish();
+    return finalResultInstances;
   }
   // endregion
 
