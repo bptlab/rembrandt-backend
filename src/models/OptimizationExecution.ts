@@ -139,5 +139,13 @@ export const optimizationExecutionSerializer = new Serializer('optimizationExecu
     'successful',
     'result',
   ],
+  recipe: {
+    ref: '_id',
+    type: 'optimizationRecipe',
+    attributes: [
+      'name',
+      'ingredients',
+    ],
+  },
   keyForAttribute: 'camelCase',
 } as any);

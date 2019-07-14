@@ -10,6 +10,11 @@ import { populateResourceTypeOptions } from '../organization/resourceInstances';
 
 const router: express.Router = express.Router();
 
+export const populateRecipeOptions = {
+  path: 'recipe',
+  model: 'OptimizationRecipe',
+};
+
 /**
  * @swagger
  *
@@ -28,7 +33,10 @@ const router: express.Router = express.Router();
  */
 router.get('/', async (req: express.Request, res: express.Response) => {
   try {
-    const optimizationExecutions = await OptimizationExecutionModel.find({}).exec();
+    const optimizationExecutions = await OptimizationExecutionModel
+      .find({})
+      .populate(populateRecipeOptions)
+      .exec();
     res.send(apiSerializer(optimizationExecutions, optimizationExecutionSerializer));
   } catch (error) {
     winston.error(error.message);
@@ -61,7 +69,10 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  */
 router.get('/:executionId', async (req: express.Request, res: express.Response) => {
   try {
-    const optimizationExecution = await OptimizationExecutionModel.findById(req.params.executionId).exec();
+    const optimizationExecution = await OptimizationExecutionModel
+      .findById(req.params.executionId)
+      .populate(populateRecipeOptions)
+      .exec();
     if (!optimizationExecution) {
       throw Error(`Optimization execution with id ${req.params.executionId} could not be found.`);
     }
