@@ -3,8 +3,10 @@ import RecipeController from '@/controllers/RecipeController';
 import OptimizationAlgorithmModel from '@/models/OptimizationAlgorithm';
 import OptimizationRecipeModel, { OptimizationRecipe } from '@/models/OptimizationRecipe';
 import winston = require('winston');
+import { IngredientType } from '@/models/OptimizationIngredient';
 
 const idOfResourceType = '5d14c2251b0b6d2cd4b4c52e';
+const idOfResourceType2 = '5d14c2251b0b6d2cd4b4c532';
 const nameOfTestRecipe = 'Testrecipe';
 
 export async function testRecipe() {
@@ -29,25 +31,36 @@ export async function testRecipe() {
 
     const recipeJson = {
       ingredientObject: {
-        definitionId: idOfResourceType,
-        type: 'output',
+        id: idOfResourceType,
       },
+      ingredientType: IngredientType.OUTPUT,
+      position: {x: 0, y: 0},
       inputs: [{
         ingredientObject: {
-          definitionId: algorithmDefinition.id,
-          type: 'algorithm',
+          id: algorithmDefinition.id,
         },
+        ingredientType: IngredientType.ALGORITHM,
+        position: { x: 0, y: 0 },
         inputs: [{
           ingredientObject: {
-            definitionId: transformerDefinition.id,
-            type: 'transform',
+            id: transformerDefinition.id,
           },
+          ingredientType: IngredientType.TRANSFORM,
+          position: { x: 0, y: 0 },
           inputs: [{
             ingredientObject: {
-              definitionId: idOfResourceType,
-              type: 'input',
+              id: idOfResourceType,
             },
+            ingredientType: IngredientType.INPUT,
+            position: { x: 0, y: 0 },
           }],
+        },
+        {
+          ingredientObject: {
+            id: idOfResourceType2,
+          },
+          ingredientType: IngredientType.INPUT,
+          position: { x: 0, y: 0 },
         }],
       }],
     };
