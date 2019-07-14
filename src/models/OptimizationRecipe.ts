@@ -1,12 +1,14 @@
 import { Typegoose, prop, arrayProp, Ref, instanceMethod } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
-import OptimizationIngredient, { IngredientType } from './OptimizationIngredient';
+import OptimizationIngredient, { IngredientType, Position } from './OptimizationIngredient';
 import { ObjectId } from 'bson';
 import { getIdFromRef } from '@/utils/utils';
 import ResourceTypeModel from './ResourceType';
 
 interface TreeRecipeStructure {
   ingredientObject: any;
+  ingredientType: IngredientType;
+  position: Position;
   inputs?: TreeRecipeStructure[];
 }
 
@@ -56,9 +58,9 @@ export class OptimizationRecipe extends Typegoose {
     recipe: OptimizationRecipe, ingredientStructure: TreeRecipeStructure): ObjectId {
     const ingredientDef = new OptimizationIngredient();
 
-    ingredientDef.ingredientDefinition = ingredientStructure.ingredientObject.definitionId;
-    ingredientDef.ingredientType = ingredientStructure.ingredientObject.type;
-    ingredientDef.position = ingredientStructure.ingredientObject.position;
+    ingredientDef.ingredientDefinition = ingredientStructure.ingredientObject.id;
+    ingredientDef.ingredientType = ingredientStructure.ingredientType;
+    ingredientDef.position = ingredientStructure.position;
 
     if (ingredientStructure.inputs) {
       ingredientDef.inputs = ingredientStructure.inputs.map((input) => {
@@ -104,12 +106,15 @@ export class OptimizationRecipe extends Typegoose {
         ingredientObject = await OptimizationIngredient.getIngredientObject(ingredient);
         break;
     }
-    (ingredientObject as any).position = ingredient.position;
+
+    const returnObject: TreeRecipeStructure = {
+      ingredientObject,
+      ingredientType: ingredient.ingredientType,
+      position: ingredient.position,
+    };
 
     if (ingredient.inputs.length === 0) {
-      return {
-        ingredientObject,
-      };
+      return returnObject;
     }
 
     const ingredientInputObjects = await Promise.all(ingredient.inputs.map((input) => {
@@ -123,10 +128,9 @@ export class OptimizationRecipe extends Typegoose {
       return this.toNestedObject(input);
     }));
 
-    return {
-      ingredientObject,
-      inputs: ingredientInputObjects,
-    };
+    returnObject.inputs = ingredientInputObjects;
+
+    return returnObject;
   }
   // endregion
 
