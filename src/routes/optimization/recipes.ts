@@ -68,13 +68,28 @@ router.get('/:recipeId', async (req: express.Request, res: express.Response) => 
     if (!optimizationRecipe) {
       throw Error(`Optimization recipe with id ${req.params.recipeId} could not be found.`);
     }
+    res.send(apiSerializer(optimizationRecipe, optimizationRecipeSerializer));
+    } catch (error) {
+    winston.error(error.message);
+    res.status(500).send(createJSONError('500', 'Error in OptimizationRecipe-Router', error.message));
+  }
+});
+
+router.get('/object/:recipeId', async (req: express.Request, res: express.Response) => {
+  try {
+    const optimizationRecipe = await OptimizationRecipeModel
+      .findById(req.params.recipeId)
+      .exec();
+    if (!optimizationRecipe) {
+      throw Error(`Optimization recipe with id ${req.params.recipeId} could not be found.`);
+    }
     const amountOfIngredients = optimizationRecipe.ingredients.length;
     const outputIngredient = optimizationRecipe.ingredients[amountOfIngredients - 1];
     res.send({
       rootIngredient: await optimizationRecipe.toNestedObject(outputIngredient),
       name: optimizationRecipe.name,
     });
-    } catch (error) {
+  } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in OptimizationRecipe-Router', error.message));
   }
