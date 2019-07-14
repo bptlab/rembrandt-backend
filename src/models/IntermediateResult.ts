@@ -2,6 +2,7 @@ import { ResourceInstance } from './ResourceInstance';
 import { ResourceType } from './ResourceType';
 import { Ref } from 'typegoose';
 import { getIdFromRef } from '@/utils/utils';
+import { ObjectId } from 'bson';
 
 interface IntermediateResultObject {
   [index: string]: ResourceInstance[];
@@ -83,6 +84,28 @@ export default class IntermediateResult {
 
   public getResultsForResourceType(resourceType: Ref<ResourceType>): ResourceInstance[] {
     return this.data[getIdFromRef(resourceType)];
+  }
+
+  public getResultsForAllResourceTypes(): ResourceInstance[] {
+    const instances: ResourceInstance[] = [];
+    Object.values(this.data).forEach((instancesOfType) => {
+      instances.push(...instancesOfType);
+    });
+
+    return instances;
+  }
+
+  public getInstanceIdsForAllResourceTypes(): ObjectId[] {
+    const instances: ObjectId[] = [];
+    Object.values(this.data).forEach((instancesOfType) => {
+      instancesOfType.forEach((instance) => instances.push(instance._id));
+    });
+
+    return instances;
+  }
+
+  public getIncludedResourceTypeIds(): string[] {
+    return Object.keys(this.data);
   }
   // endregion
 

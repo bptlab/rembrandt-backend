@@ -1,10 +1,12 @@
 import express from 'express';
 import OptimizationExecutionModel, { optimizationExecutionSerializer } from '@/models/OptimizationExecution';
 import winston from 'winston';
-import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
-import DockerController from '@/controllers/DockerController';
+import ResourceInstanceModel, { resourceInstanceSerializer } from '@/models/ResourceInstance';
+import IntermediateResult from '@/models/IntermediateResult';
+import { ObjectId } from 'bson';
+import { populateResourceTypeOptions } from '../organization/resourceInstances';
 
 const router: express.Router = express.Router();
 
@@ -30,7 +32,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
     res.send(apiSerializer(optimizationExecutions, optimizationExecutionSerializer));
   } catch (error) {
     winston.error(error.message);
-    res.status(500).send(createJSONError('500', 'Error in OptimizationAlgorithm-Router', error.message));
+    res.status(500).send(createJSONError('500', 'Error in OptimizationExecution-Router', error.message));
   }
 });
 
@@ -66,22 +68,33 @@ router.get('/:executionId', async (req: express.Request, res: express.Response) 
     res.send(apiSerializer(optimizationExecution, optimizationExecutionSerializer));
   } catch (error) {
     winston.error(error.message);
-    res.status(500).send(createJSONError('500', 'Error in OptimizationAlgorithm-Router', error.message));
+    res.status(500).send(createJSONError('500', 'Error in OptimizationExecution-Router', error.message));
   }
 });
 
-router.get('/:executionId/stop', async (req: express.Request, res: express.Response) => {
+router.get('/:executionId/instances', async (req: express.Request, res: express.Response) => {
   try {
     const optimizationExecution = await OptimizationExecutionModel.findById(req.params.executionId).exec();
     if (!optimizationExecution) {
       throw Error(`Optimization execution with id ${req.params.executionId} could not be found.`);
     }
-    const dockerController = new DockerController();
-    dockerController.stopExecution(optimizationExecution);
-    res.status(201).send();
+    if (!optimizationExecution.finishedAt) {
+      throw Error(`Optimization execution with id ${req.params.executionId} is still running.`);
+    }
+    if ((!optimizationExecution.successful) || (!optimizationExecution.result)) {
+      throw Error(`Optimization execution with id ${req.params.executionId} failed.`);
+    }
+    const resultObject = new IntermediateResult(optimizationExecution.result.data);
+    const instancesIds: ObjectId[] = resultObject.getInstanceIdsForAllResourceTypes();
+
+    const resourceInstances = await ResourceInstanceModel
+      .find({_id: { $in: instancesIds}})
+      .populate(populateResourceTypeOptions)
+      .exec();
+    res.send(apiSerializer(resourceInstances, resourceInstanceSerializer));
   } catch (error) {
     winston.error(error.message);
-    res.status(500).send(createJSONError('500', 'Error in OptimizationAlgorithm-Router', error.message));
+    res.status(500).send(createJSONError('500', 'Error in OptimizationExecution-Router', error.message));
   }
 });
 
