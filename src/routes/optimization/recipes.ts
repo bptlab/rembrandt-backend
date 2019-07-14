@@ -5,7 +5,7 @@ import { Deserializer } from 'jsonapi-serializer';
 import apiSerializer from '@/utils/apiSerializer';
 import createJSONError from '@/utils/errorSerializer';
 import RecipeController from '@/controllers/RecipeController';
-import { optimizationExecutionSerializer } from '@/models/OptimizationExecution';
+import OptimizationExecutionModel, { optimizationExecutionSerializer } from '@/models/OptimizationExecution';
 
 const router: express.Router = express.Router();
 
@@ -106,6 +106,16 @@ router.get('/:recipeId/execute', async (req: express.Request, res: express.Respo
     const recipeController = await RecipeController.createFromOptimizationIngredient(optimizationRecipe);
     recipeController.execute();
     res.send(apiSerializer(recipeController.execution, optimizationExecutionSerializer));
+  } catch (error) {
+    winston.error(error.message);
+    res.status(500).send(createJSONError('500', 'Error in OptimizationRecipe-Router', error.message));
+  }
+});
+
+router.get('/:recipeId/executions', async (req: express.Request, res: express.Response) => {
+  try {
+    const optimizationExecutions = await OptimizationExecutionModel.find({ recipe: req.params.recipeId }).exec();
+    res.send(apiSerializer(optimizationExecutions, optimizationExecutionSerializer));
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in OptimizationRecipe-Router', error.message));
