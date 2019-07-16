@@ -43,9 +43,15 @@ export default class AlgorithmController implements IngredientController {
 
       await this.dockerController.run(
         this.optimizationAlgorithm.imageIdentifier,
-        ['/bin/bash', '-c', 'sleep 30s'],
+        [],
         process.stdout,
-        { name: containerName })
+        {
+          name: containerName,
+          env: ['folderPath=/mnt/rembrandt/'],
+          HostConfig: {
+            Binds: [`${fileController.absoluteDataExchangePath}:/mnt/rembrandt:rw`],
+          },
+        })
         .then((container) => {
           winston.debug(`Container ${containerName} exited with code ${container.output.StatusCode}.`);
         });

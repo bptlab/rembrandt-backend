@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs';
-import path from 'path';
+import path, { resolve } from 'path';
 import config from '@/config.json';
 import IntermediateResult from '@/models/IntermediateResult';
 import ResourceTypeModel, { ResourceType } from '@/models/ResourceType';
@@ -38,6 +38,10 @@ export default class FileController {
   // endregion
 
   // region public methods
+  public get absoluteDataExchangePath(): string {
+    return resolve(this.filePathForDataExchange);
+  }
+
   public async writeRequiredAlgorithmInputFiles(
     input: IntermediateResult,
     requiredTypes: Array<Ref<ResourceType>>): Promise<void[]> {
