@@ -108,12 +108,8 @@ export default class FileController {
     try {
       await fs.mkdir(this.filePathForDataExchange);
     } catch (error) {
-      return new Promise((resolve, reject) => {
-        reject(
-          // tslint:disable-next-line: max-line-length
-          new Error(`Could not create directory for docker data exchange in ${config.docker.dataExchangeDirectory}. ${error}`),
-        );
-      });
+      // tslint:disable-next-line: max-line-length
+      throw new Error(`Could not create directory for docker data exchange in ${config.docker.dataExchangeDirectory}. ${error}`);
     }
   }
   // endregion

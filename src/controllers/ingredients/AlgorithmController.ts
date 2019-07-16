@@ -62,12 +62,7 @@ export default class AlgorithmController implements IngredientController {
 
     } catch (error) {
       fileController.removeDirectoryForDataExchange();
-
-      return new Promise((resolve, reject) => {
-        reject(
-          new Error(`Error while executing container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`),
-        );
-      });
+      throw new Error(`Error while executing container for algorithm: ${this.optimizationAlgorithm.name}. ${error}`);
     }
   }
   // endregion
