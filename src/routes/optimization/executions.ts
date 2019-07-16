@@ -109,4 +109,38 @@ router.get('/:executionId/instances', async (req: express.Request, res: express.
   }
 });
 
+
+/**
+ * @swagger
+ *
+ *  /optimization/executions/{id}:
+ *    delete:
+ *      summary: Delete a optimization execution with a given ID
+ *      tags:
+ *        - OptimizationRecipe
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Optimization Execution ID
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        '204':
+ *          description: Successfully deleted
+ */
+router.delete('/:executionId', async (req: express.Request, res: express.Response) => {
+  try {
+    const optimizationExecution = await OptimizationExecutionModel.findById(req.params.executionId).exec();
+    if (!optimizationExecution) {
+      throw Error(`Optimization execution with Id: '${req.params.executionId}' not found. Could not be deleted.`);
+    }
+    await optimizationExecution.remove();
+    res.status(204).send();
+  } catch (error) {
+    winston.error(error.message);
+    res.status(500).send(createJSONError('500', 'Error in OptimizationExecution-Router', error.message));
+  }
+});
+
 export default router;
