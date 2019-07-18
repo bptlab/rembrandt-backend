@@ -1,4 +1,5 @@
 {
+  "seeDocumentation": "https://rembrandt.gitbook.io/docs/configuration",
   "resourceTypeInitializer": {
     "enable": true
   },
@@ -10,7 +11,7 @@
   },
   "docker": {
     "configuration": {
-      "Refer to the docs": "https://github.com/apocas/dockerode#getting-started"
+      "socketPath": "/var/run/docker.sock"
     },
     "containerPrefix": "rembrandt-",
     "dataExchangeDirectory": "dataExchange"
