@@ -81,6 +81,23 @@ import { ObjectId } from 'bson';
 export class ResourceInstance extends Typegoose {
   [index: string]: any;
   // region public static methods
+  public static convertAttributeArrayToObject(attributeArray: ResourceAttributeValue[]): any {
+    const attributeObject: any = {};
+    attributeArray.forEach((attributeValue) => {
+      attributeObject[attributeValue.name] = attributeValue.value;
+    });
+    return attributeObject;
+  }
+  public static convertAttributeObjectToArray(attributeObject: any): ResourceAttributeValue[] {
+    const attributeArray: ResourceAttributeValue[] = [];
+    Object.keys(attributeObject).forEach((attributeName) => {
+      attributeArray.push({
+        name: attributeName,
+        value: attributeObject[attributeName],
+      });
+    });
+    return attributeArray;
+  }
   // endregion
 
   // region private static methods

@@ -1,4 +1,6 @@
-export default interface Ingredient {
+import IntermediateResult from '@/models/IntermediateResult';
+
+export default interface IngredientController {
   // region public static methods
   // endregion
 
@@ -15,7 +17,7 @@ export default interface Ingredient {
   // endregion
 
   // region public methods
-  execute(input: any): any;
+  execute(input: IntermediateResult, identifier: string): Promise<IntermediateResult>;
   // endregion
 
   // region private methods

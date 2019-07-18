@@ -71,6 +71,32 @@ export class OptimizationAlgorithm extends Typegoose {
 
   @prop({ required: true })
   public dockerConfig: DockerConfiguration = DockerConfigurationNullObject;
+
+  @prop()
+  get imageIdentifier(): string {
+    let imageIdentifier = this.dockerConfig.name;
+    if (this.dockerConfig.tag) {
+      imageIdentifier += ':' + this.dockerConfig.tag;
+    } else if (this.dockerConfig.digest) {
+      imageIdentifier += '@' + this.dockerConfig.digest;
+    }
+    return imageIdentifier;
+  }
+  set imageIdentifier(identifier: string) {
+    if (identifier.indexOf(':') > 0) {
+      const splittedIdentifier = identifier.split(':');
+      this.dockerConfig.name = splittedIdentifier[0];
+      this.dockerConfig.tag = splittedIdentifier[1];
+      return;
+    }
+    if (identifier.indexOf('@') > 0) {
+      const splittedIdentifier = identifier.split('@');
+      this.dockerConfig.name = splittedIdentifier[0];
+      this.dockerConfig.digest = splittedIdentifier[1];
+      return;
+    }
+    this.dockerConfig.name = identifier;
+  }
   // endregion
 
   // region private members
