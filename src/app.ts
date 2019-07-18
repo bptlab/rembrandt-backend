@@ -6,10 +6,15 @@ import cors from 'cors';
 import resourceTypeRouter from '@/routes/organization/resourceTypes';
 import resourceInstanceRouter from '@/routes/organization/resourceInstances';
 import optimizationAlgorithmRouter from '@/routes/optimization/algorithms';
+import optimizationExecutionRouter from '@/routes/optimization/executions';
+import optimizationTransformerRouter from '@/routes/optimization/transformers';
+import optimizationRecipeRouter from '@/routes/optimization/recipes';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
+import shutdown from '@/utils/shutdown';
+import { testRecipe } from './utils/testRecipe';
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
@@ -45,6 +50,9 @@ async function startApiServer(): Promise<void> {
   app.use('/organization/resource-instances', resourceInstanceRouter);
 
   app.use('/optimization/algorithms', optimizationAlgorithmRouter);
+  app.use('/optimization/executions', optimizationExecutionRouter);
+  app.use('/optimization/transformers', optimizationTransformerRouter);
+  app.use('/optimization/recipes', optimizationRecipeRouter);
 
   app.get('/', (req: express.Request, res: express.Response) => {
     res.send('hello world!');
@@ -58,6 +66,8 @@ async function startApiServer(): Promise<void> {
   if (config.resourceInstanceInitializer.enable) {
     await ResourceInstanceInitializer.initializeResourceInstances();
   }
+
+  testRecipe();
 }
 
 const db = mongoose.connection;
@@ -66,3 +76,8 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', startApiServer);
 
 mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/rembrandt`, { useNewUrlParser: true });
+
+process.on('SIGINT', async () => {
+  await shutdown();
+  process.exit(0);
+});

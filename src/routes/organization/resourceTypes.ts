@@ -131,7 +131,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
  *          schema:
  *            type: string
  *      responses:
- *        '200':
+ *        '204':
  *          description: Successfully updated
  */
 router.patch('/:typeId', async (req: express.Request, res: express.Response) => {
@@ -147,7 +147,7 @@ router.patch('/:typeId', async (req: express.Request, res: express.Response) => 
     }
     resourceType.set(newAttributeValues);
     await resourceType.save();
-    res.status(200).send();
+    res.status(204).send();
   } catch (error) {
     winston.error(error.message);
     res.status(500).send(createJSONError('500', 'Error in ResourceType-Router', error.message));

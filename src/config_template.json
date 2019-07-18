@@ -1,0 +1,19 @@
+{
+  "seeDocumentation": "https://rembrandt.gitbook.io/docs/configuration",
+  "resourceTypeInitializer": {
+    "enable": true
+  },
+  "resourceInstanceInitializer": {
+    "enable": true,
+    "random": true,
+    "targetAmountOfHumanResources": 10,
+    "targetAmountOfExhaustibleResources": 10
+  },
+  "docker": {
+    "configuration": {
+      "socketPath": "/var/run/docker.sock"
+    },
+    "containerPrefix": "rembrandt-",
+    "dataExchangeDirectory": "dataExchange"
+  }
+}
