@@ -1,5 +1,5 @@
-import OptimizationTransformerModel, { OptimizationTransformer } from '@/models/OptimizationTransformer';
-import OptimizationAlgorithmModel, { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
+import { OptimizationTransformer } from '@/models/OptimizationTransformer';
+import { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
 import { Ref } from 'typegoose';
 import { ResourceType } from './ResourceType';
 import IntermediateResult from './IntermediateResult';

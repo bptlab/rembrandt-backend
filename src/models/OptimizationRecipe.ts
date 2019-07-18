@@ -1,4 +1,4 @@
-import { Typegoose, prop, arrayProp, Ref, instanceMethod } from 'typegoose';
+import { Typegoose, prop, arrayProp, instanceMethod } from 'typegoose';
 import { Serializer } from 'jsonapi-serializer';
 import OptimizationIngredient, { IngredientType, Position } from './OptimizationIngredient';
 import { ObjectId } from 'bson';

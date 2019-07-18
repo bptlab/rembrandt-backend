@@ -1,4 +1,4 @@
-import { Typegoose, prop, arrayProp, Ref, instanceMethod } from 'typegoose';
+import { Typegoose, prop, arrayProp, Ref } from 'typegoose';
 import { ObjectId } from 'bson';
 import OptimizationTransformerModel, { OptimizationTransformer } from '@/models/OptimizationTransformer';
 import OptimizationAlgorithmModel, { OptimizationAlgorithm } from '@/models/OptimizationAlgorithm';
