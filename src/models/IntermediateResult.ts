@@ -8,6 +8,31 @@ interface IntermediateResultObject {
   [index: string]: ResourceInstance[];
 }
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      IntermediateResult:
+ *        allOf:
+ *          - $ref: '#/components/schemas/JsonApiObject'
+ *          - type: object
+ *            properties:
+ *              attributes:
+ *                type: object
+ *                required:
+ *                  - data
+ *                  - finished
+ *                  - error
+ *                properties:
+ *                  data:
+ *                    type: object
+ *                  finished:
+ *                    type: boolean
+ *                  error:
+ *                    type: string
+ */
+
 export default class IntermediateResult {
   // region public static methods
   public static merge(ir1: IntermediateResult, ir2: IntermediateResult): IntermediateResult {

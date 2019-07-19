@@ -17,7 +17,7 @@ interface TreeRecipeStructure {
  *
  *  components:
  *    schemas:
- *      OptimizationAlgorithm:
+ *      OptimizationRecipe:
  *        allOf:
  *          - $ref: '#/components/schemas/JsonApiObject'
  *          - type: object
@@ -26,31 +26,15 @@ interface TreeRecipeStructure {
  *                type: object
  *                required:
  *                  - name
- *                  - inputs
- *                  - outputs
- *                  - dockerConfig
+ *                  - ingredients
  *                properties:
  *                  name:
  *                    type: string
- *                  inputs:
+ *                  ingredients:
  *                    type: array
  *                    items:
- *                      type: string
- *                  outputs:
- *                    type: string
- *                  dockerConfig:
- *                    type: object
- *                    required:
- *                      - name
- *                    properties:
- *                      name:
- *                        type: string
- *                      tag:
- *                        type: string
- *                      digest:
- *                        type: string
+ *                      $ref: '#/components/schemas/OptimizationIngredient'
  */
-
 export class OptimizationRecipe extends Typegoose {
   [index: string]: any;
   // region public static methods

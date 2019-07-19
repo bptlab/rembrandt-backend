@@ -123,6 +123,224 @@
         }
       }
     },
+    "/optimization/executions": {
+      "get": {
+        "summary": "Get list of all optimization executions",
+        "tags": [
+          "OptimizationExecution"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationExecutionsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/optimization/executions/{id}": {
+      "get": {
+        "summary": "Get a optimization execution by ID",
+        "tags": [
+          "OptimizationExecution"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Execution ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationExecutionResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a optimization execution with a given ID",
+        "tags": [
+          "OptimizationRecipe"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Execution ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          }
+        }
+      }
+    },
+    "/optimization/executions/{id}/instances": {
+      "get": {
+        "summary": "Get list of all resource instances created in the defined execution",
+        "tags": [
+          "ResourceInstances",
+          "OptimizationExecution"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Execution ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceInstancesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/optimization/recipes": {
+      "get": {
+        "summary": "Get list of all optimization recipes",
+        "tags": [
+          "OptimizationRecipe"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationRecipesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new optimization recipe",
+        "tags": [
+          "OptimizationRecipe"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationRecipeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/optimization/recipes/{id}": {
+      "get": {
+        "summary": "Get a optimization recipe by ID",
+        "tags": [
+          "OptimizationRecipe"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Recipe ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizationRecipeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a optimization recipe with a given ID",
+        "tags": [
+          "OptimizationRecipe"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Recipe ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a optimization recipe with a given ID",
+        "tags": [
+          "OptimizationRecipe"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Optimization Recipe ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          }
+        }
+      }
+    },
     "/optimization/transformers": {
       "get": {
         "summary": "Get list of all optimization transformers",
@@ -612,6 +830,75 @@
           }
         }
       },
+      "OptimizationExecutionsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OptimizationExecution"
+            }
+          }
+        }
+      },
+      "OptimizationExecutionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OptimizationExecution"
+          }
+        }
+      },
+      "OptimizationRecipesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OptimizationRecipe"
+            }
+          }
+        }
+      },
+      "OptimizationRecipeResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/OptimizationRecipe"
+          }
+        }
+      },
+      "IntermediateResult": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "data",
+                  "finished",
+                  "error"
+                ],
+                "properties": {
+                  "data": {
+                    "type": "object"
+                  },
+                  "finished": {
+                    "type": "boolean"
+                  },
+                  "error": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
       "OptimizationAlgorithm": {
         "allOf": [
           {
@@ -656,6 +943,133 @@
                       "digest": {
                         "type": "string"
                       }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "OptimizationExecution": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "identifier"
+                ],
+                "properties": {
+                  "identifier": {
+                    "type": "string"
+                  },
+                  "startedAt": {
+                    "type": "object"
+                  },
+                  "recipe": {
+                    "type": "object"
+                  },
+                  "containerId": {
+                    "type": "string"
+                  },
+                  "successful": {
+                    "type": "boolean"
+                  },
+                  "result": {
+                    "type": "object",
+                    "properties": {
+                      "relationships": {
+                        "$ref": "#/components/schemas/IntermediateResult"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "OptimizationIngredient": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "ingredients"
+                ],
+                "properties": {
+                  "inputs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "ingredientDefinition": {
+                    "type": "string"
+                  },
+                  "ingredientType": {
+                    "type": "string",
+                    "enum": [
+                      "input",
+                      "output",
+                      "transform",
+                      "algorithm"
+                    ]
+                  },
+                  "position": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "integer"
+                      },
+                      "y": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "x",
+                      "y"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "OptimizationRecipe": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonApiObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "ingredients"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "ingredients": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/OptimizationIngredient"
                     }
                   }
                 }

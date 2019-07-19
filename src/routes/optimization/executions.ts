@@ -29,7 +29,7 @@ export const populateRecipeOptions = {
  *          content:
  *            application/vnd.api+json:
  *              schema:
- *                $ref: '#/components/schemas/OptimizationAlgorithmsResponse'
+ *                $ref: '#/components/schemas/OptimizationExecutionsResponse'
  */
 router.get('/', async (req: express.Request, res: express.Response) => {
   try {
@@ -55,7 +55,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  *      parameters:
  *        - name: id
  *          in: path
- *          description: Optimization Algorithm ID
+ *          description: Optimization Execution ID
  *          required: true
  *          schema:
  *            type: string
@@ -65,7 +65,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  *          content:
  *            application/vnd.api+json:
  *              schema:
- *                $ref: '#/components/schemas/OptimizationAlgorithmResponse'
+ *                $ref: '#/components/schemas/OptimizationExecutionResponse'
  */
 router.get('/:executionId', async (req: express.Request, res: express.Response) => {
   try {
@@ -83,6 +83,30 @@ router.get('/:executionId', async (req: express.Request, res: express.Response) 
   }
 });
 
+/**
+ * @swagger
+ *
+ *  /optimization/executions/{id}/instances:
+ *    get:
+ *      summary: Get list of all resource instances created in the defined execution
+ *      tags:
+ *        - ResourceInstances
+ *        - OptimizationExecution
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Optimization Execution ID
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        '200':
+ *          description: Successful
+ *          content:
+ *            application/vnd.api+json:
+ *              schema:
+ *                $ref: '#/components/schemas/ResourceInstancesResponse'
+ */
 router.get('/:executionId/instances', async (req: express.Request, res: express.Response) => {
   try {
     const optimizationExecution = await OptimizationExecutionModel.findById(req.params.executionId).exec();
@@ -108,7 +132,6 @@ router.get('/:executionId/instances', async (req: express.Request, res: express.
     res.status(500).send(createJSONError('500', 'Error in OptimizationExecution-Router', error.message));
   }
 });
-
 
 /**
  * @swagger

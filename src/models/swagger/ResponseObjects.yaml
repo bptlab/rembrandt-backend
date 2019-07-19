@@ -74,3 +74,27 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/OptimizationTransformer'
+    OptimizationExecutionsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OptimizationExecution'
+    OptimizationExecutionResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/OptimizationExecution'
+    OptimizationRecipesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OptimizationRecipe'
+    OptimizationRecipeResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/OptimizationRecipe'

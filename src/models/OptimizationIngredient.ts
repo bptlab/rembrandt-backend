@@ -16,6 +16,42 @@ export interface Position {
   y: number;
 }
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      OptimizationIngredient:
+ *        allOf:
+ *          - $ref: '#/components/schemas/JsonApiObject'
+ *          - type: object
+ *            properties:
+ *              attributes:
+ *                type: object
+ *                required:
+ *                  - name
+ *                  - ingredients
+ *                properties:
+ *                  inputs:
+ *                    type: array
+ *                    items:
+ *                      type: string
+ *                  ingredientDefinition:
+ *                    type: string
+ *                  ingredientType:
+ *                    type: string
+ *                    enum: [input, output, transform, algorithm]
+ *                  position:
+ *                    type: object
+ *                    properties:
+ *                      x:
+ *                        type: integer
+ *                      y:
+ *                        type: integer
+ *                    required:
+ *                      - x
+ *                      - y
+ */
 export default class OptimizationIngredient extends Typegoose {
   [index: string]: any;
   // region public static methods

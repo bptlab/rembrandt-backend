@@ -24,18 +24,19 @@ import { getIdFromRef } from '@/utils/utils';
  *                properties:
  *                  identifier:
  *                    type: string
- *                  createdAt:
- *                    type: date
  *                  startedAt:
- *                    type: date
- *                  finishedAt:
- *                    type: date
+ *                    type: object
+ *                  recipe:
+ *                    type: object
  *                  containerId:
  *                    type: string
- *                  caller:
- *                    type: string
- *                  algorithm:
- *                    type: string
+ *                  successful:
+ *                    type: boolean
+ *                  result:
+ *                    type: object
+ *                    properties:
+ *                      relationships:
+ *                        $ref: '#/components/schemas/IntermediateResult'
  */
 
 export class OptimizationExecution extends Typegoose {
