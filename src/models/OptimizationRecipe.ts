@@ -82,6 +82,17 @@ export class OptimizationRecipe extends Typegoose {
 
   @arrayProp({ items: OptimizationIngredient, default: [] })
   public ingredients: OptimizationIngredient[] = [];
+
+  @prop()
+  get inputs(): string[] {
+    return this.ingredients.filter((ingredient) => ingredient.ingredientType === IngredientType.INPUT)
+      .map((ingredient) => ingredient.ingredientDefinition);
+  }
+  @prop()
+  get outputs(): string[] {
+    return this.ingredients.filter((ingredient) => ingredient.ingredientType === IngredientType.OUTPUT)
+      .map((ingredient) => ingredient.ingredientDefinition);
+  }
   // endregion
 
   // region private members
@@ -149,6 +160,8 @@ export const optimizationRecipeSerializer = new Serializer('optimizationRecipe',
   attributes: [
     'name',
     'ingredients',
+    'inputs',
+    'outputs',
   ],
   keyForAttribute: 'camelCase',
 } as any);
