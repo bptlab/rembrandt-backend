@@ -97,7 +97,8 @@ export default class FileController {
         throw new Error(`Could not find name of input resource type with id ${getIdFromRef(resourceType)}.`);
       }
     } else {
-      resourceTypeName = resourceType.name;
+      const resourceTypeObject = resourceType as ResourceType;
+      resourceTypeName = resourceTypeObject.name;
     }
     const nameOfFileToWrite = `${resourceTypeName}.txt`;
     this.filesInDirectory.push(nameOfFileToWrite);

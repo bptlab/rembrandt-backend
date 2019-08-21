@@ -64,7 +64,7 @@ export class OptimizationRecipe extends Typegoose {
 
     if (ingredientStructure.inputs) {
       ingredientDef.inputs = ingredientStructure.inputs.map((input) => {
-        return OptimizationRecipe.addIngredientFromJSON(recipe, input);
+        return OptimizationRecipe.addIngredientFromJSON(recipe, input) as any;
       });
     }
 
@@ -125,7 +125,8 @@ export class OptimizationRecipe extends Typegoose {
         }
         return this.toNestedObject(inputObject);
       }
-      return this.toNestedObject(input);
+      const inputIngredient = input as OptimizationIngredient;
+      return this.toNestedObject(inputIngredient);
     }));
 
     returnObject.inputs = ingredientInputObjects;

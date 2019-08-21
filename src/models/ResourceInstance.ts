@@ -8,7 +8,7 @@ import { ObjectId } from 'bson';
 
 @pre<ResourceInstance>('save', async function() {
   if (typeof this.resourceType === 'string') {
-    this.resourceType = new ObjectId(this.resourceType);
+    this.resourceType = new ObjectId(this.resourceType) as any;
   }
 
   const foundType = await ResourceTypeModel.findById( this.resourceType ).exec();
@@ -132,7 +132,7 @@ export class ResourceInstance extends Typegoose {
   }
 
   @instanceMethod
-  public getAttribute(attributeKey: string): string|undefined {
+  public getAttribute(attributeKey: string): string | undefined {
     const foundAttribute = this.attributes.find((attribute) => attribute.name === attributeKey);
     if (foundAttribute) {
       return foundAttribute.value;

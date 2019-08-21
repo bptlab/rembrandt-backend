@@ -78,13 +78,13 @@ export class OptimizationExecution extends Typegoose {
   // region public methods
   @instanceMethod
   public ingredientStarted(ingredientId: string): string {
-    // tslint:disable-next-line: max-line-length
     const state = this.processingStates.find((currentState) => {
       if (currentState instanceof ObjectId) {
         throw new Error('Method \'ingredientStarted\' can only be called on populated instances.');
       }
-      if (getIdFromRef(currentState.ingredient) === ingredientId) {
-        currentState.startedAt = new Date();
+      const currentStateObject = currentState as OptimizationExecutionIngredientState;
+      if (getIdFromRef(currentStateObject.ingredient) === ingredientId) {
+        currentStateObject.startedAt = new Date();
         this.markModified('processingStates');
         return true;
       }
@@ -98,17 +98,17 @@ export class OptimizationExecution extends Typegoose {
 
   @instanceMethod
   public ingredientFinished(ingredientId: string, successful: boolean, comment?: string) {
-    // tslint:disable-next-line: max-line-length
     this.processingStates.find((state) => {
       if (state instanceof ObjectId) {
         throw new Error('Method \'ingredientFinished\' can only be called on populated instances.');
       }
-      if (getIdFromRef(state.ingredient) === ingredientId) {
-        state.finishedAt = new Date();
-        state.successful = successful;
+      const stateObject = state as OptimizationExecutionIngredientState;
+      if (getIdFromRef(stateObject.ingredient) === ingredientId) {
+        stateObject.finishedAt = new Date();
+        stateObject.successful = successful;
 
         if (comment) {
-          state.comment = comment;
+          stateObject.comment = comment;
         }
 
         this.markModified('processingStates');

@@ -25,7 +25,7 @@ export default class OptimizationIngredient extends Typegoose {
     switch (ingredient.ingredientType) {
       case IngredientType.INPUT:
         return {
-          inputResourceType: new ObjectId(ingredient.ingredientDefinition),
+          inputResourceType: new ObjectId(ingredient.ingredientDefinition) as any,
         };
       case IngredientType.ALGORITHM:
         const optimizationAlgorithm = await OptimizationAlgorithmModel.findById(ingredient.ingredientDefinition).exec();
@@ -45,7 +45,7 @@ export default class OptimizationIngredient extends Typegoose {
         return optimizationTransformer;
       case IngredientType.OUTPUT:
         return {
-          outputResourceType: new ObjectId(ingredient.ingredientDefinition),
+          outputResourceType: new ObjectId(ingredient.ingredientDefinition)  as any,
         };
       default:
         // tslint:disable-next-line: max-line-length
