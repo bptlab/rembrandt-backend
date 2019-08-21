@@ -148,7 +148,7 @@ export default class ResourceInstanceInitializer {
           },
           {
             name: 'exhaustion limit',
-            value: exhaustible.limit,
+            value: exhaustible.limit.toString(),
           },
         ],
       });

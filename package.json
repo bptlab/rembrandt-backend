@@ -6,7 +6,7 @@
     "start": "nodemon",
     "lint": "tslint -p tsconfig.json",
     "development": "npm run lint && node --inspect=9229 -r tsconfig-paths/register -r ts-node/register src/app.ts",
-    "build": "tsc && cp src/swagger.json build/swagger.json",
+    "build": "cp src/config_template.json src/config.json && tsc && cp src/swagger.json build/swagger.json",
     "production": "node -r tsconfig-paths/register build/app.js",
     "swagger": "swagger-jsdoc -d swaggerConf.js -o src/swagger.json"
   },

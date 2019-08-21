@@ -31,7 +31,7 @@ export default class OutputController implements IngredientController {
     const finalResultInstances = new IntermediateResult();
 
     Object.keys(input.data).forEach((resourceTypeId) => {
-      const resourceTypeRef = new ObjectId(resourceTypeId);
+      const resourceTypeRef: Ref<ResourceType> = new ObjectId(resourceTypeId) as any;
 
       const listOfNewResourceInstances: ResourceInstance[] = [];
 
