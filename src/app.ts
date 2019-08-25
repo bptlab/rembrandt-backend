@@ -42,7 +42,7 @@ async function startApiServer(): Promise<void> {
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json({ type:  contentType}));
   app.use(cors());
-  app.use('/', enforceContentType);
+  app.use(express.static('public'));
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
   app.use('/organization/resource-types', resourceTypeRouter);
