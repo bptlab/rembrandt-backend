@@ -47,9 +47,9 @@ export default class AlgorithmController implements IngredientController {
         process.stdout,
         {
           name: containerName,
-          env: ['folderPath=/mnt/rembrandt/'],
+          env: [`folderPath=/mnt/rembrandt/${identifier}/`],
           HostConfig: {
-            Binds: [`${fileController.absoluteDataExchangePath}:/mnt/rembrandt:rw`],
+            Binds: ['rembrandt_data-exchange:/mnt/rembrandt:rw'],
           },
         })
         .then((container) => {
