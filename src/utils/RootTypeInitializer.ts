@@ -14,7 +14,7 @@ export default class RootTypeInitializer {
     winston.info('Begin initializing root types...');
 
     for (const rootType of rootTypes) {
-      const resourceRootType = new ResourceType(rootType);
+      const resourceRootType = new ResourceType(rootType as any);
 
       try {
         if (rootType.parentType) {

@@ -14,18 +14,12 @@ import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
 import shutdown from '@/utils/shutdown';
-import { testRecipe } from './utils/testRecipe';
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
 const contentType: string = 'application/vnd.api+json';
 
 function enforceContentType(req: express.Request, res: express.Response, next: express.NextFunction): void {
-  if (req.originalUrl.startsWith('/docs')) {
-    next();
-    return;
-  }
-
   if (!req.headers || req.headers['content-type'] !== contentType) {
     res.status(415).send(createJSONError(
       '415',
@@ -43,20 +37,19 @@ async function startApiServer(): Promise<void> {
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json({ type:  contentType}));
   app.use(cors());
-  app.use('/', enforceContentType);
+  app.use(express.static('public'));
+
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
-  app.use('/organization/resource-types', resourceTypeRouter);
-  app.use('/organization/resource-instances', resourceInstanceRouter);
+  app.use('/api', enforceContentType);
 
-  app.use('/optimization/algorithms', optimizationAlgorithmRouter);
-  app.use('/optimization/executions', optimizationExecutionRouter);
-  app.use('/optimization/transformers', optimizationTransformerRouter);
-  app.use('/optimization/recipes', optimizationRecipeRouter);
+  app.use('/api/organization/resource-types', resourceTypeRouter);
+  app.use('/api/organization/resource-instances', resourceInstanceRouter);
 
-  app.get('/', (req: express.Request, res: express.Response) => {
-    res.send('hello world!');
-  });
+  app.use('/api/optimization/algorithms', optimizationAlgorithmRouter);
+  app.use('/api/optimization/executions', optimizationExecutionRouter);
+  app.use('/api/optimization/transformers', optimizationTransformerRouter);
+  app.use('/api/optimization/recipes', optimizationRecipeRouter);
 
   app.listen(port);
 
@@ -66,8 +59,6 @@ async function startApiServer(): Promise<void> {
   if (config.resourceInstanceInitializer.enable) {
     await ResourceInstanceInitializer.initializeResourceInstances();
   }
-
-  testRecipe();
 }
 
 const db = mongoose.connection;
