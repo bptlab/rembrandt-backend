@@ -30,7 +30,7 @@ export default class InputController implements IngredientController {
     const resourceInstances = await ResourceInstanceModel
       .find({ resourceType: this.resourceType })
       .lean()
-      .exec();
+      .exec() as ResourceInstance[];
 
     resourceInstances.forEach((instance: ResourceInstance) => {
       instance.attributes = ResourceInstance.convertAttributeArrayToObject(instance.attributes);
