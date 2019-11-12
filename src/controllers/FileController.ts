@@ -92,7 +92,7 @@ export default class FileController {
     if (resourceType instanceof ObjectId) {
       const resourceTypeObject = await ResourceTypeModel.findById(getIdFromRef(resourceType)).lean().exec();
       if (resourceTypeObject) {
-        resourceTypeName = resourceTypeObject.name;
+        resourceTypeName = (resourceTypeObject as ResourceType).name;
       } else {
         throw new Error(`Could not find name of input resource type with id ${getIdFromRef(resourceType)}.`);
       }
