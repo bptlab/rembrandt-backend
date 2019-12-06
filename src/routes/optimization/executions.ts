@@ -29,7 +29,7 @@ export const populateRecipeOptions = {
  *          content:
  *            application/vnd.api+json:
  *              schema:
- *                $ref: '#/components/schemas/OptimizationAlgorithmsResponse'
+ *                $ref: '#/components/schemas/OptimizationExecutionsResponse'
  */
 router.get('/', async (req: express.Request, res: express.Response) => {
   try {
@@ -49,13 +49,13 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  *
  *  /optimization/executions/{id}:
  *    get:
- *      summary: Get a optimization execution by ID
+ *      summary: Get an optimization execution by ID
  *      tags:
  *        - OptimizationExecution
  *      parameters:
  *        - name: id
  *          in: path
- *          description: Optimization Algorithm ID
+ *          description: Optimization Execution ID
  *          required: true
  *          schema:
  *            type: string
@@ -65,7 +65,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  *          content:
  *            application/vnd.api+json:
  *              schema:
- *                $ref: '#/components/schemas/OptimizationAlgorithmResponse'
+ *                $ref: '#/components/schemas/OptimizationExecutionResponse'
  */
 router.get('/:executionId', async (req: express.Request, res: express.Response) => {
   try {
@@ -83,6 +83,30 @@ router.get('/:executionId', async (req: express.Request, res: express.Response) 
   }
 });
 
+/**
+ * @swagger
+ *
+ *  /optimization/executions/{id}/instances:
+ *    get:
+ *      summary: Get all resources that resulted from a specific optimization execution
+ *      tags:
+ *        - OptimizationExecution
+ *        - ResourceInstances
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Optimization Execution ID
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        '200':
+ *          description: Successful
+ *          content:
+ *            application/vnd.api+json:
+ *              schema:
+ *                $ref: '#/components/schemas/ResourceInstancesResponse'
+ */
 router.get('/:executionId/instances', async (req: express.Request, res: express.Response) => {
   try {
     const optimizationExecution = await OptimizationExecutionModel.findById(req.params.executionId).exec();
@@ -109,7 +133,6 @@ router.get('/:executionId/instances', async (req: express.Request, res: express.
   }
 });
 
-
 /**
  * @swagger
  *
@@ -117,7 +140,7 @@ router.get('/:executionId/instances', async (req: express.Request, res: express.
  *    delete:
  *      summary: Delete a optimization execution with a given ID
  *      tags:
- *        - OptimizationRecipe
+ *        - OptimizationExecution
  *      parameters:
  *        - name: id
  *          in: path

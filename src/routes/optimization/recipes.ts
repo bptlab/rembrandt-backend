@@ -42,7 +42,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
  *
  *  /optimization/recipes/{id}:
  *    get:
- *      summary: Get a optimization recipe by ID
+ *      summary: Get an optimization recipe by ID
  *      tags:
  *        - OptimizationRecipe
  *      parameters:
@@ -95,6 +95,30 @@ router.get('/object/:recipeId', async (req: express.Request, res: express.Respon
   }
 });
 
+/**
+ * @swagger
+ *
+ *  /optimization/recipes/{id}/execute:
+ *    get:
+ *      summary: Start an optimization recipe by ID
+ *      tags:
+ *        - OptimizationRecipe
+ *        - OptimizationExecution
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Optimization Recipe ID
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        '200':
+ *          description: Successful
+ *          content:
+ *            application/vnd.api+json:
+ *              schema:
+ *                $ref: '#/components/schemas/OptimizationExecutionResponse'
+ */
 router.get('/:recipeId/execute', async (req: express.Request, res: express.Response) => {
   try {
     const optimizationRecipe = await OptimizationRecipeModel
@@ -112,6 +136,30 @@ router.get('/:recipeId/execute', async (req: express.Request, res: express.Respo
   }
 });
 
+/**
+ * @swagger
+ *
+ *  /optimization/recipes/{id}/executions:
+ *    get:
+ *      summary: Get all executions of optimization recipe with given ID
+ *      tags:
+ *        - OptimizationRecipe
+ *        - OptimizationExecution
+ *      parameters:
+ *        - name: id
+ *          in: path
+ *          description: Optimization Recipe ID
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        '200':
+ *          description: Successful
+ *          content:
+ *            application/vnd.api+json:
+ *              schema:
+ *                $ref: '#/components/schemas/OptimizationExecutionsResponse'
+ */
 router.get('/:recipeId/executions', async (req: express.Request, res: express.Response) => {
   try {
     const optimizationExecutions = await OptimizationExecutionModel.find({ recipe: req.params.recipeId }).exec();
