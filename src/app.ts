@@ -33,23 +33,24 @@ function enforceContentType(req: express.Request, res: express.Response, next: e
 async function startApiServer(): Promise<void> {
   const app: express.Application = express();
   const port: string = process.env.PORT || '3000';
+  const baseUrl: string = process.env.BASE_URL || '';
 
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json({ type:  contentType}));
   app.use(cors());
   app.use(express.static('public'));
 
-  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
+  app.use(baseUrl + '/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
-  app.use('/api', enforceContentType);
+  app.use(baseUrl + '/api', enforceContentType);
 
-  app.use('/api/organization/resource-types', resourceTypeRouter);
-  app.use('/api/organization/resource-instances', resourceInstanceRouter);
+  app.use(baseUrl + '/api/organization/resource-types', resourceTypeRouter);
+  app.use(baseUrl + '/api/organization/resource-instances', resourceInstanceRouter);
 
-  app.use('/api/optimization/algorithms', optimizationAlgorithmRouter);
-  app.use('/api/optimization/executions', optimizationExecutionRouter);
-  app.use('/api/optimization/transformers', optimizationTransformerRouter);
-  app.use('/api/optimization/recipes', optimizationRecipeRouter);
+  app.use(baseUrl + '/api/optimization/algorithms', optimizationAlgorithmRouter);
+  app.use(baseUrl + '/api/optimization/executions', optimizationExecutionRouter);
+  app.use(baseUrl + '/api/optimization/transformers', optimizationTransformerRouter);
+  app.use(baseUrl + '/api/optimization/recipes', optimizationRecipeRouter);
 
   app.listen(port);
 
