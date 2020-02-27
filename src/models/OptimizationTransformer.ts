@@ -94,6 +94,7 @@ export const optimizationTransformerSerializer = new Serializer('OptimizationTra
       'attributes',
       'parentType',
       'eponymousAttribute',
+      'costAttribute',
     ],
   },
   keyForAttribute: 'camelCase',

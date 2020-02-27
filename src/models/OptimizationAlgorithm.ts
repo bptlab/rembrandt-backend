@@ -134,6 +134,7 @@ export const optimizationAlgorithmSerializer = new Serializer('optimizationAlgor
       'attributes',
       'parentType',
       'eponymousAttribute',
+      'costAttribute',
     ],
   },
   outputs: {
@@ -145,6 +146,7 @@ export const optimizationAlgorithmSerializer = new Serializer('optimizationAlgor
       'attributes',
       'parentType',
       'eponymousAttribute',
+      'costAttribute',
     ],
   },
   keyForAttribute: 'camelCase',
