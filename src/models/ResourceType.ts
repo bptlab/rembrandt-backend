@@ -21,6 +21,18 @@ import { Serializer } from 'jsonapi-serializer';
       });
     }
   }
+
+  if (this.costAttribute) {
+    const allAttributes = await this.getCompleteListOfAttributes();
+    const costAttributeDefined = allAttributes.some((attribute) => {
+      return attribute.name === this.costAttribute;
+    });
+    if (!costAttributeDefined) {
+      return new Promise((resolve, reject) => {
+        reject(new Error(`The attribute marked as costAttribute '${this.costAttribute}' is not defined on this resource type.`));
+      });
+    }
+  }
 })
 
 @pre<ResourceType>('remove', async function(): Promise<void> {
@@ -107,6 +119,9 @@ export class ResourceType extends Typegoose {
   @prop({ required: false })
   public eponymousAttribute?: string;
 
+  @prop({ required: false })
+  public costAttribute?: string;
+
   @prop({ ref: ResourceType })
   public parentType?: Ref<ResourceType>;
   // endregion
@@ -151,6 +166,14 @@ export class ResourceType extends Typegoose {
   }
 
   @instanceMethod
+  public getCostAttribute(): ResourceAttribute | undefined {
+    const attributes: ResourceAttribute[] = this.attributes;
+    return attributes.find((attribute: any) => {
+      return (attribute.name === this.costAttribute);
+    });
+  }
+
+  @instanceMethod
   public async setParentResourceTypeByName(resourceTypeName: string): Promise<void> {
     const parentResourceType = await ResourceTypeModel.findOne({ name: resourceTypeName });
 
@@ -181,6 +204,7 @@ export const resourceTypeSerializer = new Serializer('resourceType', {
     'attributes',
     'parentType',
     'eponymousAttribute',
+    'costAttribute',
   ],
   parentType: {
     ref: '_id',
@@ -191,6 +215,7 @@ export const resourceTypeSerializer = new Serializer('resourceType', {
       'attributes',
       'parentType',
       'eponymousAttribute',
+      'costAttribute',
     ],
   },
   keyForAttribute: 'camelCase',
