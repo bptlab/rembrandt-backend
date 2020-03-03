@@ -176,6 +176,7 @@ export const resourceInstanceSerializer = new Serializer('resourceInstance', {
       'attributes',
       'parentType',
       'eponymousAttribute',
+      'timeAttribute',
       'costAttribute',
     ],
   },

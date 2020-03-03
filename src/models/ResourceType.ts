@@ -79,6 +79,10 @@ import { Serializer } from 'jsonapi-serializer';
  *                      $ref: '#/components/schemas/ResourceAttribute'
  *                  eponymousAttribute:
  *                    type: string
+ *                  timeAttribute:
+ *                    type: string
+ *                  costAttribute:
+ *                    type: string
  *      PopulatedResourceType:
  *        allOf:
  *          - $ref: '#/components/schemas/ResourceType'
@@ -118,6 +122,9 @@ export class ResourceType extends Typegoose {
 
   @prop({ required: false })
   public eponymousAttribute?: string;
+
+  @prop({ required: false })
+  public timeAttribute?: string;
 
   @prop({ required: false })
   public costAttribute?: string;
@@ -166,6 +173,14 @@ export class ResourceType extends Typegoose {
   }
 
   @instanceMethod
+  public getTimeAttribute(): ResourceAttribute | undefined {
+    const attributes: ResourceAttribute[] = this.attributes;
+    return attributes.find((attribute: any) => {
+      return (attribute.name === this.timeAttribute);
+    });
+  }
+
+  @instanceMethod
   public getCostAttribute(): ResourceAttribute | undefined {
     const attributes: ResourceAttribute[] = this.attributes;
     return attributes.find((attribute: any) => {
@@ -204,6 +219,7 @@ export const resourceTypeSerializer = new Serializer('resourceType', {
     'attributes',
     'parentType',
     'eponymousAttribute',
+    'timeAttribute',
     'costAttribute',
   ],
   parentType: {
@@ -215,6 +231,7 @@ export const resourceTypeSerializer = new Serializer('resourceType', {
       'attributes',
       'parentType',
       'eponymousAttribute',
+      'timeAttribute',
       'costAttribute',
     ],
   },
