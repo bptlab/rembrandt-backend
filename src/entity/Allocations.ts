@@ -15,7 +15,9 @@ Resource!: string;
 @Column()
 AllocationService!: string;
 
-@Column()
+@Column({
+  default: null
+})
 Duration!: number;
 
 @Column()
