@@ -22,6 +22,18 @@ import { Serializer } from 'jsonapi-serializer';
     }
   }
 
+  if (this.timeAttribute) {
+    const allAttributes = await this.getCompleteListOfAttributes();
+    const timeAttributeDefined = allAttributes.some((attribute) => {
+      return attribute.name === this.timeAttribute;
+    });
+    if (!timeAttributeDefined) {
+      return new Promise((resolve, reject) => {
+        reject(new Error(`The attribute marked as timeAttribute '${this.timeAttribute}' is not defined on this resource type.`));
+      });
+    }
+  }
+
   if (this.costAttribute) {
     const allAttributes = await this.getCompleteListOfAttributes();
     const costAttributeDefined = allAttributes.some((attribute) => {
