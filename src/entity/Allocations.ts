@@ -1,24 +1,24 @@
 import {Entity, Column, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
-export class AllocationEntry {
+export class AllocationLog {
 
 @PrimaryGeneratedColumn()
-id: number;
+public id: number;
 
 @Column()
-Date: Date;
+public Date: Date;
 
 @Column()
-Resource : string;
+public Resource: string;
 
 @Column()
-AllocationService : string;
+public AllocationService: string;
 
 @Column()
-Duration : number;
+public Duration: number;
 
 @Column()
-Requester : string;
+public Requester: string;
 
 }

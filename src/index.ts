@@ -1,27 +1,27 @@
-import "reflect-metadata";
-import {createConnection} from "typeorm";
-import { AllocationEntry } from "./entity/Allocations";
+import 'reflect-metadata';
+import {createConnection} from 'typeorm';
+import { AllocationLog } from './entity/Allocations';
 
 createConnection({
-  type: "mysql",
-  host: "localhost",
+  type: 'mysql',
+  host: 'localhost',
   port: 3306,
-  username: "root",
-  password: "12345",
-  database: "mysql",
+  username: 'root',
+  password: '12345',
+  database: 'mysql',
   entities: [
-     __dirname + "/entity/*.ts"
+     __dirname + '/entity/*.ts',
   ],
   synchronize: true,
-  logging: false
+  logging: false,
 }).then(async connection => {
-  let allocation = new AllocationEntry();
+  const allocation = new AllocationLog();
 
   allocation.Date = new Date();
-  allocation.Resource = "Testresource";
-  allocation.AllocationService = "Testservice";
+  allocation.Resource = 'Testresource';
+  allocation.AllocationService = 'Testservice';
   allocation.Duration = 100;
-  allocation.Requester = "testrequester";
+  allocation.Requester = 'testrequester';
 
   await connection.manager.save(allocation);
   console.log('test saved');
