@@ -14,9 +14,7 @@ import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
 import shutdown from '@/utils/shutdown';
-import 'reflect-metadata';
-import {createConnection} from 'typeorm';
-import { AllocationLog } from './entity/Allocations';
+import { saveInAllocationLog } from './utils/utils';
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
@@ -72,19 +70,7 @@ db.once('open', startApiServer);
 mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/rembrandt`, { useNewUrlParser: true });
 
 // mysql connection
-createConnection().then(async (connection) => {
-  const allocation = new AllocationLog();
-
-  allocation.Date = new Date();
-  allocation.Resource = 'Testresource';
-  allocation.AllocationService = 'Testservice';
-  allocation.Duration = 101;
-  allocation.Requester = 'testrequester';
-
-  await connection.manager.save(allocation);
-  console.log('test saved');
-
-}).catch(error => console.log(error));
+saveInAllocationLog('testresource', 'testservice', 'ich');
 
 process.on('SIGINT', async () => {
   await shutdown();
