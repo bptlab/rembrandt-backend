@@ -20,7 +20,9 @@ AllocationService!: string;
 })
 Duration!: number;
 
-@Column()
+@Column({
+  default: null
+})
 Requester!: string;
 
 }

@@ -14,7 +14,7 @@ import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
 import shutdown from '@/utils/shutdown';
-import { saveInAllocationLog } from './utils/utils';
+import allocationLogger from '@/utils/allocationLogger';
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
@@ -70,7 +70,11 @@ db.once('open', startApiServer);
 mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/rembrandt`, { useNewUrlParser: true });
 
 // mysql connection
-saveInAllocationLog('testresource', 'testservice', 'ich');
+
+allocationLogger.saveInAllocationLog('testresource', 'testservice', 'ich');
+allocationLogger.saveInAllocationLog('testresource', 'testservice', 'du');
+allocationLogger.saveInAllocationLog('testresource', 'testservice', 'er');
+allocationLogger.saveInAllocationLog('testresource', 'testservice', 'sie');
 
 process.on('SIGINT', async () => {
   await shutdown();

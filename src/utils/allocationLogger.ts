@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import {createConnection} from 'typeorm';
 import { AllocationLog } from 'src/entity/Allocations';
+import winston = require('winston');
 
 export default class RootTypeInitializer {
 
@@ -14,7 +15,7 @@ export default class RootTypeInitializer {
     allocation.AllocationService = allocationService;
     allocation.Requester = requester;
     await connection.manager.save(allocation);
-    console.log('test saved');
-    }).catch(error => console.log(error));
+    winston.info('test saved');
+    }).catch(error => winston.error(error));
   }
 }
