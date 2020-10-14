@@ -1,4 +1,4 @@
-// import { promises as fs } from 'fs';
+import { promises as fs } from 'fs';
 import path, { resolve } from 'path';
 import config from '@/config.json';
 import IntermediateResult from '@/models/IntermediateResult';
@@ -8,7 +8,7 @@ import { ResourceInstance } from '@/models/ResourceInstance';
 import { getIdFromRef } from '@/utils/utils';
 import { ObjectId } from 'bson';
 import winston = require('winston');
-const fs = require('fs').promises;
+// const fs = require('fs').promises;
 
 export default class FileController {
   // region public static methods
