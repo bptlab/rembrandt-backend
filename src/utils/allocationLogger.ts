@@ -5,9 +5,9 @@ import winston = require('winston');
 
 export default class RootTypeInitializer {
 
- public static async saveInAllocationLog(resource: string,
-                                  allocationService: string,
-                                  requester: string): Promise<void>{
+ public static async saveInAllocationLog(resource: string, allocationService: string,
+                                         requester: string): Promise<void> {
+
   createConnection().then(async (connection) => {
     const allocation = new AllocationLog();
     allocation.Date = new Date();
@@ -16,6 +16,6 @@ export default class RootTypeInitializer {
     allocation.Requester = requester;
     await connection.manager.save(allocation);
     winston.info('test saved');
-    }).catch(error => winston.error(error));
+    }).catch((error) => winston.error(error));
   }
 }

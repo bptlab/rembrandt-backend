@@ -4,6 +4,8 @@ import winston = require('winston');
 import { OptimizationRecipe } from '@/models/OptimizationRecipe';
 import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
 import OptimizationExecutionIngredientState from '@/models/OptimizationExecutionIngredientState';
+import allocationLogger from '@/utils/allocationLogger';
+
 
 export default class RecipeController {
   // region public static methods
@@ -23,6 +25,13 @@ export default class RecipeController {
 
     recipeController.ingredients = await Promise.all(recipeIngredientsPromise);
     await recipeController.execution.save();
+    //writing allocation Log
+    recipeController.execution.result?.data.array.forEach(resourceInstance => {
+      allocationLogger.saveInAllocationLog(resourceInstance.id, recipeController.name, 'Testnull')
+    });
+ //   recipeController.execution.result?.getInstanceIdsForAllResourceTypes().forEach((resourceInstance) => {
+//      allocationLogger.saveInAllocationLog(resourceInstance, recipeController.name, null)
+ //   });
     return recipeController;
   }
   // endregion

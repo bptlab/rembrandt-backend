@@ -16,12 +16,12 @@ Resource!: string;
 AllocationService!: string;
 
 @Column({
-  default: null
+  default: null,
 })
 Duration!: number;
 
 @Column({
-  default: null
+  default: null,
 })
 Requester!: string;
 
