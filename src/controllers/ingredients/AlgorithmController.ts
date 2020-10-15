@@ -5,6 +5,8 @@ import DockerController from '../DockerController';
 import IntermediateResult from '@/models/IntermediateResult';
 import config from '@/config.json';
 import FileController from '../FileController';
+import path, { resolve } from 'path';
+
 
 export default class AlgorithmController implements IngredientController {
   // region public static methods
@@ -40,7 +42,7 @@ export default class AlgorithmController implements IngredientController {
 
     try {
       const containerName = config.docker.containerPrefix + identifier;
-
+      winston.debug(path.normalize(config.docker.dataExchangeDirectory));
       await this.dockerController.run(
         this.optimizationAlgorithm.imageIdentifier,
         [],
@@ -49,7 +51,8 @@ export default class AlgorithmController implements IngredientController {
           name: containerName,
           env: [`folderPath=/mnt/rembrandt/${identifier}/`],
           HostConfig: {
-            Binds: ['rembrandt_data-exchange:/mnt/rembrandt:rw'],
+            Binds: [`D:\\Uni\\Master\\MA\\Rembrandt\\rembrandt-backend\\dataExchange\\:/mnt/rembrandt:rw`],
+            //Binds: ['rembrandt_data-exchange:/mnt/rembrandt:rw'],
           },
         })
         .then((container) => {

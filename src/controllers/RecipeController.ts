@@ -80,8 +80,9 @@ export default class RecipeController {
     this.terminateRecipeExecution(response);
     await this.execution.save();
     //writing allocation log
-    this.execution.result?.data.array.forEach(resourceInstance => {
-      allocationLogger.saveInAllocationLog(resourceInstance.id, this.name, 'Testnull')
+    this.execution.result!.getInstanceIdsForAllResourceTypes().forEach(resourceInstance => {
+      console.log(resourceInstance.toHexString());
+      allocationLogger.saveInAllocationLog(resourceInstance.toHexString(), this.name, 'Testnull')
     });
     return;
   }

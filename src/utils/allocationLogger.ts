@@ -16,6 +16,7 @@ export default class RootTypeInitializer {
     allocation.Requester = requester;
     await connection.manager.save(allocation);
     winston.info('test saved');
+    console.log('test really saved - for real')
     }).catch((error) => winston.error(error));
   }
 }

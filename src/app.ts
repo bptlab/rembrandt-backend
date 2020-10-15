@@ -71,10 +71,10 @@ mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/rembrandt`,
 
 // mysql connection
 
-allocationLogger.saveInAllocationLog('testresource', 'testservice', 'ich');
-allocationLogger.saveInAllocationLog('testresource', 'testservice', 'du');
-allocationLogger.saveInAllocationLog('testresource', 'testservice', 'er');
-allocationLogger.saveInAllocationLog('testresource', 'testservice', 'sie');
+//allocationLogger.saveInAllocationLog('testresource', 'testservice', 'ich');
+//allocationLogger.saveInAllocationLog('testresource', 'testservice', 'du');
+//allocationLogger.saveInAllocationLog('testresource', 'testservice', 'er');
+//allocationLogger.saveInAllocationLog('testresource', 'testservice', 'sie');
 
 process.on('SIGINT', async () => {
   await shutdown();

@@ -11,7 +11,7 @@
   },
   "docker": {
     "configuration": {
-      "socketPath": "/var/run/docker.sock"
+      "socketPath": "//./pipe/docker_engine"
     },
     "containerPrefix": "rembrandt-",
     "dataExchangeDirectory": "dataExchange"
