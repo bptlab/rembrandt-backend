@@ -25,13 +25,6 @@ export default class RecipeController {
 
     recipeController.ingredients = await Promise.all(recipeIngredientsPromise);
     await recipeController.execution.save();
-    //writing allocation Log
-    recipeController.execution.result?.data.array.forEach(resourceInstance => {
-      allocationLogger.saveInAllocationLog(resourceInstance.id, recipeController.name, 'Testnull')
-    });
- //   recipeController.execution.result?.getInstanceIdsForAllResourceTypes().forEach((resourceInstance) => {
-//      allocationLogger.saveInAllocationLog(resourceInstance, recipeController.name, null)
- //   });
     return recipeController;
   }
   // endregion
@@ -86,6 +79,10 @@ export default class RecipeController {
       new IntermediateResult({}, true));
     this.terminateRecipeExecution(response);
     await this.execution.save();
+    //writing allocation log
+    this.execution.result?.data.array.forEach(resourceInstance => {
+      allocationLogger.saveInAllocationLog(resourceInstance.id, this.name, 'Testnull')
+    });
     return;
   }
   // endregion
