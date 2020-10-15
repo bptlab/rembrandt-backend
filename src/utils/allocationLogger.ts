@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import {createConnection} from 'typeorm';
-import { AllocationLog } from 'src/entity/Allocations';
+import { AllocationLog } from '@/entity/Allocations';
 import winston = require('winston');
 
 export default class RootTypeInitializer {
