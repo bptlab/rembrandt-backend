@@ -15,6 +15,7 @@ import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
 import shutdown from '@/utils/shutdown';
 import allocationLogger from '@/utils/allocationLogger';
+import { getConnection } from 'typeorm';
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
@@ -73,13 +74,15 @@ mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/rembrandt`,
 
 (async () => {
   await allocationLogger.createAllocationLogConnection();
+  await allocationLogger.saveInAllocationLog('testres', 'testserv', 'mymy');
+  await allocationLogger.queryAllocationLog('select * from allocation_log where Requester = "mymy";');
 })();
+
 
 //allocationLogger.saveInAllocationLog('testresource', 'testservice', 'ich');
 //allocationLogger.saveInAllocationLog('testresource', 'testservice', 'du');
 //allocationLogger.saveInAllocationLog('testresource', 'testservice', 'er');
-allocationLogger.saveInAllocationLog('testresource', 'testservice', 'sie');
-allocationLogger.queryAllocationLog('SELECT * from allocation_log;');
+
 
 process.on('SIGINT', async () => {
   await shutdown();

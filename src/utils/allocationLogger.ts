@@ -14,15 +14,11 @@ export default class RootTypeInitializer {
  }
 
  public static async createAllocationLogConnection(): Promise<void>{
-  console.log('creating connection');
   const connection = await createConnection();
-  console.log('established connection');
  }
 
  public static async saveInAllocationLog(resource: string, allocationService: string,
                                          requester: string): Promise<void> {
-
-  //createConnection().then(async (connection) => {
     console.log('trying to save');
     const allocation = new AllocationLog();
     allocation.Date = new Date();
@@ -32,6 +28,5 @@ export default class RootTypeInitializer {
     await getManager().save(allocation);
     winston.info('test saved');
     console.log('test really saved - for real');
-    //}).catch((error) => winston.error(error));
   }
 }
