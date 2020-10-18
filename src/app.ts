@@ -15,7 +15,6 @@ import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
 import shutdown from '@/utils/shutdown';
 import allocationLogger from '@/utils/allocationLogger';
-import { getConnection } from 'typeorm';
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
