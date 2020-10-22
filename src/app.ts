@@ -73,14 +73,10 @@ mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/rembrandt`,
 
 (async () => {
   await allocationLogger.createAllocationLogConnection();
-  await allocationLogger.saveInAllocationLog('testres', 'testserv', 'mymy');
-  await allocationLogger.queryAllocationLog('select * from allocation_log where Requester = "mymy";');
+  await allocationLogger.saveInEventAllocationLog('testres', 'testserv', 'mymy');
+ // await allocationLogger.setDurationEntry(2,10);
+  // await allocationLogger.queryAllocationLog('select * from allocation_log where Requester = "mymy";');
 })();
-
-
-//allocationLogger.saveInAllocationLog('testresource', 'testservice', 'ich');
-//allocationLogger.saveInAllocationLog('testresource', 'testservice', 'du');
-//allocationLogger.saveInAllocationLog('testresource', 'testservice', 'er');
 
 
 process.on('SIGINT', async () => {

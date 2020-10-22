@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import {createConnection, getConnection, getManager} from 'typeorm';
 import { AllocationLog } from '@/entity/Allocations';
 import winston = require('winston');
+import { EventAllocationLog } from '@/entity/EventLogAllocation';
 
 export default class RootTypeInitializer {
 
@@ -29,4 +30,25 @@ export default class RootTypeInitializer {
     winston.info('test saved');
     console.log('test really saved - for real');
   }
+
+  public static async saveInEventAllocationLog(resource: string, allocationService: string,
+                                              requester: string): Promise<void> {
+    console.log('trying to save EventAllocation');
+    const eventAllocation = new EventAllocationLog();
+    eventAllocation.Date = new Date();
+    eventAllocation.Resource = resource;
+    eventAllocation.AllocationService = allocationService;
+    eventAllocation.Requester = requester;
+    await getManager().save(eventAllocation);
+    winston.info('test saved');
+    console.log('eventAllocation was saved');
+  }
+
+  public static async setDurationEntry(id : number, duration: number) : Promise<void>{
+    //console.log('this is the find result');
+    await getManager().update(AllocationLog,id, {Duration:duration})
+    //console.log(await getManager().find(AllocationLog, {id: id}));
+
+  }
+
 }
