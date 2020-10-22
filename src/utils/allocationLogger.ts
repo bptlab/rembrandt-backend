@@ -44,11 +44,12 @@ export default class RootTypeInitializer {
     console.log('eventAllocation was saved');
   }
 
-  public static async setDurationEntry(id : number, duration: number) : Promise<void>{
-    //console.log('this is the find result');
-    await getManager().update(AllocationLog,id, {Duration:duration})
-    //console.log(await getManager().find(AllocationLog, {id: id}));
+  public static async updateAllocationTable(table: string, column : string, value: string, id: number) : Promise<void>{
+    await getManager().update(table,id, {column:value})
+  }
 
+  public static async setAllocationLogDuration(id : number, duration: number) : Promise<void>{
+    await getManager().update(AllocationLog,id, {Duration:duration})
   }
 
 }
