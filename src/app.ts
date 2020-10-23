@@ -9,12 +9,14 @@ import optimizationAlgorithmRouter from '@/routes/optimization/algorithms';
 import optimizationExecutionRouter from '@/routes/optimization/executions';
 import optimizationTransformerRouter from '@/routes/optimization/transformers';
 import optimizationRecipeRouter from '@/routes/optimization/recipes';
+import analysisRouter from '@/routes/analysis/metrics';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
 import shutdown from '@/utils/shutdown';
 import allocationLogger from '@/utils/allocationLogger';
+
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
@@ -51,6 +53,7 @@ async function startApiServer(): Promise<void> {
   app.use('/api/optimization/executions', optimizationExecutionRouter);
   app.use('/api/optimization/transformers', optimizationTransformerRouter);
   app.use('/api/optimization/recipes', optimizationRecipeRouter);
+  app.use('/api/analysis/metrics', analysisRouter);
 
   app.listen(port);
 
