@@ -17,7 +17,6 @@ import config from '@/config.json';
 import shutdown from '@/utils/shutdown';
 import allocationLogger from '@/utils/allocationLogger';
 
-
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
 const contentType: string = 'application/vnd.api+json';
@@ -76,11 +75,10 @@ mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/rembrandt`,
 
 (async () => {
   await allocationLogger.createAllocationLogConnection();
-  // await allocationLogger.saveInEventAllocationLog('testres', 'testserv', 'mymy');
+ // await allocationLogger.saveInEventAllocationLog('testres', 'SMile Tour Planning - Rule', 'mymy');
  // await allocationLogger.setDuration(2,10);
-  // await allocationLogger.queryAllocationLog('select * from allocation_log where Requester = "mymy";');
+  await allocationLogger.queryDatabase('select * from allocation_log where Requester = "mymy";');
 })();
-
 
 process.on('SIGINT', async () => {
   await shutdown();

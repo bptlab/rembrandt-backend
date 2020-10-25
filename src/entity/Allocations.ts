@@ -4,25 +4,25 @@ import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 export class AllocationLog {
 
 @PrimaryGeneratedColumn()
-id!: number;
+public id!: number;
 
 @Column()
-Date!: Date;
+public Date!: Date;
 
 @Column()
-Resource!: string;
+public Resource!: string;
 
 @Column()
-AllocationService!: string;
+public AllocationService!: string;
 
 @Column({
   default: null,
 })
-Duration!: number;
+public Duration!: number;
 
 @Column({
   default: null,
 })
-Requester!: string;
+public Requester!: string;
 
 }

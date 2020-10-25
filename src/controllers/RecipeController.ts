@@ -6,7 +6,6 @@ import OptimizationExecutionModel, { OptimizationExecution } from '@/models/Opti
 import OptimizationExecutionIngredientState from '@/models/OptimizationExecutionIngredientState';
 import allocationLogger from '@/utils/allocationLogger';
 
-
 export default class RecipeController {
   // region public static methods
   public static async createFromOptimizationIngredient(recipe: OptimizationRecipe): Promise<RecipeController> {
@@ -79,10 +78,9 @@ export default class RecipeController {
       new IntermediateResult({}, true));
     this.terminateRecipeExecution(response);
     await this.execution.save();
-    //writing allocation log
-    this.execution.result!.getInstanceIdsForAllResourceTypes().forEach(resourceInstance => {
-      console.log(resourceInstance.toHexString());
-      allocationLogger.saveInAllocationLog(resourceInstance.toHexString(), this.name, 'Testnull')
+    // writing allocation log
+    this.execution.result!.getInstanceIdsForAllResourceTypes().forEach((resourceInstance) => {
+      allocationLogger.saveInAllocationLog(resourceInstance.toHexString(), this.name, 'Testnull');
     });
     return;
   }

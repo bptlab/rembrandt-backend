@@ -7,7 +7,6 @@ import config from '@/config.json';
 import FileController from '../FileController';
 import path, { resolve } from 'path';
 
-
 export default class AlgorithmController implements IngredientController {
   // region public static methods
   // endregion
@@ -52,7 +51,7 @@ export default class AlgorithmController implements IngredientController {
           env: [`folderPath=/mnt/rembrandt/${identifier}/`],
           HostConfig: {
             Binds: [`D:\\Uni\\Master\\MA\\Rembrandt\\rembrandt-backend\\dataExchange\\:/mnt/rembrandt:rw`],
-            //Binds: ['rembrandt_data-exchange:/mnt/rembrandt:rw'],
+            // Binds: ['rembrandt_data-exchange:/mnt/rembrandt:rw'],
           },
         })
         .then((container) => {

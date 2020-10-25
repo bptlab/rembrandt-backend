@@ -5,8 +5,6 @@ import {createConnection, getConnection, getManager} from 'typeorm';
 import { EventAllocationLog } from '@/entity/EventLogAllocation';
 import { AllocationLog } from '@/entity/Allocations';
 
-
-
 export default class EventLogReader {
 
 // region public static methods
@@ -20,7 +18,7 @@ export default class EventLogReader {
 // endregion
 
 // region private members
-  
+
 // endregion
 
 // region constructor
@@ -29,7 +27,7 @@ export default class EventLogReader {
 
 // region public methods
 
-public async readEventLog(filePathForEventLog : string): Promise<void> {
+public async readEventLog(filePathForEventLog: string): Promise<void> {
     const resultJSON = await fs.readFile(path.join(filePathForEventLog, 'eventlog.txt'), 'utf8');
     const resultObjects = JSON.parse(resultJSON);
 

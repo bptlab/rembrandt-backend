@@ -4,46 +4,45 @@ import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 export class EventAllocationLog {
 
 @PrimaryGeneratedColumn()
-id!: number;
+public id!: number;
 
 @Column()
-Date!: Date;
+public Date!: Date;
 
 @Column()
-Resource!: string;
+public Resource!: string;
 
 @Column()
-AllocationService!: string;
+public AllocationService!: string;
 
 @Column({
     default: null,
   })
-  TaskId!: number;
+public TaskId!: number;
 
 @Column({
     default: null,
   })
-  ProcessId!: number;
+public ProcessId!: number;
 
 @Column({
   default: null,
 })
-Duration!: number;
+public Duration!: number;
 
 @Column({
   default: null,
 })
-Requester!: string;
+public Requester!: string;
 
 @Column({
     default: null,
   })
-  Costs!: number;
+public Costs!: number;
 
 @Column({
     default: null,
   })
-  WaitingTime!: number;
+public WaitingTime!: number;
 
 }
-
