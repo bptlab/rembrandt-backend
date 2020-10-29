@@ -63,13 +63,13 @@ public static async readEventLog(filePathForEventLog: string): Promise<void> {
     ignoreAttributes : false,
   };
 
-  let startTime: number; 
+  let startTime: number = 0; 
 
   const eventLogData = await fs.readFile(path.join(filePathForEventLog, 'eventlog.xes'), 'utf8');
   const eventLogObject : EventLogObject = parser.parse(eventLogData, options);
   //console.log(eventLogObject.log);
-  eventLogObject.log.trace.forEach( async (trace: Trace) => {
-    trace.event.forEach( async (event: Event) => {
+  for (const trace of eventLogObject.log.trace){
+    for (const event of trace.event) {
       if (event.string.length == 3) {
         if (event.string[1].value == 'start') {
           console.log(event.date.value);
@@ -88,6 +88,11 @@ public static async readEventLog(filePathForEventLog: string): Promise<void> {
           }
         }
       }
+    }
+  }
+  eventLogObject.log.trace.forEach( async (trace: Trace) => {
+    trace.event.forEach( async (event: Event) => {
+      
     });
   });
     
