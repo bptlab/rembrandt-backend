@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dockerode": "^2.5.8",
     "express": "^4.16.4",
+    "fast-xml-parser": "^3.17.4",
     "json-api-serializer": "^2.6.0",
     "jsonapi-serializer": "^3.6.4",
     "mongoose": "^5.5.5",

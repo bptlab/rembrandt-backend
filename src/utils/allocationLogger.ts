@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { createConnection, getConnection, getManager } from 'typeorm';
 import { AllocationLog } from '@/entity/Allocations';
-import winston = require('winston');
 import { EventAllocationLog } from '@/entity/EventLogAllocation';
+import winston = require('winston');
 
 export default class RootTypeInitializer {
 
@@ -43,8 +43,26 @@ export default class RootTypeInitializer {
     await getManager().update(table, id, { column: value });
   }
 
-  public static async setAllocationLogDuration(id: number, duration: number): Promise<void> {
-    await getManager().update(AllocationLog, id, { Duration: duration });
+  public static async setDurationEntry(table: string, value: string, id: number): Promise<void> {
+    await getManager().update(table, id, { Duration: value });
+  }
+
+  public static async findEntryWithoutDuration(resource: string, allocationService: string): Promise<number | undefined> {
+    const resourceid = resource.substr(resource.indexOf('_') + 1,resource.length)
+    try {
+      const entry = await getManager().findOne(AllocationLog, {
+        select: ["id"],
+        where: {
+          Duration: null,
+          AllocationService: allocationService,
+          //Resource: resourceid
+        }
+        
+      })
+      return entry?.id;
+    } catch (error) {
+      return undefined;
+    }
   }
 
 }

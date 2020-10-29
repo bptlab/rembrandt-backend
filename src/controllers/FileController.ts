@@ -8,7 +8,6 @@ import { ResourceInstance } from '@/models/ResourceInstance';
 import { getIdFromRef } from '@/utils/utils';
 import { ObjectId } from 'bson';
 import winston = require('winston');
-// const fs = require('fs').promises;
 
 export default class FileController {
   // region public static methods
