@@ -47,22 +47,29 @@ export default class RootTypeInitializer {
     await getManager().update(table, id, { Duration: value });
   }
 
-  public static async findEntryWithoutDuration(resource: string, allocationService: string): Promise<number | undefined> {
-    const resourceid = resource.substr(resource.indexOf('_') + 1,resource.length)
+  public static async findEntryWithoutDuration(resource: string,
+                                               allocationService: string): Promise<number | undefined> {
+
     try {
       const entry = await getManager().findOne(AllocationLog, {
-        select: ["id"],
+        select: ['id'],
         where: {
           Duration: null,
           AllocationService: allocationService,
-          //Resource: resourceid
-        }
-        
-      })
+          Resource: this.truncatResourceString(resource),
+        },
+      });
       return entry?.id;
     } catch (error) {
       return undefined;
     }
+  }
+
+  public static truncatResourceString(completeString: string): string {
+    let rembrandtResource = '';
+    const indexOfResourceId: number = completeString.indexOf('_') + 1;
+    rembrandtResource = completeString.substr(indexOfResourceId, completeString.length);
+    return rembrandtResource;
   }
 
 }

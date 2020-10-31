@@ -10,13 +10,14 @@ import optimizationExecutionRouter from '@/routes/optimization/executions';
 import optimizationTransformerRouter from '@/routes/optimization/transformers';
 import optimizationRecipeRouter from '@/routes/optimization/recipes';
 import analysisRouter from '@/routes/analysis/metrics';
+import eventLogRouter from '@/routes/analysis/eventLog';
 import RootTypeInitializer from '@/utils/RootTypeInitializer';
 import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
 import shutdown from '@/utils/shutdown';
 import allocationLogger from '@/utils/allocationLogger';
-import EventLogController from '@/controllers/EventLogController'
+import EventLogController from '@/controllers/EventLogController';
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');
@@ -54,6 +55,7 @@ async function startApiServer(): Promise<void> {
   app.use('/api/optimization/transformers', optimizationTransformerRouter);
   app.use('/api/optimization/recipes', optimizationRecipeRouter);
   app.use('/api/analysis/metrics', analysisRouter);
+  app.use('/api/analysis/readlog', eventLogRouter);
 
   app.listen(port);
 
@@ -81,7 +83,7 @@ mongoose.connect(`mongodb://${process.env.MONGO_HOST || 'localhost'}/rembrandt`,
   await allocationLogger.queryDatabase('select * from allocation_log where Requester = "mymy";');
 })();
 
-EventLogController.readEventLog('D:\\Uni\\Master\\MA\\Rembrandt\\rembrandt-backend\\dataExchange\\');
+// EventLogController.readEventLog('D:\\Uni\\Master\\MA\\Rembrandt\\rembrandt-backend\\dataExchange\\');
 
 process.on('SIGINT', async () => {
   await shutdown();
