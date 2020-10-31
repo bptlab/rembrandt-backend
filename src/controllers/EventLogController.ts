@@ -90,12 +90,6 @@ public static async readEventLog(filePathForEventLog: string): Promise<void> {
       }
     }
   }
-  eventLogObject.log.trace.forEach( async (trace: Trace) => {
-    trace.event.forEach( async (event: Event) => {
-      
-    });
-  });
-    
 
     // now update database
     // for each trace
