@@ -43,8 +43,40 @@ export default class RootTypeInitializer {
     await getManager().update(table, id, { column: value });
   }
 
-  public static async setDurationEntry(table: string, value: string, id: number): Promise<void> {
+  public static async setDurationEntry(table: string, value: number, id: number): Promise<void> {
     await getManager().update(table, id, { Duration: value });
+  }
+
+  public static async setCostsEntry(table: string, value: number, id: number): Promise<void> {
+    await getManager().update(table, id, { Costs: value });
+  }
+
+  public static async setWaitingTimeEntry(table: string, value: number, id: number): Promise<void> {
+    await getManager().update(table, id, { WaitingTime: value });
+  }
+
+  public static async setRequesterEntry(table: string, value: string, id: number): Promise<void> {
+    await getManager().update(table, id, { Requester: value });
+  }
+
+  public static async setProcessIdEntry(table: string, value: string, id: number): Promise<void> {
+    await getManager().update(table, id, { ProcessId: value });
+  }
+
+  public static async setTaskIdEntry(table: string, value: string, id: number): Promise<void> {
+    await getManager().update(table, id, { TaskId: value });
+  }
+
+  public static async setAllocationServiceEntry(table: string, value: string, id: number): Promise<void> {
+    await getManager().update(table, id, { AllocationService: value });
+  }
+
+  public static async setResourceEntry(table: string, value: string, id: number): Promise<void> {
+    await getManager().update(table, id, { Resource: value });
+  }
+
+  public static async setDateEntry(table: string, value: string, id: number): Promise<void> {
+    await getManager().update(table, id, { Date: value });
   }
 
   public static async findEntryWithoutDuration(resource: string,

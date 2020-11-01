@@ -18,12 +18,12 @@ public AllocationService!: string;
 @Column({
     default: null,
   })
-public TaskId!: number;
+public TaskId!: string;
 
 @Column({
     default: null,
   })
-public ProcessId!: number;
+public ProcessId!: string;
 
 @Column({
   default: null,
