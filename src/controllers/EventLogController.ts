@@ -69,17 +69,24 @@ export default class EventLogController {
       const eventLogObject: EventLogObject = parser.parse(eventLogData, options);
       for (const trace of eventLogObject.log.trace) {
         for (const event of trace.event) {
-          if (event.string.length === 3) {
-            if (event.string[1].value === 'start') {
+          // if a resource was assinged to this event
+          if (event.string.some((attribute) => (attribute.key.includes('org:resource')))) {
+            //find correct line in eventLog
+            const indexOfTransition = event.string.findIndex((attribute: Attribute) => attribute.key.includes('lifecycle:transition'));
+            const indexOfResource = event.string.findIndex((attribute: Attribute) => attribute.key.includes('org:resource'));
+            const indexOftask = event.string.findIndex((attribute: Attribute) => attribute.key.includes('concept:name'));
+            if (event.string[indexOfTransition].value === 'start') {
               startTime = Math.round((new Date(event.date.value)).getTime() / 1000);
+              console.log(startTime);
             }
-            if (event.string[1].value === 'complete') {
+            if (event.string[indexOfTransition].value === 'complete') {
               const endTime = Math.round((new Date(event.date.value)).getTime() / 1000);
+              console.log(endTime);
               const duration = endTime - startTime;
               // look for matching entry based on taskname and resource
-              const id = await allocationLogger.findEntryWithoutDuration(event.string[2].value, event.string[0].value);
+              const id = await allocationLogger.findEntryWithoutDuration(event.string[indexOfResource].value, event.string[indexOftask].value);
               // const id = await allocationLogger.findEntryWithoutDuration(event.string[2].value, "SMile Tour Planning - Rule");
-              console.log(id + 'will be set to ' + duration);
+              console.log(id + ' will be set to ' + duration);
               if (id) {
                 await allocationLogger.setDurationEntry('AllocationLog', duration.toString(), id);
               }
