@@ -16,8 +16,8 @@ import ResourceInstanceInitializer from '@/utils/ResourceInstanceInitializer';
 import createJSONError from '@/utils/errorSerializer';
 import config from '@/config.json';
 import shutdown from '@/utils/shutdown';
-import allocationLogger from '@/utils/allocationLogger';
-import EventLogController from '@/controllers/EventLogController';
+import allocationLogger from '@/utils/AllocationLogger';
+
 
 // tslint:disable-next-line: no-var-requires
 const swaggerConfig = require('@/swagger.json');

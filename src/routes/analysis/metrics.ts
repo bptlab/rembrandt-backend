@@ -2,7 +2,7 @@ import winston from 'winston';
 import { Deserializer } from 'jsonapi-serializer';
 import createJSONError from '@/utils/errorSerializer';
 import express from 'express';
-import allocationLogger from '@/utils/allocationLogger';
+import allocationLogger from '@/utils/AllocationLogger';
 
 const JSONAPISerializer = require('json-api-serializer');
 const NewSerializer = new JSONAPISerializer({

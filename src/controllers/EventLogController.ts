@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import path, { resolve } from 'path';
-import allocationLogger from '@/utils/allocationLogger';
+import allocationLogger from '@/utils/AllocationLogger';
 import { createConnection, getConnection, getManager, Timestamp } from 'typeorm';
 import { EventAllocationLog } from '@/entity/EventLogAllocation';
 import { AllocationLog } from '@/entity/Allocations';

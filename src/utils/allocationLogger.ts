@@ -4,7 +4,7 @@ import { AllocationLog } from '@/entity/Allocations';
 import { EventAllocationLog } from '@/entity/EventLogAllocation';
 import winston = require('winston');
 
-export default class RootTypeInitializer {
+export default class AllocationLogger {
 
   public static async queryDatabase(sqlQuery: string): Promise<string> {
     const entityManager = getConnection().manager;

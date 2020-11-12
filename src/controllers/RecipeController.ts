@@ -4,7 +4,7 @@ import winston = require('winston');
 import { OptimizationRecipe } from '@/models/OptimizationRecipe';
 import OptimizationExecutionModel, { OptimizationExecution } from '@/models/OptimizationExecution';
 import OptimizationExecutionIngredientState from '@/models/OptimizationExecutionIngredientState';
-import allocationLogger from '@/utils/allocationLogger';
+import allocationLogger from '@/utils/AllocationLogger';
 
 export default class RecipeController {
   // region public static methods
