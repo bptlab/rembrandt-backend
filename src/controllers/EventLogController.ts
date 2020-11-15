@@ -88,7 +88,7 @@ export default class EventLogController {
               console.log('Duration of' + id + ' will be set to ' + duration);
               if (id) {
                 await allocationLogger.setDurationEntry('AllocationLog', duration, id);
-                if (indexOfCosts) {
+                if (indexOfCosts >= 0) {
                 const costs = event.string[indexOfCosts].value;
                 await allocationLogger.setCostsEntry('EventAllocationLog', parseInt(costs, 10), id);
                 }
