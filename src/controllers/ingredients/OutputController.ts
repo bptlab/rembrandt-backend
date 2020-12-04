@@ -37,22 +37,19 @@ export default class OutputController implements IngredientController {
 
       input.data[resourceTypeId].forEach((newInstance) => {
         const newResourceInstance = new ResourceInstanceModel();
-        if (!newInstance.id){
+        if (!newInstance.id) {
           if (newInstance.attributes) {
             newResourceInstance.attributes = ResourceInstance.convertAttributeObjectToArray(newInstance.attributes);
           } else {
             newResourceInstance.attributes = ResourceInstance.convertAttributeObjectToArray(newInstance);
           }
-        }
-        else {
+        } else {
           newResourceInstance._id = newInstance.id;
         }
-        
         newResourceInstance.resourceType = resourceTypeRef;
         
-
         listOfNewResourceInstances.push(newResourceInstance);
-        if (!newInstance.id){
+        if (!newInstance.id) {
           newResourceInstance.save();
         }
       });
