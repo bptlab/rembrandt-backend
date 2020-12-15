@@ -5,6 +5,7 @@ import { createConnection, getConnection, getManager, Timestamp } from 'typeorm'
 import { EventAllocationLog } from '@/entity/EventLogAllocation';
 import { AllocationLog } from '@/entity/Allocations';
 const parser = require('fast-xml-parser');
+import winston = require('winston');
 
 interface EventLogObject {
   log: EventLog;
@@ -85,7 +86,7 @@ export default class EventLogController {
               // look for matching entry based on taskname and resource
               const id = await allocationLogger.findEntryWithoutDuration(event.string[indexOfResource].value, event.string[indexOftask].value);
               // const id = await allocationLogger.findEntryWithoutDuration(event.string[2].value, "SMile Tour Planning - Rule");
-              console.log('Duration of' + id + ' will be set to ' + duration);
+              winston.info('Duration of' + id + ' will be set to ' + duration);
               if (id) {
                 await allocationLogger.setDurationEntry('AllocationLog', duration, id);
                 if (indexOfCosts >= 0) {

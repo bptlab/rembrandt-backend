@@ -47,7 +47,7 @@ export default class OutputController implements IngredientController {
           newResourceInstance._id = newInstance.id;
         }
         newResourceInstance.resourceType = resourceTypeRef;
-        
+
         listOfNewResourceInstances.push(newResourceInstance);
         if (!newInstance.id) {
           newResourceInstance.save();
