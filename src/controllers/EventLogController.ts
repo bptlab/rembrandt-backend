@@ -64,52 +64,59 @@ export default class EventLogController {
       ignoreAttributes: false,
     };
 
-    let startTime: number = 0;
     try {
       const eventLogData = await fs.readFile(path.join(filePathForEventLog, 'eventlog.xes'), 'utf8');
       const eventLogObject: EventLogObject = parser.parse(eventLogData, options);
-      for (const trace of eventLogObject.log.trace) {
-        for (const event of trace.event) {
-          // if a resource was assinged to this event
-          if (event.string.some((attribute) => (attribute.key.includes('org:resource')))) {
-            // find correct line in eventLog
-            const indexOfTransition = event.string.findIndex((attribute: Attribute) => attribute.key.includes('lifecycle:transition'));
-            const indexOfResource = event.string.findIndex((attribute: Attribute) => attribute.key.includes('org:resource'));
-            const indexOftask = event.string.findIndex((attribute: Attribute) => attribute.key.includes('concept:name'));
-            const indexOfCosts = event.string.findIndex((attribute: Attribute) => attribute.key.includes('total'));
-            if (event.string[indexOfTransition].value === 'start') {
-              startTime = Math.round((new Date(event.date.value)).getTime() / 1000);
-            }
-            if (event.string[indexOfTransition].value === 'complete') {
-              const endTime = Math.round((new Date(event.date.value)).getTime() / 1000);
-              const duration = endTime - startTime;
-              // look for matching entry based on taskname and resource
-              const id = await allocationLogger.findEntryWithoutDuration(event.string[indexOfResource].value, event.string[indexOftask].value);
-              // const id = await allocationLogger.findEntryWithoutDuration(event.string[2].value, "SMile Tour Planning - Rule");
-              winston.info('Duration of' + id + ' will be set to ' + duration);
-              if (id) {
-                await allocationLogger.setDurationEntry('AllocationLog', duration, id);
-                if (indexOfCosts >= 0) {
+      if (Array.isArray(eventLogObject.log.trace)) {
+        for (const trace of eventLogObject.log.trace) {
+          this.updateLog(trace);
+        }
+      } else {
+        this.updateLog(eventLogObject.log.trace);
+      }
+    } catch (error) {
+      winston.error(error);
+      return false;
+    }
+    return true;
+  }
+
+  public static async updateLog(trace: any): Promise<boolean> {
+    let startTime: number = 0;
+    try {
+      for (const event of trace.event) {
+        // if a resource was assinged to this event
+        if (event.string.some((attribute: any) => (attribute.key.includes('org:resource')))) {
+          // find correct line in eventLog
+          const indexOfTransition = event.string.findIndex((attribute: Attribute) => attribute.key.includes('lifecycle:transition'));
+          const indexOfResource = event.string.findIndex((attribute: Attribute) => attribute.key.includes('org:resource'));
+          const indexOftask = event.string.findIndex((attribute: Attribute) => attribute.key.includes('concept:name'));
+          const indexOfCosts = event.string.findIndex((attribute: Attribute) => attribute.key.includes('total'));
+          if (event.string[indexOfTransition].value === 'start') {
+            startTime = Math.round((new Date(event.date.value)).getTime() / 1000);
+          }
+          if (event.string[indexOfTransition].value === 'complete') {
+            const endTime = Math.round((new Date(event.date.value)).getTime() / 1000);
+            const duration = endTime - startTime;
+            // look for matching entry based on taskname and resource
+            const id = await allocationLogger.findEntryWithoutDuration(event.string[indexOfResource].value, event.string[indexOftask].value);
+            winston.info('Duration of' + id + ' will be set to ' + duration);
+            if (id) {
+              await allocationLogger.setDurationEntry('AllocationLog', duration, id);
+              if (indexOfCosts >= 0) {
                 const costs = event.string[indexOfCosts].value;
                 await allocationLogger.setCostsEntry('EventAllocationLog', parseInt(costs, 10), id);
-                }
-                // include other database column updates (e.g. process ID, taskId) here, like it was done for the costs of a task.
               }
+              // include other database column updates (e.g. process ID, taskId) here,
+              // like it was done for the costs of a task.
             }
           }
         }
       }
     } catch (error) {
+      winston.error(error);
       return false;
     }
-
-    // now update database
-    // for each trace
-    // for each activity in trace
-    // find id of (first) corresponding event in allocationlog where resource = assignedresource
-
-    // allocationLogger.setDurationEntry(id, activity.duration)
-    // await getManager().update(EventAllocationLog,id, {column:value, column2: value2, ...})
     return true;
   }
 

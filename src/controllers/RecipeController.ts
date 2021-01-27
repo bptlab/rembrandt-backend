@@ -80,7 +80,7 @@ export default class RecipeController {
     await this.execution.save();
     // writing allocation log
     this.execution.result!.getInstanceIdsForAllResourceTypes().forEach((resourceInstance) => {
-      allocationLogger.saveInAllocationLog(resourceInstance.toHexString(), this.name, 'Testnull');
+      allocationLogger.saveInAllocationLog(resourceInstance.toHexString(), this.name, 'unknown');
       winston.info(resourceInstance.toHexString() + ' saved in log');
     });
     return;
